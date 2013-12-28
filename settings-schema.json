@@ -4,13 +4,13 @@
     "default" : "/usr/share/cinnamon/theme/menu.png",
     "description": "Icon",
     "tooltip": "Select an icon to show in the panel."
- }, 
+ },
  "menu-label" : {
     "type" : "entry",
     "default" : "Menu",
     "description" : "Text",
     "tooltip" : "Enter custom text to show in the panel."
- }, 
+ },
  "show-recent" : {
     "type" : "checkbox",
     "default" : true,
@@ -35,6 +35,17 @@
     "description": "Enable filesystem path entry in search box",
     "tooltip": "Allows path entry in the menu search box."
  },
+ "quicklink-options" : {
+    "type": "combobox",
+    "default": "both",
+    "options": {
+         "Both Icons and Labels": "both",
+         "Icons Only": "icons",
+         "Labels Only": "labels"
+     },
+    "description": "Quicklinks Options",
+    "tooltip": "Allows the icons or Labels to be shown in the Quicklinks sidebar."
+ },
 "activate-on-hover" : {
     "type" : "checkbox",
     "default" : false,
@@ -43,7 +54,7 @@
  },
  "hover-delay" : {
     "type": "spinbutton",
-    "default" : 0,
+    "default" : 50,
     "min" : 0,
     "max" : 1000,
     "step" : 50,
