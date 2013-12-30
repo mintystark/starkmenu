@@ -611,7 +611,51 @@ TextBoxItem.prototype = {
 
         this.label_icon = new St.Icon({icon_name: this.icon, icon_size: 18, icon_type: St.IconType.FULLCOLOR,});
         this.addActor(this.label_icon);
+        this.label = new St.Label({
+            text: this.label_text,
+            style_class: 'menu-category-button-label'
+        });
+        this.addActor(this.label);
+    },
 
+    _update : function(quicklinkOptions){
+
+        this.removeActor(this.label_icon);
+        this.removeActor(this.label);
+
+        if(quicklinkOptions == 'both' || quicklinkOptions == 'icons')
+        {
+            this.name_icon = new St.Icon({icon_name: this.icon, icon_size: (quicklinkOptions == 'icons' ? 26 : 18), icon_type: St.IconType.FULLCOLOR,});
+
+            let iconFileName = this.icon;
+            let iconFile = Gio.file_new_for_path(iconFileName);
+            let icon;
+
+            if (iconFile.query_exists(null)) {
+                icon = new Gio.FileIcon({file: iconFile});
+            } else {
+                icon = new Gio.ThemedIcon({name: this.icon});
+            }
+
+            this.label_icon.set_gicon (icon);
+            this.label_icon.set_icon_size((quicklinkOptions == 'icons' ? 26 : 18));
+
+            if (!iconFile.query_exists(null)) {
+                this.label_icon = this.name_icon;
+
+            }
+
+            this.addActor(this.label_icon);
+        }
+
+        if(quicklinkOptions == 'both' || quicklinkOptions == 'labels')
+        {
+            this.label = new St.Label({
+                text: this.label_text,
+                style_class: 'menu-category-button-label'
+            });
+            this.addActor(this.label);
+        }
     },
 
     _onLeaveEvent : function(){
@@ -624,26 +668,6 @@ TextBoxItem.prototype = {
               }
            }
         });
-    },
-
-    _update_quicklink_options: function(quicklinkOptions){
-
-        this.removeActor(this.label_icon);
-        this.removeActor(this.label);
-
-        if(quicklinkOptions == 'both' || quicklinkOptions == 'icons')
-        {
-            this.label_icon = new St.Icon({icon_name: this.icon, icon_size: (quicklinkOptions == 'icons' ? 26 : 18), icon_type: St.IconType.FULLCOLOR,});
-            this.addActor(this.label_icon);
-        }
-        if(quicklinkOptions == 'both' || quicklinkOptions == 'labels')
-        {
-            this.label = new St.Label({
-                text: this.label_text,
-                style_class: 'menu-category-button-label'
-            });
-            this.addActor(this.label);
-        }
     },
 
     setActive: function (active) {
@@ -793,7 +817,25 @@ HoverIcon.prototype = {
 
     _refresh: function (icon) {
         this._userIcon.hide();
-        this.icon.set_icon_name(icon);
+
+        let iconFileName = icon;
+        let iconFile = Gio.file_new_for_path(iconFileName);
+        let newicon;
+
+        if (iconFile.query_exists(null)) {
+            newicon = new Gio.FileIcon({file: iconFile});
+        } else {
+            newicon = new Gio.ThemedIcon({name: icon});
+        }
+
+        if (iconFile.query_exists(null)) {
+            this.icon.set_gicon (newicon);
+        }
+        else
+        {
+            this.icon.set_icon_name(icon);
+        }
+
         this.icon.show();
     }
 };
@@ -921,7 +963,10 @@ RightButtonsBox.prototype = {
         this.itemsBox = new St.BoxLayout({
             vertical: true
         });
-        this.shutDownItemsBox = new St.BoxLayout({
+        this.shutDownMenuBox = new St.BoxLayout({
+            vertical: true
+        });
+        this.shutDownIconBox = new St.BoxLayout({
             vertical: true
         });
         this.shutdownBox = new St.BoxLayout({
@@ -936,75 +981,103 @@ RightButtonsBox.prototype = {
         this._container.connect('get-preferred-width', Lang.bind(this, this._getPreferredWidth));
         this._container.connect('allocate', Lang.bind(this, this._allocate));
         this._container.add_actor(this.itemsBox);
-        this._container.add_actor(this.shutDownItemsBox);
     },
 
     _update_quicklinks : function(quicklinkOptions) {
-        this.home._update_quicklink_options(quicklinkOptions);
-        this.documents._update_quicklink_options(quicklinkOptions);
-        this.pictures._update_quicklink_options(quicklinkOptions);
-        this.music._update_quicklink_options(quicklinkOptions);
-        this.videos._update_quicklink_options(quicklinkOptions);
-        this.computer._update_quicklink_options(quicklinkOptions);
-        this.packageItem._update_quicklink_options(quicklinkOptions);
-        this.control._update_quicklink_options(quicklinkOptions);
-        this.terminal._update_quicklink_options(quicklinkOptions);
-        this.help._update_quicklink_options(quicklinkOptions);
-        this.shutdown._update_quicklink_options(quicklinkOptions);
+
+        for(let i in this.quicklinks)
+        {
+            this.quicklinks[i]._update(quicklinkOptions);
+        }
+        this.shutdown._update(quicklinkOptions);
+        this.logout._update(quicklinkOptions);
+        this.lock._update(quicklinkOptions);
 
         if(quicklinkOptions == 'icons')
         {
             this.hoverIcon.userLabel.hide();
+            this.hoverIcon._userIcon.set_icon_size(22);
+            this.hoverIcon.icon.set_icon_size(22);
+            this.shutDownMenuBox.set_style('min-height: 1px');
             this.shutdownMenu.actor.hide();
-            this.hoverIcon._userIcon.set_icon_size(26);
-            this.hoverIcon.icon.set_icon_size(26);
-            this.shutDownItemsBox.set_style('padding-top: 36px;');
+            this.shutdownBox.remove_actor(this.shutdownMenu.actor);
+
         }
         else
         {
             this.hoverIcon.userLabel.show();
-            this.shutdownMenu.actor.show();
             this.hoverIcon._userIcon.set_icon_size(HOVER_ICON_SIZE);
             this.hoverIcon.icon.set_icon_size(HOVER_ICON_SIZE);
-            this.shutDownItemsBox.set_style('padding-top: 0px;');
+            this.shutDownIconBox.hide();
+            this.shutdownMenu.actor.show();
+            this.shutDownMenuBox.set_style('min-height: 82px');
+            this.shutdownBox.add_actor(this.shutdownMenu.actor);
         }
     },
 
     addItems: function () {
+
+        this.itemsBox.destroy_all_children();
+        this.shutdownBox.destroy_all_children();
+
         this.hoverIcon = new HoverIcon(this.menu);
-        this.home = new TextBoxItem(_("Home"), "folder-home", "Util.spawnCommandLine('nemo')", this.menu, this.hoverIcon, false);
-        this.documents = new TextBoxItem(_("Documents"), "folder-documents", "Util.spawnCommandLine('nemo Documents')", this.menu, this.hoverIcon, false);
-        this.pictures = new TextBoxItem(_("Pictures"), "folder-pictures", "Util.spawnCommandLine('nemo Pictures')", this.menu, this.hoverIcon, false);
-        this.music = new TextBoxItem(_("Music"), "folder-music", "Util.spawnCommandLine('nemo Music')", this.menu, this.hoverIcon, false);
-        this.videos = new TextBoxItem(_("Videos"), "folder-videos", "Util.spawnCommandLine('nemo Videos')", this.menu, this.hoverIcon, false);
-        this.computer = new TextBoxItem(_("Computer"), "computer", "Util.spawnCommandLine('nemo computer:///')", this.menu, this.hoverIcon, false);
-        this.packageItem = new TextBoxItem(_("Software Manager"), "package-manager", "Util.spawnCommandLine('gksu mintinstall')", this.menu, this.hoverIcon, false);
-        this.control = new TextBoxItem(_("Control Center"), "control-center2", "Util.spawnCommandLine('cinnamon-settings')", this.menu, this.hoverIcon, false);
-        this.terminal = new TextBoxItem(_("Terminal"), "terminal", "Util.spawnCommandLine('gnome-terminal')", this.menu, this.hoverIcon, false);
-        this.help = new TextBoxItem(_("Help"), "help", "Util.spawnCommandLine('yelp')", this.menu, this.hoverIcon, false);
+        this.itemsBox.add_actor(this.hoverIcon.userBox);
+
+        this.quicklinks = [];
+        for(let i in this.menu.quicklinks)
+        {
+            if(this.menu.quicklinks[i] != '')
+            {
+                if(this.menu.quicklinks[i] == 'separator')
+                {
+                    this.separator = new PopupMenu.PopupSeparatorMenuItem();
+                    this.separator.actor.set_style("padding: 0em 0em; min-width: 1px;");
+
+                    this.itemsBox.add_actor(this.separator.actor);
+                }
+                else
+                {
+                    let split = this.menu.quicklinks[i].split(',');
+                    if(split.length == 3)
+                    {
+                        this.quicklinks[i] = new TextBoxItem(_(split[0]), split[1], "Util.spawnCommandLine('"+split[2]+"')", this.menu, this.hoverIcon, false);
+                        this.itemsBox.add_actor(this.quicklinks[i].actor);
+                    }
+                }
+            }
+        }
+
         this.shutdown = new TextBoxItem(_("Shutdown"), "system-shutdown", "Session.ShutdownRemote()", this.menu, this.hoverIcon, false);
+        this.logout = new TextBoxItem(_("Logout"), "system-shutdown", "Session.LogoutRemote(0)", this.menu, this.hoverIcon, false);
+
+        let screensaver_settings = new Gio.Settings({ schema: "org.cinnamon.screensaver" });
+        let screensaver_dialog = Gio.file_new_for_path("/usr/bin/cinnamon-screensaver-command");
+        if (screensaver_dialog.query_exists(null)) {
+            if (screensaver_settings.get_boolean("ask-for-away-message"))
+            {
+                this.lock = new TextBoxItem(_("Lock"), "system-shutdown", "Util.spawnCommandLine('cinnamon-screensaver-lock-dialog')", this.menu, this.hoverIcon, false);
+            }
+            else
+            {
+                this.lock = new TextBoxItem(_("Lock"), "system-shutdown", "Util.spawnCommandLine('cinnamon-screensaver-command --lock')", this.menu, this.hoverIcon, false);
+            }
+        }
+
         this.shutdownMenu = new ShutdownMenu(this.menu, this.hoverIcon);
 
         this.shutdownBox.add_actor(this.shutdown.actor);
         this.shutdownBox.add_actor(this.shutdownMenu.actor);
 
-        this.itemsBox.add_actor(this.hoverIcon.userBox);
-        this.itemsBox.add_actor(new PopupMenu.PopupSeparatorMenuItem().actor);
-        this.itemsBox.add_actor(this.home.actor);
-        this.itemsBox.add_actor(this.pictures.actor);
-        this.itemsBox.add_actor(this.music.actor);
-        this.itemsBox.add_actor(this.videos.actor);
-        this.itemsBox.add_actor(this.documents.actor);
-        this.itemsBox.add_actor(new PopupMenu.PopupSeparatorMenuItem().actor);
-        this.itemsBox.add_actor(this.computer.actor);
-        this.itemsBox.add_actor(this.control.actor);
-        //this.itemsBox.add_actor(new PopupMenu.PopupSeparatorMenuItem().actor);
-        this.itemsBox.add_actor(this.packageItem.actor);
-        this.itemsBox.add_actor(this.terminal.actor);
-        this.itemsBox.add_actor(this.help.actor);
-        this.itemsBox.add_actor(new PopupMenu.PopupSeparatorMenuItem().actor);
-        this.shutDownItemsBox.add_actor(this.shutdownBox);
-        this.shutDownItemsBox.add_actor(this.shutdownMenu.menu.actor);
+        this.shutDownMenuBox.add_actor(this.shutdownBox);
+        this.shutDownMenuBox.add_actor(this.shutdownMenu.menu.actor);
+
+        this.shutDownIconBox.add_actor(this.logout.actor);
+        this.shutDownIconBox.add_actor(this.lock.actor);
+
+        this.itemsBox.add_actor(this.shutDownMenuBox);
+        this.shutDownMenuBox.set_style('min-height: 82px');
+
+        this.itemsBox.add_actor(this.shutDownIconBox);
     },
 
     _getPreferredHeight: function (actor, forWidth, alloc) {
@@ -1032,13 +1105,13 @@ RightButtonsBox.prototype = {
 
         let mainBoxHeight = this.appsMenuButton.mainBox.get_height();
 
-        [minWidth, minHeight, naturalWidth, naturalHeight] = this.shutDownItemsBox.get_preferred_size();
+        // [minWidth, minHeight, naturalWidth, naturalHeight] = this.shutDownItemsBox.get_preferred_size();
 
-        childBox.y1 = mainBoxHeight - 110;
-        childBox.y2 = childBox.y1;
-        childBox.x1 = 0;
-        childBox.x2 = childBox.x1 + naturalWidth;
-        this.shutDownItemsBox.allocate(childBox, flags);
+        // childBox.y1 = mainBoxHeight - 110;
+        // childBox.y2 = childBox.y1;
+        // childBox.x1 = 0;
+        // childBox.x2 = childBox.x1 + naturalWidth;
+        // this.shutDownItemsBox.allocate(childBox, flags);
     }
 };
 
@@ -1221,6 +1294,7 @@ MyApplet.prototype = {
             this.settings.bindProperty(Settings.BindingDirection.IN, "menu-label", "menuLabel", this._updateIconAndLabel, null);
             this._updateIconAndLabel();
 
+
             this._searchInactiveIcon = new St.Icon({ style_class: 'menu-search-entry-icon',
                                                icon_name: 'edit-find',
                                                icon_type: St.IconType.SYMBOLIC });
@@ -1252,6 +1326,11 @@ MyApplet.prototype = {
             this.settings.bindProperty(Settings.BindingDirection.IN, "hover-delay", "hover_delay_ms", this._update_hover_delay, null);
             this._update_hover_delay();
 
+            this.settings.bindProperty(Settings.BindingDirection.IN, "show-quicklinks", "showQuicklinks", this._updateQuickLinksView, null);
+            this._updateQuickLinksView();
+
+            this.settings.bindProperty(Settings.BindingDirection.IN, "show-quicklinks-shutdown-menu", "showQuicklinksShutdownMenu", this._updateQuickLinksShutdownView, null);
+            this._updateQuickLinksShutdownView();
 
             global.display.connect('overlay-key', Lang.bind(this, function(){
                 try{
@@ -1271,6 +1350,30 @@ MyApplet.prototype = {
             this.lastAcResults = new Array();
 
             this.settings.bindProperty(Settings.BindingDirection.IN, "search-filesystem", "searchFilesystem", null, null);
+
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-0", "quicklink_0", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-1", "quicklink_1", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-2", "quicklink_2", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-3", "quicklink_3", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-4", "quicklink_4", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-5", "quicklink_5", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-6", "quicklink_6", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-7", "quicklink_7", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-8", "quicklink_8", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-9", "quicklink_9", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-10", "quicklink_10", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-11", "quicklink_11", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-12", "quicklink_12", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-13", "quicklink_13", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-14", "quicklink_14", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-15", "quicklink_15", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-16", "quicklink_16", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-17", "quicklink_17", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-18", "quicklink_18", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-19", "quicklink_19", this._updateQuickLinks, null);
+
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-options", "quicklinkOptions", this._updateQuickLinks, null);
+            this._updateQuickLinks();
         }
         catch (e) {
             global.logError(e);
@@ -1289,6 +1392,79 @@ MyApplet.prototype = {
         if (this.activateOnHover) {
             this._openMenuId = this.actor.connect('enter-event', Lang.bind(this, this.openMenu));
         }
+    },
+
+    _updateQuickLinksView : function(){
+        this.menu.showQuicklinks = this.showQuicklinks;
+        if(this.menu.showQuicklinks)
+        {
+            this.rightButtonsBox.actor.show();
+        }
+        else
+        {
+            this.rightButtonsBox.actor.hide();
+        }
+    },
+
+    _updateQuickLinksShutdownView : function(){
+        this.menu.showQuicklinksShutdownMenu = this.showQuicklinksShutdownMenu;
+        if(this.menu.showQuicklinksShutdownMenu)
+        {
+            this.rightButtonsBox.shutdown.actor.show();
+            this.rightButtonsBox.shutdownMenu.actor.show();
+
+            if(this.quicklinkOptions != 'icons')
+            {
+                this.rightButtonsBox.shutDownMenuBox.set_style('min-height: 82px');
+            }
+            else
+            {
+                this.rightButtonsBox.shutDownIconBox.show();
+            }
+        }
+        else
+        {
+            this.rightButtonsBox.shutdown.actor.hide();
+            this.rightButtonsBox.shutdownMenu.actor.hide();
+            this.rightButtonsBox.shutDownIconBox.hide();
+            this.rightButtonsBox.shutDownMenuBox.set_style('min-height: 1px');
+        }
+        this.favsBox.style = "min-height: "+(this.rightButtonsBox.actor.get_height()-100)+"px;min-width: 235px;";
+    },
+
+    _updateQuickLinks: function() {
+        this.menu.quicklinks = [];
+        this.menu.quicklinks[0] = this.quicklink_0;
+        this.menu.quicklinks[1] = this.quicklink_1;
+        this.menu.quicklinks[2] = this.quicklink_2;
+        this.menu.quicklinks[3] = this.quicklink_3;
+        this.menu.quicklinks[4] = this.quicklink_4;
+        this.menu.quicklinks[5] = this.quicklink_5;
+        this.menu.quicklinks[6] = this.quicklink_6;
+        this.menu.quicklinks[7] = this.quicklink_7;
+        this.menu.quicklinks[8] = this.quicklink_8;
+        this.menu.quicklinks[9] = this.quicklink_9;
+        this.menu.quicklinks[10] = this.quicklink_10;
+        this.menu.quicklinks[11] = this.quicklink_11;
+        this.menu.quicklinks[12] = this.quicklink_12;
+        this.menu.quicklinks[13] = this.quicklink_13;
+        this.menu.quicklinks[14] = this.quicklink_14;
+        this.menu.quicklinks[15] = this.quicklink_15;
+        this.menu.quicklinks[16] = this.quicklink_16;
+        this.menu.quicklinks[17] = this.quicklink_17;
+        this.menu.quicklinks[18] = this.quicklink_18;
+        this.menu.quicklinks[19] = this.quicklink_19;
+
+        this.menu.quicklinkOptions = this.quicklinkOptions;
+        this.rightButtonsBox.addItems();
+        this.rightButtonsBox._update_quicklinks(this.quicklinkOptions);
+
+        this._updateQuickLinksShutdownView();
+
+        global.logError(this.rightButtonsBox.actor.get_height());
+
+        this.favsBox.style = "min-height: "+(this.rightButtonsBox.actor.get_height()-100)+"px;min-width: 235px;";
+
     },
 
     _update_hover_delay: function() {
@@ -1884,7 +2060,7 @@ MyApplet.prototype = {
         this.leftPane = new St.Bin();
 
         this.favsBox = new St.BoxLayout({vertical: true});
-        this.favsBox.style = "min-height: 452px;min-width: 235px;";
+        this.favsBox.style = "min-height: 152px;min-width: 235px;";
 
         this.appsBox = new St.BoxLayout({vertical: true});
 
@@ -1943,12 +2119,13 @@ MyApplet.prototype = {
         this.leftPaneBox = new St.BoxLayout({ style_class: 'menu-favorites-box', vertical: true });
 
 
+
+
         this.rightButtonsBox = new RightButtonsBox(this, this.menu);
 
         this.rightButtonsBox.actor.style_class = "right-buttons-box";
 
-        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-options", "quicklinkOptions", this._update_quicklinks, null);
-        this._update_quicklinks();
+
 
         this.mainBox = new St.BoxLayout({ style_class: 'menu-applications-box', vertical:false });
 
@@ -1995,7 +2172,10 @@ MyApplet.prototype = {
         }else {
             this.leftPane.set_child(this.favsBox);
             this.appsButton.label.set_text(' All Programs');
-            this.rightButtonsBox.actor.show();
+            if(this.menu.showQuicklinks)
+            {
+                this.rightButtonsBox.actor.show();
+            }
             this._appletStyles("favs");
         }
     },
@@ -2011,11 +2191,6 @@ MyApplet.prototype = {
 
     _update_autoscroll: function() {
         this.applicationsScrollBox.set_auto_scrolling(this.autoscroll_enabled);
-    },
-
-     _update_quicklinks: function() {
-        this.rightButtonsBox._update_quicklinks(this.quicklinkOptions);
-        this.menu.quicklinkOptions = this.quicklinkOptions;
     },
 
     _clearAllSelections: function() {

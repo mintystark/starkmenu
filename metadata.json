@@ -1,7 +1,8 @@
 {
-    "uuid": "StarkMenu@mintystark", 
-    "icon": "applications-other", 
-    "last-edited": "1388281591", 
-    "name": "StarkMenu", 
+    "uuid": "StarkMenu@mintystark",
+    "icon": "applications-other",
+    "last-edited": "1388281591",
+    "name": "StarkMenu",
+    "version": "1.1.0",
     "description": "A Menu Derived from physics Windows 7+Cinnamon, Menu.  Works on Cinnamon 2.0 and has a few updates and additional options."
 }
