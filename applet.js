@@ -1048,18 +1048,18 @@ RightButtonsBox.prototype = {
         }
 
         this.shutdown = new TextBoxItem(_("Shutdown"), "system-shutdown", "Session.ShutdownRemote()", this.menu, this.hoverIcon, false);
-        this.logout = new TextBoxItem(_("Logout"), "system-shutdown", "Session.LogoutRemote(0)", this.menu, this.hoverIcon, false);
+        this.logout = new TextBoxItem(_("Logout"), "gnome-logout", "Session.LogoutRemote(0)", this.menu, this.hoverIcon, false);
 
         let screensaver_settings = new Gio.Settings({ schema: "org.cinnamon.screensaver" });
         let screensaver_dialog = Gio.file_new_for_path("/usr/bin/cinnamon-screensaver-command");
         if (screensaver_dialog.query_exists(null)) {
             if (screensaver_settings.get_boolean("ask-for-away-message"))
             {
-                this.lock = new TextBoxItem(_("Lock"), "system-shutdown", "Util.spawnCommandLine('cinnamon-screensaver-lock-dialog')", this.menu, this.hoverIcon, false);
+                this.lock = new TextBoxItem(_("Lock"), "gnome-lockscreen", "Util.spawnCommandLine('cinnamon-screensaver-lock-dialog')", this.menu, this.hoverIcon, false);
             }
             else
             {
-                this.lock = new TextBoxItem(_("Lock"), "system-shutdown", "Util.spawnCommandLine('cinnamon-screensaver-command --lock')", this.menu, this.hoverIcon, false);
+                this.lock = new TextBoxItem(_("Lock"), "gnome-lockscreen", "Util.spawnCommandLine('cinnamon-screensaver-command --lock')", this.menu, this.hoverIcon, false);
             }
         }
 
