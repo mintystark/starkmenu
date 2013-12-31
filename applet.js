@@ -1461,8 +1461,6 @@ MyApplet.prototype = {
 
         this._updateQuickLinksShutdownView();
 
-        global.logError(this.rightButtonsBox.actor.get_height());
-
         this.favsBox.style = "min-height: "+(this.rightButtonsBox.actor.get_height()-100)+"px;min-width: 235px;";
 
     },
@@ -1560,65 +1558,93 @@ MyApplet.prototype = {
         this.appBoxIter.reloadVisible();
         this.catBoxIter.reloadVisible();
 
-        if (symbol==Clutter.KEY_Super_L && this.menu.isOpen) {
+        if (symbol==Clutter.KEY_Super_L && this.menu.isOpen)
+        {
             this.menu.close();
             return true;
         }
         let index = this._selectedItemIndex;
 
-        if (this._activeContainer === null && symbol == Clutter.KEY_Up) {
+        if (this._activeContainer === null && symbol == Clutter.KEY_Up)
+        {
             this._activeContainer = this.applicationsBox;
             item_actor = this.appBoxIter.getLastVisible();
             index = this.appBoxIter.getAbsoluteIndexOfChild(item_actor);
-        } else if (this._activeContainer === null && symbol == Clutter.KEY_Down) {
+        }
+        else if (this._activeContainer === null && symbol == Clutter.KEY_Down)
+        {
             this._activeContainer = this.applicationsBox;
             item_actor = this.appBoxIter.getFirstVisible();
             index = this.appBoxIter.getAbsoluteIndexOfChild(item_actor);
-        } else if (symbol == Clutter.KEY_Up) {
-            if (this._activeContainer==this.applicationsBox) {
+        }
+        else if (symbol == Clutter.KEY_Up)
+        {
+            if (this._activeContainer == this.applicationsBox)
+            {
                 this._previousSelectedActor = this.applicationsBox.get_child_at_index(index);
                 item_actor = this.appBoxIter.getPrevVisible(this._previousSelectedActor);
                 index = this.appBoxIter.getAbsoluteIndexOfChild(item_actor);
-            } else {
+            }
+            else
+            {
                 this._previousSelectedActor = this.categoriesBox.get_child_at_index(index);
                 this._previousSelectedActor._delegate.isHovered = false;
                 item_actor = this.catBoxIter.getPrevVisible(this._activeActor)
                 index = this.catBoxIter.getAbsoluteIndexOfChild(item_actor);
             }
-        } else if (symbol == Clutter.KEY_Down) {
-            if (this._activeContainer==this.applicationsBox) {
+        }
+        else if (symbol == Clutter.KEY_Down)
+        {
+            if (this._activeContainer == this.applicationsBox)
+            {
                 this._previousSelectedActor = this.applicationsBox.get_child_at_index(index);
                 item_actor = this.appBoxIter.getNextVisible(this._previousSelectedActor);
                 index = this.appBoxIter.getAbsoluteIndexOfChild(item_actor);
-            } else {
+            }
+            else
+            {
                 this._previousSelectedActor = this.categoriesBox.get_child_at_index(index);
                 this._previousSelectedActor._delegate.isHovered = false;
                 item_actor = this.catBoxIter.getNextVisible(this._activeActor)
                 index = this.catBoxIter.getAbsoluteIndexOfChild(item_actor);
             }
-        } else if (symbol == Clutter.KEY_Right && (this._activeContainer !== this.applicationsBox)) {
+        }
+        else if (symbol == Clutter.KEY_Right && (this._activeContainer !== this.applicationsBox))
+        {
+            // Jump from Categories to Appications
             item_actor = this.appBoxIter.getFirstVisible();
             index = this.appBoxIter.getAbsoluteIndexOfChild(item_actor);
-        } else if (symbol == Clutter.KEY_Left && this._activeContainer === this.applicationsBox && !this.searchActive) {
+        }
+        else if (symbol == Clutter.KEY_Left && this._activeContainer === this.applicationsBox && !this.searchActive)
+        {
+            // Jump from Appications to Categories
             this._previousSelectedActor = this.applicationsBox.get_child_at_index(index);
             item_actor = (this._previousTreeSelectedActor != null) ? this._previousTreeSelectedActor : this.catBoxIter.getFirstVisible();
             index = this.catBoxIter.getAbsoluteIndexOfChild(item_actor);
-        } else if (this._activeContainer === this.applicationsBox && (symbol == Clutter.KEY_Return || symbol == Clutter.KP_Enter)) {
+        }
+        else if (this._activeContainer === this.applicationsBox && (symbol == Clutter.KEY_Return || symbol == Clutter.KP_Enter))
+        {
             item_actor = this.applicationsBox.get_child_at_index(this._selectedItemIndex);
             item_actor._delegate.activate();
             return true;
-        } else if (this.searchFilesystem && (this._fileFolderAccessActive || symbol == Clutter.slash)) {
-            if (symbol == Clutter.Return || symbol == Clutter.KP_Enter) {
-                if (this._run(this.searchEntry.get_text())) {
+        }
+        else if (this.searchFilesystem && (this._fileFolderAccessActive || symbol == Clutter.slash))
+        {
+            if (symbol == Clutter.Return || symbol == Clutter.KP_Enter)
+            {
+                if (this._run(this.searchEntry.get_text()))
+                {
                     this.menu.close();
                 }
                 return true;
             }
-            if (symbol == Clutter.Escape) {
+            if (symbol == Clutter.Escape)
+            {
                 this.searchEntry.set_text('');
                 this._fileFolderAccessActive = false;
             }
-            if (symbol == Clutter.slash) {
+            if (symbol == Clutter.slash)
+            {
                 // Need preload data before get completion. GFilenameCompleter load content of parent directory.
                 // Parent directory for /usr/include/ is /usr/. So need to add fake name('a').
                 let text = this.searchEntry.get_text().concat('/a');
@@ -1631,15 +1657,22 @@ MyApplet.prototype = {
 
                 return false;
             }
-            if (symbol == Clutter.Tab) {
+            if (symbol == Clutter.Tab)
+            {
                 let text = actor.get_text();
                 let prefix;
                 if (text.lastIndexOf(' ') == -1)
+                {
                     prefix = text;
+                }
                 else
+                {
                     prefix = text.substr(text.lastIndexOf(' ') + 1);
+                }
                 let postfix = this._getCompletion(prefix);
-                if (postfix != null && postfix.length > 0) {
+
+                if (postfix != null && postfix.length > 0)
+                {
                     actor.insert_text(postfix, -1);
                     actor.set_cursor_position(text.length + postfix.length);
                     if (postfix[postfix.length - 1] == '/')
@@ -1650,12 +1683,15 @@ MyApplet.prototype = {
             }
             return false;
 
-        } else {
+        }
+        else
+        {
             return false;
         }
 
         this._selectedItemIndex = index;
-        if (!item_actor || item_actor === this.searchEntry) {
+        if (!item_actor || item_actor === this.searchEntry)
+        {
             return false;
         }
         item_actor._delegate.emit('enter-event');
@@ -1838,6 +1874,7 @@ MyApplet.prototype = {
                         }
                     });
                 }
+                this._scrollToCategoryButton(this.placesButton);
             }));
             this.placesButton.actor.connect('leave-event', Lang.bind(this, function () {
                 if (!this.searchActive) {
@@ -1886,6 +1923,7 @@ MyApplet.prototype = {
                         }
                     });
                 }
+                this._scrollToCategoryButton(this.recentButton);
             }));
             this.recentButton.actor.connect('leave-event', Lang.bind(this, function () {
                 if (!this.searchActive) {
@@ -2051,6 +2089,16 @@ MyApplet.prototype = {
         if (new_scroll_value!=current_scroll_value) this.applicationsScrollBox.get_vscroll_bar().get_adjustment().set_value(new_scroll_value);
     },
 
+    _scrollToCategoryButton: function(button) {
+        var current_scroll_value = this.categoriesScrollBox.get_vscroll_bar().get_adjustment().get_value();
+        var box_height = this.categoriesScrollBox.get_allocation_box().y2-this.categoriesScrollBox.get_allocation_box().y1;
+        var new_scroll_value = current_scroll_value;
+        if (current_scroll_value > button.actor.get_allocation_box().y1-10) new_scroll_value = button.actor.get_allocation_box().y1-10;
+        if (box_height+current_scroll_value < button.actor.get_allocation_box().y2+10) new_scroll_value = button.actor.get_allocation_box().y2-box_height+10;
+        if (new_scroll_value!=current_scroll_value) this.categoriesScrollBox.get_vscroll_bar().get_adjustment().set_value(new_scroll_value);
+    },
+
+
     _display : function() {
         this._activeContainer = null;
         this._activeActor = null;
@@ -2100,6 +2148,16 @@ MyApplet.prototype = {
         this._update_autoscroll();
 
         let vscroll = this.applicationsScrollBox.get_vscroll_bar();
+        vscroll.connect('scroll-start',
+                        Lang.bind(this, function() {
+                                      this.menu.passEvents = true;
+                                  }));
+        vscroll.connect('scroll-stop',
+                        Lang.bind(this, function() {
+                                      this.menu.passEvents = false;
+                                  }));
+
+        let vscroll = this.categoriesScrollBox.get_vscroll_bar();
         vscroll.connect('scroll-start',
                         Lang.bind(this, function() {
                                       this.menu.passEvents = true;
@@ -2214,6 +2272,7 @@ MyApplet.prototype = {
         else
             this._displayButtons(this._listApplications(null));
         this.closeApplicationsContextMenus(null, false);
+        this._scrollToCategoryButton(categoryButton);
     },
 
     closeApplicationsContextMenus: function(excludeApp, animate) {
