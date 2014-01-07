@@ -51,6 +51,16 @@
     "description" : "Menu hover delay:",
     "tooltip" : "Delay between switching categories"
  },
+ "favorite-icon-size" : {
+    "type": "spinbutton",
+    "default" : 32,
+    "min" : 12,
+    "max" : 64,
+    "step" : 1,
+    "units" : "pixels",
+    "description" : "Size of the Fovorite Button Icons:",
+    "tooltip" : "Change the Size of the Favorite Buttons Icons"
+ },
  "show-quicklinks" : {
     "type" : "checkbox",
     "default" : true,

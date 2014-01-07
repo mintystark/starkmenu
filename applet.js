@@ -26,7 +26,7 @@ const Pango = imports.gi.Pango;
 
 const Session = new GnomeSession.SessionManager();
 const ICON_SIZE = 16;
-const MAX_FAV_ICON_SIZE = 32;
+const MAX_FAV_ICON_SIZE = 64;
 const CATEGORY_ICON_SIZE = 22;
 const APPLICATION_ICON_SIZE = 22;
 const HOVER_ICON_SIZE = 48;
@@ -546,18 +546,18 @@ RecentCategoryButton.prototype = {
     }
 };
 
-function FavoritesButton(appsMenuButton, app, nbFavorites) {
-    this._init(appsMenuButton, app, nbFavorites);
+function FavoritesButton(appsMenuButton, app, nbFavorites, iconSize) {
+    this._init(appsMenuButton, app, nbFavorites, iconSize);
 }
 
 FavoritesButton.prototype = {
     __proto__: GenericApplicationButton.prototype,
 
-    _init: function(appsMenuButton, app, nbFavorites) {
+    _init: function(appsMenuButton, app, nbFavorites, iconSize) {
         GenericApplicationButton.prototype._init.call(this, appsMenuButton, app, true);
         let monitorHeight = Main.layoutManager.primaryMonitor.height;
         let real_size = (0.7*monitorHeight) / nbFavorites;
-        let icon_size = 0.6*real_size;
+        let icon_size = iconSize;//0.6*real_size;
         if (icon_size>MAX_FAV_ICON_SIZE) icon_size = MAX_FAV_ICON_SIZE;
         this.actor.style = "padding-top: "+(icon_size/3)+"px;padding-bottom: "+(icon_size/3)+"px; margin:auto;"
 
@@ -1991,7 +1991,7 @@ MyApplet.prototype = {
             let app = appSys.lookup_app(launchers[i]);
             if (!app) app = appSys.lookup_settings_app(launchers[i]);
             if (app) {
-                let button = new FavoritesButton(this, app, launchers.length); // + 3 because we're adding 3 system buttons at the bottom
+                let button = new FavoritesButton(this, app, launchers.length, this.favorite_icon_size); // + 3 because we're adding 3 system buttons at the bottom
                 this._favoritesButtons[app] = button;
                 favoritesBox.actor.add_actor(button.actor, {
                     y_align: St.Align.END,
@@ -2146,6 +2146,8 @@ MyApplet.prototype = {
 
         this.settings.bindProperty(Settings.BindingDirection.IN, "enable-autoscroll", "autoscroll_enabled", this._update_autoscroll, null);
         this._update_autoscroll();
+
+        this.settings.bindProperty(Settings.BindingDirection.IN, "favorite-icon-size", "favorite_icon_size", this._refreshFavs, null);
 
         let vscroll = this.applicationsScrollBox.get_vscroll_bar();
         vscroll.connect('scroll-start',
