@@ -1321,7 +1321,7 @@ MyApplet.prototype = {
             this._display();
             this.menu.connect('open-state-changed', Lang.bind(this, this._onOpenStateChanged));
             appsys.connect('installed-changed', Lang.bind(this, this._refreshApps));
-            AppFavorites.getAppFavorites().connect('changed', Lang.bind(this, this._refreshFavs));
+            AppFavorites.getAppFavorites().connect('changed', Lang.bind(this, this._updateAppFavs));
 
             this.settings.bindProperty(Settings.BindingDirection.IN, "hover-delay", "hover_delay_ms", this._update_hover_delay, null);
             this._update_hover_delay();
@@ -1378,6 +1378,15 @@ MyApplet.prototype = {
         catch (e) {
             global.logError(e);
         }
+    },
+
+    _updateAppFavs: function() {//Do not call directly _refreshFavs
+                                //because the dragable icon have a focus,
+                                //so you need to wait for drag-end and
+                                //then you can destroy the all favorites...
+        Mainloop.idle_add(Lang.bind(this, function() {
+            this._refreshFavs();
+        }));
     },
 
     openMenu: function() {
@@ -1972,9 +1981,13 @@ MyApplet.prototype = {
 
     _refreshFavs: function () {
         //Remove all favorites
-        this.favsBox.get_children().forEach(Lang.bind(this, function (child) {
-            child.destroy();
-        }));
+        this.oldFavorites = this.favsBox.get_children()[0];//You have only one children...
+        if(this.oldFavorites) {//In the first call you don't have any children...
+            this.favsBox.remove_actor(this.oldFavorites);//remove but destroy latter to avoid the problem...
+            Mainloop.idle_add(Lang.bind(this, function() {
+                this.oldFavorites.destroy();
+            }));
+        }
 
         let favoritesBox = new FavoritesBox();
         this.favsBox.add_actor(favoritesBox.actor, {
