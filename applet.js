@@ -1574,7 +1574,12 @@ MyApplet.prototype = {
         }
         let index = this._selectedItemIndex;
 
-        if (this._activeContainer === null && symbol == Clutter.KEY_Up)
+        if (!this.rightButtonsBox.actor.visible && symbol == Clutter.Tab)
+        {
+           global.stage.set_key_focus(this.appsButton.actor);
+           return true;
+        }
+        else if (this._activeContainer === null && symbol == Clutter.KEY_Up)
         {
             this._activeContainer = this.applicationsBox;
             item_actor = this.appBoxIter.getLastVisible();
