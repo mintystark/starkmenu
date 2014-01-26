@@ -1292,6 +1292,9 @@ MyApplet.prototype = {
 
             this.settings.bindProperty(Settings.BindingDirection.IN, "menu-icon", "menuIcon", this._updateIconAndLabel, null);
             this.settings.bindProperty(Settings.BindingDirection.IN, "menu-label", "menuLabel", this._updateIconAndLabel, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "all-programs-label", "allProgramsLabel", null, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "favorites-label", "favoritesLabel", null, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "shutdown-label", "shutdownLabel", null, null);
             this._updateIconAndLabel();
 
 
@@ -1374,6 +1377,8 @@ MyApplet.prototype = {
 
             this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-options", "quicklinkOptions", this._updateQuickLinks, null);
             this._updateQuickLinks();
+
+
         }
         catch (e) {
             global.logError(e);
@@ -2174,7 +2179,7 @@ MyApplet.prototype = {
         this.separator = new PopupMenu.PopupSeparatorMenuItem();
         this.separator.actor.set_style("padding: 0em 1em;");
 
-        this.appsButton = new AllProgramsItem(_("All Programs"), "forward", this, false);
+        this.appsButton = new AllProgramsItem(_(this.allProgramsLabel), "forward", this, false);
 
         this.leftPaneBox = new St.BoxLayout({ style_class: 'menu-favorites-box', vertical: true });
 
@@ -2226,18 +2231,19 @@ MyApplet.prototype = {
     switchPanes: function(pane) {
         if (pane == "apps") {
             this.leftPane.set_child(this.appsBox);
-            this.appsButton.label.set_text(' Favorites');
+            this.appsButton.label.set_text(" "+_(this.favoritesLabel));
             this.rightButtonsBox.actor.hide();
             this._appletStyles("apps");
         }else {
             this.leftPane.set_child(this.favsBox);
-            this.appsButton.label.set_text(' All Programs');
+            this.appsButton.label.set_text(" "+_(this.allProgramsLabel));
             if(this.menu.showQuicklinks)
             {
                 this.rightButtonsBox.actor.show();
             }
             this._appletStyles("favs");
         }
+        this.rightButtonsBox.shutdown.label.set_text(_(this.shutdownLabel));
     },
 
     _updateVFade: function() {

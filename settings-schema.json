@@ -8,8 +8,26 @@
  "menu-label" : {
     "type" : "entry",
     "default" : "Menu",
-    "description" : "Text",
+    "description" : "Menu Text",
     "tooltip" : "Enter custom text to show in the panel."
+ },
+ "all-programs-label" : {
+    "type" : "entry",
+    "default" : "All Programs",
+    "description" : "All Programs Text",
+    "tooltip" : "Enter custom text for button."
+ },
+ "favorites-label" : {
+    "type" : "entry",
+    "default" : "Favorites",
+    "description" : "Favorites Text",
+    "tooltip" : "Enter custom text for button."
+ },
+ "shutdown-label" : {
+    "type" : "entry",
+    "default" : "Shutdown",
+    "description" : "Shutdown Text",
+    "tooltip" : "Enter custom text for button."
  },
  "show-recent" : {
     "type" : "checkbox",
