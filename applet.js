@@ -1,6 +1,6 @@
 const Applet = imports.ui.applet;
 const Mainloop = imports.mainloop;
-const GMenu = imports.gi.GMenu;
+const CMenu = imports.gi.CMenu;
 const Lang = imports.lang;
 const Cinnamon = imports.gi.Cinnamon;
 const St = imports.gi.St;
@@ -247,7 +247,7 @@ function TransientButton(appsMenuButton, pathOrCommand) {
 }
 
 TransientButton.prototype = {
-    __proto__: PopupMenu.PopupSubMenuMenuItem.prototype,
+    __proto__: AppPopupSubMenuMenuItem.prototype,
 
     _init: function(appsMenuButton, pathOrCommand) {
         let displayPath = pathOrCommand;
@@ -431,7 +431,7 @@ RecentButton.prototype = {
         this.actor.set_style_class_name('menu-application-button');
         this.actor._delegate = this;
         this.label = new St.Label({ text: this.button_name, style_class: 'menu-application-button-label' });
-	this.label.clutter_text.ellipsize = Pango.EllipsizeMode.END;
+    this.label.clutter_text.ellipsize = Pango.EllipsizeMode.END;
         this.icon = file.createIcon(APPLICATION_ICON_SIZE);
         this.addActor(this.icon);
         this.addActor(this.label);
@@ -590,8 +590,83 @@ function TextBoxItem(label, icon, func, parent, hoverIcon) {
     this._init(label, icon, func, parent, hoverIcon);
 }
 
+function AppPopupSubMenuMenuItem() {
+    this._init.apply(this, arguments);
+}
+
+
+
+AppPopupSubMenuMenuItem.prototype = {
+    __proto__: PopupMenu.PopupBaseMenuItem.prototype,
+
+    _init: function(text, hide_expander) {
+        PopupMenu.PopupBaseMenuItem.prototype._init.call(this);
+
+        this.actor.add_style_class_name('popup-submenu-menu-item');
+
+        let table = new St.Table({ homogeneous: false,
+                                      reactive: true });
+
+        if (!hide_expander) {
+            this._triangle = new St.Icon({ icon_name: "media-playback-start",
+                                icon_type: St.IconType.SYMBOLIC,
+                                style_class: 'popup-menu-icon' });
+
+            table.add(this._triangle,
+                    {row: 0, col: 0, col_span: 1, x_expand: false, x_align: St.Align.START});
+
+            this.label = new St.Label({ text: text });
+            this.label.set_margin_left(6.0);
+            table.add(this.label,
+                    {row: 0, col: 1, col_span: 1, x_align: St.Align.START});
+        }
+        else {
+            this.label = new St.Label({ text: text });
+            table.add(this.label,
+                    {row: 0, col: 0, col_span: 1, x_align: St.Align.START});
+        }
+        this.actor.label_actor = this.label;
+        this.addActor(table, { expand: true, span: 1, align: St.Align.START });
+
+        this.menu = new PopupMenu.PopupSubMenu(this.actor, this._triangle);
+        this.menu.connect('open-state-changed', Lang.bind(this, this._subMenuOpenStateChanged));
+    },
+
+    _subMenuOpenStateChanged: function(menu, open) {
+        this.actor.change_style_pseudo_class('open', open);
+    },
+
+    destroy: function() {
+        this.menu.destroy();
+        PopupBaseMenuItem.prototype.destroy.call(this);
+    },
+
+    _onKeyPressEvent: function(actor, event) {
+        let symbol = event.get_key_symbol();
+
+        if (symbol == Clutter.KEY_Right) {
+            this.menu.open(true);
+            this.menu.actor.navigate_focus(null, Gtk.DirectionType.DOWN, false);
+            return true;
+        } else if (symbol == Clutter.KEY_Left && this.menu.isOpen) {
+            this.menu.close();
+            return true;
+        }
+
+        return PopupMenu.PopupBaseMenuItem.prototype._onKeyPressEvent.call(this, actor, event);
+    },
+
+    activate: function(event) {
+        this.menu.open(true);
+    },
+
+    _onButtonReleaseEvent: function(actor) {
+        this.menu.toggle();
+    }
+};
+
 TextBoxItem.prototype = {
-    __proto__: PopupMenu.PopupSubMenuMenuItem.prototype,
+    __proto__: AppPopupSubMenuMenuItem.prototype,
 
     _init: function (label, icon, func, parent, hoverIcon) {
         this.parent = parent;
@@ -599,13 +674,16 @@ TextBoxItem.prototype = {
         this.icon = icon;
         this.func = func;
         this.active = false;
-        PopupMenu.PopupSubMenuMenuItem.prototype._init.call(this, label);
+        AppPopupSubMenuMenuItem.prototype._init.call(this, label);
 
         this.actor.set_style_class_name('menu-category-button');
         this.actor.add_style_class_name('menu-text-item-button');
         this.actor.connect('leave-event', Lang.bind(this, this._onLeaveEvent));
-        this.removeActor(this.label);
-        this.removeActor(this._triangle);
+        //this.removeActor(this.label);
+        this.label.destroy();
+        //this.removeActor(this._triangle);
+       
+        this._triangle.destroy();
         this._triangle = new St.Label();
         this.label_text = label;
 
@@ -698,16 +776,18 @@ function AllProgramsItem(label, icon, parent) {
 }
 
 AllProgramsItem.prototype = {
-    __proto__: PopupMenu.PopupSubMenuMenuItem.prototype,
+    __proto__: AppPopupSubMenuMenuItem.prototype,
 
     _init: function (label, icon, parent) {
-        PopupMenu.PopupSubMenuMenuItem.prototype._init.call(this, label);
+        AppPopupSubMenuMenuItem.prototype._init.call(this, label);
 
         this.actor.set_style_class_name('');
         this.box = new St.BoxLayout({ style_class: 'menu-category-button' });
         this.parent = parent;
-        this.removeActor(this.label);
-        this.removeActor(this._triangle);
+        //this.removeActor(this.label);
+        this.label.destroy();
+        //this.removeActor(this._triangle);
+        this._triangle.destroy();
         this._triangle = new St.Label();
         this.label = new St.Label({
             text: " " + label
@@ -718,8 +798,8 @@ AllProgramsItem.prototype = {
             icon_name: icon,
             icon_size: ICON_SIZE
         });
-	this.box.add_actor(this.icon);
-	this.box.add_actor(this.label);
+    this.box.add_actor(this.icon);
+    this.box.add_actor(this.label);
         this.addActor(this.box);
     },
 
@@ -783,7 +863,7 @@ HoverIcon.prototype = {
                       x_align: St.Align.END,
                       y_align: St.Align.MIDDLE });
 
-        icon = new Gio.ThemedIcon({name: 'avatar-default'});
+        var icon = new Gio.ThemedIcon({name: 'avatar-default'});
         this._userIcon.set_gicon (icon);
         this._userIcon.show();
 
@@ -859,7 +939,7 @@ ShutdownContextMenuItem.prototype = {
             Session.LogoutRemote(0);
             break;
         case "lock":
-		let screensaver_settings = new Gio.Settings({ schema: "org.cinnamon.screensaver" });
+        let screensaver_settings = new Gio.Settings({ schema: "org.cinnamon.desktop.screensaver" });
                 let screensaver_dialog = Gio.file_new_for_path("/usr/bin/cinnamon-screensaver-command");
                 if (screensaver_dialog.query_exists(null)) {
                     if (screensaver_settings.get_boolean("ask-for-away-message")) {
@@ -886,16 +966,18 @@ function ShutdownMenu(parent, hoverIcon) {
 }
 
 ShutdownMenu.prototype = {
-    __proto__: PopupMenu.PopupSubMenuMenuItem.prototype,
+    __proto__: AppPopupSubMenuMenuItem.prototype,
 
     _init: function (parent, hoverIcon) {
         let label = '';
         this.hoverIcon = hoverIcon;
         this.parent = parent;
-        PopupMenu.PopupSubMenuMenuItem.prototype._init.call(this, label);
+        AppPopupSubMenuMenuItem.prototype._init.call(this, label);
         this.actor.set_style_class_name('menu-category-button');
-        this.removeActor(this.label);
-        this.removeActor(this._triangle);
+        //this.removeActor(this.label);
+        this.label.destroy();
+        //this.removeActor(this._triangle);
+        this._triangle.destroy();
         this._triangle = new St.Label();
         this.icon = new St.Icon({
             style_class: 'popup-menu-icon',
@@ -1050,7 +1132,7 @@ RightButtonsBox.prototype = {
         this.shutdown = new TextBoxItem(_("Shutdown"), "system-shutdown", "Session.ShutdownRemote()", this.menu, this.hoverIcon, false);
         this.logout = new TextBoxItem(_("Logout"), "gnome-logout", "Session.LogoutRemote(0)", this.menu, this.hoverIcon, false);
 
-        let screensaver_settings = new Gio.Settings({ schema: "org.cinnamon.screensaver" });
+        let screensaver_settings = new Gio.Settings({ schema: "org.cinnamon.desktop.screensaver" });
         let screensaver_dialog = Gio.file_new_for_path("/usr/bin/cinnamon-screensaver-command");
         if (screensaver_dialog.query_exists(null)) {
             if (screensaver_settings.get_boolean("ask-for-away-message"))
@@ -1280,7 +1362,7 @@ MyApplet.prototype = {
 
             this.actor.connect('key-press-event', Lang.bind(this, this._onSourceKeyPress));
 
-	        this.settings = new Settings.AppletSettings(this, "StarkMenu@mintystark", instance_id);
+            this.settings = new Settings.AppletSettings(this, "StarkMenu@mintystark", instance_id);
 
             this.settings.bindProperty(Settings.BindingDirection.IN, "show-recent", "showRecent", this._refreshPlacesAndRecent, null);
             this.settings.bindProperty(Settings.BindingDirection.IN, "show-places", "showPlaces", this._refreshPlacesAndRecent, null);
@@ -1334,7 +1416,8 @@ MyApplet.prototype = {
 
             this.settings.bindProperty(Settings.BindingDirection.IN, "show-quicklinks-shutdown-menu", "showQuicklinksShutdownMenu", this._updateQuickLinksShutdownView, null);
             this._updateQuickLinksShutdownView();
-
+	    
+	    /*
             global.display.connect('overlay-key', Lang.bind(this, function(){
                 try{
                     this.menu.toggle();
@@ -1343,6 +1426,8 @@ MyApplet.prototype = {
                     global.logError(e);
                 }
             }));
+	    */
+
             Main.placesManager.connect('places-updated', Lang.bind(this, this._refreshApps));
             this.RecentManager.connect('changed', Lang.bind(this, this._refreshApps));
 
@@ -1482,6 +1567,8 @@ MyApplet.prototype = {
         this.menu.actor.add_style_class_name('menu-background');
         this.menu.connect('open-state-changed', Lang.bind(this, this._onOpenStateChanged));
         this._display();
+        this._updateQuickLinksShutdownView();
+        this._updateQuickLinks();
     },
 
     _launch_editor: function() {
@@ -1515,18 +1602,18 @@ MyApplet.prototype = {
             this.menuIsOpening = true;
             this.actor.add_style_pseudo_class('active');
             this.switchPanes("favs");
-	    this._appletStyles();
+        this._appletStyles();
             global.stage.set_key_focus(this.searchEntry);
             this._selectedItemIndex = null;
             this._activeContainer = null;
             this._activeActor = null;
             let monitorHeight = Main.layoutManager.primaryMonitor.height;
             this._select_category(null, this._allAppsCategoryButton);
-	} else {
+    } else {
             this.actor.remove_style_pseudo_class('active');
             if (this.searchActive) {
-		this.resetSearch();
-	    }
+        this.resetSearch();
+        }
             this.selectedAppTitle.set_text("");
             this.selectedAppDescription.set_text("");
             this._previousTreeItemIndex = null;
@@ -1765,7 +1852,7 @@ MyApplet.prototype = {
         this._recentButtons = new Array();
         this._applicationsBoxWidth = 0;
         //Remove all categories
-    	this.categoriesBox.destroy_all_children();
+        this.categoriesBox.destroy_all_children();
 
         this._allAppsCategoryButton = new CategoryButton(null);
         this._addEnterEvent(this._allAppsCategoryButton, Lang.bind(this, function() {
@@ -1807,8 +1894,8 @@ MyApplet.prototype = {
 
             let iter = root.iter();
             let nextType;
-            while ((nextType = iter.next()) != GMenu.TreeItemType.INVALID) {
-                if (nextType == GMenu.TreeItemType.DIRECTORY) {
+            while ((nextType = iter.next()) != CMenu.TreeItemType.INVALID) {
+                if (nextType == CMenu.TreeItemType.DIRECTORY) {
                     let dir = iter.get_directory();
                     if (dir.get_is_nodisplay())
                         continue;
@@ -2025,8 +2112,8 @@ MyApplet.prototype = {
         var dupe = false;
         var nextType;
         if (!top_dir) top_dir = dir;
-        while ((nextType = iter.next()) != GMenu.TreeItemType.INVALID) {
-            if (nextType == GMenu.TreeItemType.ENTRY) {
+        while ((nextType = iter.next()) != CMenu.TreeItemType.INVALID) {
+            if (nextType == CMenu.TreeItemType.ENTRY) {
                 var entry = iter.get_entry();
                 if (!entry.get_app_info().get_nodisplay()) {
                     var app = appsys.lookup_app_by_tree_entry(entry);
@@ -2048,7 +2135,7 @@ MyApplet.prototype = {
                         this.applicationsByCategory[dir.get_menu_id()].push(app.get_name());
                     }
                 }
-            } else if (nextType == GMenu.TreeItemType.DIRECTORY) {
+            } else if (nextType == CMenu.TreeItemType.DIRECTORY) {
                 let subdir = iter.get_directory();
                 this.applicationsByCategory[subdir.get_menu_id()] = new Array();
                 this._loadCategory(subdir, top_dir);
@@ -2194,7 +2281,7 @@ MyApplet.prototype = {
 
         this.mainBox = new St.BoxLayout({ style_class: 'menu-applications-box', vertical:false });
 
-	    this.applicationsByCategory = {};
+        this.applicationsByCategory = {};
         this._refreshApps();
 
         this.appBoxIter = new VisibleChildIterator(this, this.applicationsBox);
