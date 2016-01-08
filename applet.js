@@ -1372,6 +1372,7 @@ MyApplet.prototype = {
 
             this.menu.actor.add_style_class_name('menu-background');
 
+	    this.settings.bindProperty(Settings.BindingDirection.IN, "menu-icon-custom", "menuIconCustom", this._updateIconAndLabel, null);
             this.settings.bindProperty(Settings.BindingDirection.IN, "menu-icon", "menuIcon", this._updateIconAndLabel, null);
             this.settings.bindProperty(Settings.BindingDirection.IN, "menu-label", "menuLabel", this._updateIconAndLabel, null);
             this.settings.bindProperty(Settings.BindingDirection.IN, "all-programs-label", "allProgramsLabel", null, null);
@@ -1631,15 +1632,55 @@ MyApplet.prototype = {
         this.emit('destroy');
     },
 
+    _set_default_menu_icon: function() {
+        let path = global.datadir + "/theme/menu.svg";
+        if (GLib.file_test(path, GLib.FileTest.EXISTS)) {
+            this.set_applet_icon_path(path);
+            return;
+        }
+
+        path = global.datadir + "/theme/menu-symbolic.svg";
+        if (GLib.file_test(path, GLib.FileTest.EXISTS)) {
+            this.set_applet_icon_symbolic_path(path);
+            return;
+        }
+        /* If all else fails, this will yield no icon */
+        this.set_applet_icon_path("");
+    },
+
     _updateIconAndLabel: function(){
-
-        this.set_applet_label(this.menuLabel);
-
-        try {
-           this.set_applet_icon_path(this.menuIcon);
+	try {
+            if (this.menuIconCustom) {
+                if (this.menuIcon == "") {
+                    this.set_applet_icon_name("");
+                } else if (GLib.path_is_absolute(this.menuIcon) && GLib.file_test(this.menuIcon, GLib.FileTest.EXISTS)) {
+                    if (this.menuIcon.search("-symbolic") != -1)
+                        this.set_applet_icon_symbolic_path(this.menuIcon);
+                    else
+                        this.set_applet_icon_path(this.menuIcon);
+                } else if (Gtk.IconTheme.get_default().has_icon(this.menuIcon)) {
+                    if (this.menuIcon.search("-symbolic") != -1)
+                        this.set_applet_icon_symbolic_name(this.menuIcon);
+                    else
+                        this.set_applet_icon_name(this.menuIcon);
+                }
+            } else {
+                this._set_default_menu_icon();
+            }
         } catch(e) {
            global.logWarning("Could not load icon file \""+this.menuIcon+"\" for menu button");
         }
+
+        if (this.menuIconCustom && this.menuIcon == "") {
+            this._applet_icon_box.hide();
+        } else {
+            this._applet_icon_box.show();
+        }
+
+        if (this.menuLabel != "")
+            this.set_applet_label(_(this.menuLabel));
+        else
+            this.set_applet_label("");
     },
 
     _onMenuKeyPress: function(actor, event) {
