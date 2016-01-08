@@ -1364,8 +1364,8 @@ MyApplet.prototype = {
 
             this.settings = new Settings.AppletSettings(this, "StarkMenu@mintystark", instance_id);
 
-            this.settings.bindProperty(Settings.BindingDirection.IN, "show-recent", "showRecent", this._refreshPlacesAndRecent, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "show-places", "showPlaces", this._refreshPlacesAndRecent, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "show-recent", "showRecent", this._refreshApps, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "show-places", "showPlaces", this._refreshApps, null);
 
             this.settings.bindProperty(Settings.BindingDirection.IN, "activate-on-hover", "activateOnHover", this._updateActivateOnHover, null);
             this._updateActivateOnHover();
