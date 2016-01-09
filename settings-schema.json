@@ -9,7 +9,7 @@
     "type" : "iconfilechooser",
     "default" : "/usr/share/cinnamon/theme/menu-symbolic.svg",
     "description" : "Icon",
-    "tooltip" : "Select an icon to show in the panel."
+    "tooltip" : "Select an icon to show in the panel.",
     "dependency" : "menu-icon-custom",
     "indent" : "true"
  },
