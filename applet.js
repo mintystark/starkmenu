@@ -1463,12 +1463,27 @@ MyApplet.prototype = {
 
             this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-options", "quicklinkOptions", this._updateQuickLinks, null);
             this._updateQuickLinks();
+            
+	    // We shouldn't need to call refreshAll() here... since we get a "icon-theme-changed" signal when CSD starts.
+            // The reason we do is in case the Cinnamon icon theme is the same as the one specificed in GTK itself (in .config)
+            // In that particular case we get no signal at all.
+            this._refreshAll();
 
-
+            St.TextureCache.get_default().connect("icon-theme-changed", Lang.bind(this, this.onIconThemeChanged));
+            
         }
         catch (e) {
             global.logError(e);
         }
+    },
+    
+    onIconThemeChanged: function() {
+        this._refreshAll();
+    },
+
+    _refreshAll: function() {
+        this._refreshApps();
+        this._refreshFavs();
     },
 
     openMenu: function() {
