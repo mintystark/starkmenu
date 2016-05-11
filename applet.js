@@ -1417,17 +1417,9 @@ MyApplet.prototype = {
 
             this.settings.bindProperty(Settings.BindingDirection.IN, "show-quicklinks-shutdown-menu", "showQuicklinksShutdownMenu", this._updateQuickLinksShutdownView, null);
             this._updateQuickLinksShutdownView();
-	    
-	    /*
-            global.display.connect('overlay-key', Lang.bind(this, function(){
-                try{
-                    this.menu.toggle();
-                }
-                catch(e) {
-                    global.logError(e);
-                }
-            }));
-	    */
+
+            this.settings.bindProperty(Settings.BindingDirection.IN, "overlay-key", "overlayKey", this._updateKeybinding, null);
+            this._updateKeybinding();
 
             Main.placesManager.connect('places-updated', Lang.bind(this, this._refreshApps));
             this.RecentManager.connect('changed', Lang.bind(this, this._refreshApps));
@@ -1475,6 +1467,12 @@ MyApplet.prototype = {
         catch (e) {
             global.logError(e);
         }
+    },
+
+    _updateKeybinding: function() {
+        Main.keybindingManager.addHotKey("overlay-key", this.overlayKey, Lang.bind(this, function() {
+            this.menu.toggle();
+        }));
     },
     
     onIconThemeChanged: function() {
