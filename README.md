@@ -1,5 +1,6 @@
-# Forked StarkMenu (originally by MintyStark, fixed by bluedxca93):
+# StarkMenu
 Custom Menu for Linux Cinnamon based on the look of Windows 7 Menu
+(forked from MintyStark and bluedxca93)
 
 # This applet works on:
 Linux Mint 17.3 Cinnamon (Cinnamon-Version 2.8)
