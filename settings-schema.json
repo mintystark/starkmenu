@@ -87,6 +87,11 @@
     "description" : "Size of the Fovorite Button Icons:",
     "tooltip" : "Change the Size of the Favorite Buttons Icons"
  },
+ "overlay-key" : {
+    "type" : "keybinding",
+    "description" : "Keyboard shortcut to open and close the menu",
+    "default" : "Super_L::Super_R"
+ },
  "show-quicklinks" : {
     "type" : "checkbox",
     "default" : true,
