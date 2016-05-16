@@ -19,6 +19,7 @@ Linux Mint 17.3 Cinnamon (Cinnamon-Version 2.8)
 2. Add the following lines and save the file:
 
 -------------------------------------------------------------------------------------------------
+```
 /* ===================================================================
  * CinnXPStarkMenu 
  * (if CinnXPStarkMenu is used, change some stuff, else use default)
@@ -57,4 +58,5 @@ Linux Mint 17.3 Cinnamon (Cinnamon-Version 2.8)
     background-color: #ece9d8;
     color: black;
 }
+```
 -------------------------------------------------------------------------------------------------
