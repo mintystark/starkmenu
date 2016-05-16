@@ -837,6 +837,7 @@ HoverIcon.prototype = {
         this.showUser = true;
 
         this.userBox = new St.BoxLayout({ style_class: 'hover-box', reactive: true, vertical: false });
+      	this.userBox.add_style_class_name("starkhover-box");
 
         this._userIcon = new St.Icon({ style_class: 'hover-user-icon'});
 
@@ -856,7 +857,10 @@ HoverIcon.prototype = {
                       y_fill:  false,
                       x_align: St.Align.END,
                       y_align: St.Align.START });
+
         this.userLabel = new St.Label(({ style_class: 'hover-label'}));
+	this.userLabel.add_style_class_name("starkhover-label");
+
         this.userBox.add(this.userLabel,
                     { x_fill:  true,
                       y_fill:  false,
@@ -1045,9 +1049,12 @@ RightButtonsBox.prototype = {
         this.itemsBox = new St.BoxLayout({
             vertical: true
         });
+
         this.shutDownMenuBox = new St.BoxLayout({
-            vertical: true
+            style_class: 'hover-box', vertical: true	// ShutdownBox on the right panel
         });
+	this.shutDownMenuBox.add_style_class_name("starkhover-box");
+	
         this.shutDownIconBox = new St.BoxLayout({
             vertical: true
         });
@@ -1362,7 +1369,7 @@ MyApplet.prototype = {
 
             this.actor.connect('key-press-event', Lang.bind(this, this._onSourceKeyPress));
 
-            this.settings = new Settings.AppletSettings(this, "StarkMenu@mintystark", instance_id);
+            this.settings = new Settings.AppletSettings(this, "CinnXPStarkMenu@NikoKrause", instance_id);
 
             this.settings.bindProperty(Settings.BindingDirection.IN, "show-recent", "showRecent", this._refreshApps, null);
             this.settings.bindProperty(Settings.BindingDirection.IN, "show-places", "showPlaces", this._refreshApps, null);
@@ -1371,13 +1378,16 @@ MyApplet.prototype = {
             this._updateActivateOnHover();
 
             this.menu.actor.add_style_class_name('menu-background');
+	    this.menu.actor.add_style_class_name("starkmenu-background");
 
-	    this.settings.bindProperty(Settings.BindingDirection.IN, "menu-icon-custom", "menuIconCustom", this._updateIconAndLabel, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "menu-icon-custom", "menuIconCustom", this._updateIconAndLabel, null);
             this.settings.bindProperty(Settings.BindingDirection.IN, "menu-icon", "menuIcon", this._updateIconAndLabel, null);
             this.settings.bindProperty(Settings.BindingDirection.IN, "menu-label", "menuLabel", this._updateIconAndLabel, null);
             this.settings.bindProperty(Settings.BindingDirection.IN, "all-programs-label", "allProgramsLabel", null, null);
             this.settings.bindProperty(Settings.BindingDirection.IN, "favorites-label", "favoritesLabel", null, null);
             this.settings.bindProperty(Settings.BindingDirection.IN, "shutdown-label", "shutdownLabel", null, null);
+
+            Main.themeManager.connect("theme-set", Lang.bind(this, this._updateIconAndLabel));
             this._updateIconAndLabel();
 
 
@@ -1579,6 +1589,8 @@ MyApplet.prototype = {
         this.menuManager.addMenu(this.menu);
 
         this.menu.actor.add_style_class_name('menu-background');
+	this.menu.actor.add_style_class_name("starkmenu-background");
+
         this.menu.connect('open-state-changed', Lang.bind(this, this._onOpenStateChanged));
         this._display();
         this._updateQuickLinksShutdownView();
@@ -2273,6 +2285,8 @@ MyApplet.prototype = {
         this._previousSearchPattern = "";
 
         this.selectedAppBox = new St.BoxLayout({ style_class: 'menu-selected-app-box', vertical: true });
+	this.selectedAppBox.add_style_class_name("starkmenu-selected-app-box");
+
         this.selectedAppTitle = new St.Label({ style_class: 'menu-selected-app-title', text: "" });
         this.selectedAppBox.add_actor(this.selectedAppTitle);
         this.selectedAppDescription = new St.Label({ style_class: 'menu-selected-app-description', text: "" });
@@ -2323,7 +2337,7 @@ MyApplet.prototype = {
         this.appsButton = new AllProgramsItem(_(this.allProgramsLabel), "forward", this, false);
 
         this.leftPaneBox = new St.BoxLayout({ style_class: 'menu-favorites-box', vertical: true });
-
+	this.leftPaneBox.add_style_class_name("starkmenu-favorites-box");
 
 
 
@@ -2334,6 +2348,7 @@ MyApplet.prototype = {
 
 
         this.mainBox = new St.BoxLayout({ style_class: 'menu-applications-box', vertical:false });
+	this.mainBox.add_style_class_name("starkmenu-applications-box");
 
         this.applicationsByCategory = {};
         this._refreshApps();

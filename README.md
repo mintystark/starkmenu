@@ -1,14 +1,60 @@
 # StarkMenu
-Custom Menu for Linux Cinnamon based on the look of Windows 7 Menu
-(forked from MintyStark and bluedxca93)
+A custom menu for Cinnamon based on the look of Windows 7 Menu, derived from StarkMenu@mintystark (fixed by bluedxca93).
 
-# This applet works on:
+This menu is adapted by me to look better with the CinnXP theme by petruzzi4prez.
+
+## This applet works on:
 Linux Mint 17.3 Cinnamon (Cinnamon-Version 2.8)
 
-# Installation guide:
+## Installation guide:
 1. Download ZIP
 2. Extract "starkmenu-master.zip"
-3. Rename the extracted "starkmenu-master" folder to "StarkMenu@mintystark" 
+3. Rename the extracted "starkmenu-master" folder to "CinnXPStarkMenu@NikoKrause" 
    (This step is important, otherwise the applet won't work.)
-4. Move "StarkMenu@mintystark" folder to path "~/.local/share/cinnamon/applets/"
+4. Move "CinnXPStarkMenu@NikoKrause" folder to path "~/.local/share/cinnamon/applets/"
 5. Add applet to panel
+
+## If in use with CinnXP theme by petruzzi4prez you have to make some changes:
+1. Open "CinnXP/cinnamon/cinnamon.css"
+2. Add the following lines and save the file:
+
+-------------------------------------------------------------------------------------------------
+/* ===================================================================
+ * CinnXPStarkMenu 
+ * (if CinnXPStarkMenu is used, change some stuff, else use default)
+ * ===================================================================*/
+
+/* the following is by default set in stylesheet.css, i.e. by 
+   the application itself. But here I just want it to be changed
+   only in the CinnXP theme. So I have to change it here. */
+.starkhover-box {
+	background-color: #D3E5FA; /* change background, of the box
+                                      with user name and icon */
+}
+.starkhover-label{
+	color : #000; /* change color of user name font */
+}
+.starkmenu-background {
+	border-image: url("menu-bg.png") 67 6 50 6;
+	padding: 59px 1px 30px 1px;
+}
+.starkmenu-selected-app-box {
+    color: black; /* Information, which is shown, if you select apps*/
+}
+.starkmenu-favorites-box {  
+	background-color: white;
+    border: 0px solid white;
+    padding-bottom: 2.25em; /* prevent button "All Programs" and "Favorites" from jumping */
+    spacing: 3px; /* prevent menu from jumping, when arrow besides Shutdown is pressed */
+}
+.starkmenu-applications-box {
+    padding: 0px 0px 0px 0px;
+    background-color: #D3E5FA;
+}
+.starkmenu-applications-box StScrollView {
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    background-color: #ece9d8;
+    color: black;
+}
+-------------------------------------------------------------------------------------------------
