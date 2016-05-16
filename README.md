@@ -3,6 +3,9 @@ A custom menu for Cinnamon based on the look of Windows 7 Menu, derived from Sta
 
 This menu is adapted by me to look better with the CinnXP theme by petruzzi4prez.
 
+![](https://www.dropbox.com/s/lih7li11ktctsgo/CinnXPStarkMenu_1.png?dl=0)
+![](https://www.dropbox.com/s/15kod4as1nlmh54/CinnXPStarkMenu_2.png?dl=0)
+
 ## This applet works on:
 Linux Mint 17.3 Cinnamon (Cinnamon-Version 2.8)
 
