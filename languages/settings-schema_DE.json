@@ -21,19 +21,19 @@
  },
  "all-programs-label" : {
     "type" : "entry",
-    "default" : "All Programs",
+    "default" : "Alle Programme",
     "description" : "All Programs Text",
     "tooltip" : "Enter custom text for button."
  },
  "favorites-label" : {
     "type" : "entry",
-    "default" : "Favorites",
+    "default" : "Favoriten",
     "description" : "Favorites Text",
     "tooltip" : "Enter custom text for button."
  },
  "shutdown-label" : {
     "type" : "entry",
-    "default" : "Shutdown",
+    "default" : "Herunterfahren",
     "description" : "Shutdown Text",
     "tooltip" : "Enter custom text for button."
  },
@@ -129,19 +129,19 @@
  },
  "quicklink-2" : {
     "type": "entry",
-    "default": "Documents,folder-documents,nemo Documents",
+    "default": "Dokumente,folder-documents,nemo Dokumente",
     "description": "Quicklink",
     "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
  },
  "quicklink-3" : {
     "type": "entry",
-    "default": "Pictures,folder-pictures,nemo Pictures",
+    "default": "Bilder,folder-pictures,nemo Bilder",
     "description": "Quicklink",
     "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
  },
  "quicklink-4" : {
     "type": "entry",
-    "default": "Music,folder-music,nemo Music",
+    "default": "Musik,folder-music,nemo Musik",
     "description": "Quicklink",
     "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
  },
@@ -165,13 +165,13 @@
  },
  "quicklink-8" : {
     "type": "entry",
-    "default": "Software Manager,mintinstall,gksu mintinstall",
+    "default": "Anwendungsverwaltung,mintinstall,gksu mintinstall",
     "description": "Quicklink",
     "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
  },
  "quicklink-9" : {
     "type": "entry",
-    "default": "Control Center,control-center2,cinnamon-settings",
+    "default": "Systemeinstellungen,preferences-system,cinnamon-settings",
     "description": "Quicklink",
     "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
  },
@@ -183,7 +183,7 @@
  },
  "quicklink-11" : {
     "type": "entry",
-    "default": "Help,help,yelp",
+    "default": "Hilfe,help,yelp",
     "description": "Quicklink",
     "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
  },
