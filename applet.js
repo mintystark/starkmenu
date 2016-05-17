@@ -1558,12 +1558,13 @@ MyApplet.prototype = {
                     this.rightButtonsBox.shutdown.actor.show();
                     this.rightButtonsBox.shutdownMenu.actor.show();
                     this.rightButtonsBox.shutDownIconBox.hide();
+                    this.rightButtonsBox.shutDownMenuBox.show();
                     this.rightButtonsBox.shutDownMenuBox.set_style('min-height: 80px');
                 } else {
                     this.rightButtonsBox.shutdown.actor.hide();
                     this.rightButtonsBox.shutdownMenu.actor.hide();
                     this.rightButtonsBox.shutDownIconBox.show();
-                    this.rightButtonsBox.shutDownMenuBox.set_style('min-height: 0px;');
+                    this.rightButtonsBox.shutDownMenuBox.hide();
                 }
             }
             else
@@ -1578,7 +1579,7 @@ MyApplet.prototype = {
             this.rightButtonsBox.shutdown.actor.hide();
             this.rightButtonsBox.shutdownMenu.actor.hide();
             this.rightButtonsBox.shutDownIconBox.hide();
-            this.rightButtonsBox.shutDownMenuBox.set_style('min-height: 1px');
+            this.rightButtonsBox.shutDownMenuBox.hide();
         }
         this.favsBox.style = "min-height: "+(this.rightButtonsBox.actor.get_height()-100)+"px;min-width: 235px;";
     },

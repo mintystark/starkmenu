@@ -45,8 +45,8 @@ Linux Mint 17.3 Cinnamon (Cinnamon-Version 2.8)
 .starkmenu-favorites-box {  
 	background-color: white;
     border: 0px solid white;
-    padding-bottom: 2.25em; /* prevent button "All Programs" and "Favorites" from jumping */
-    spacing: 3px; /* prevent menu from jumping, when arrow besides Shutdown is pressed */
+    padding-bottom: 0.3em; /* prevent button "All Programs" and "Favorites" from jumping */
+    spacing: 12px; /* prevent menu from jumping, when arrow besides Shutdown is pressed */
 }
 .starkmenu-applications-box {
     padding: 0px 0px 0px 0px;
@@ -63,5 +63,4 @@ Linux Mint 17.3 Cinnamon (Cinnamon-Version 2.8)
 
 ###### ToDo (help and hints are welcome):
 * Find a better way to translate the settings-schema.json file
-* White space under searchbar is to big. I.e. how to move searchbar more to the bottom?
 * Separator is to long, should look more like in XP menu
