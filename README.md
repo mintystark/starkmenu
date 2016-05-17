@@ -29,10 +29,6 @@ Linux Mint 17.3 Cinnamon (Cinnamon-Version 2.8)
  * CinnXPStarkMenu 
  * (if CinnXPStarkMenu is used, change some stuff, else use default)
  * ===================================================================*/
-
-/* the following is by default set in stylesheet.css, i.e. by 
-   the application itself. But here I just want it to be changed
-   only in the CinnXP theme. So I have to change it here. */
 .starkhover-box {
 	background-color: #D3E5FA; /* change background, of the box
                                       with user name and icon */
