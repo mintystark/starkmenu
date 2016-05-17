@@ -1448,6 +1448,27 @@ MyApplet.prototype = {
 
             this.settings.bindProperty(Settings.BindingDirection.IN, "search-filesystem", "searchFilesystem", null, null);
 
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-0-checkbox", "quicklink_0_checkbox", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-1-checkbox", "quicklink_1_checkbox", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-2-checkbox", "quicklink_2_checkbox", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-3-checkbox", "quicklink_3_checkbox", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-4-checkbox", "quicklink_4_checkbox", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-5-checkbox", "quicklink_5_checkbox", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-6-checkbox", "quicklink_6_checkbox", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-7-checkbox", "quicklink_7_checkbox", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-8-checkbox", "quicklink_8_checkbox", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-9-checkbox", "quicklink_9_checkbox", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-10-checkbox", "quicklink_10_checkbox", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-11-checkbox", "quicklink_11_checkbox", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-12-checkbox", "quicklink_12_checkbox", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-13-checkbox", "quicklink_13_checkbox", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-14-checkbox", "quicklink_14_checkbox", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-15-checkbox", "quicklink_15_checkbox", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-16-checkbox", "quicklink_16_checkbox", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-17-checkbox", "quicklink_17_checkbox", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-18-checkbox", "quicklink_18_checkbox", this._updateQuickLinks, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-19-checkbox", "quicklink_19_checkbox", this._updateQuickLinks, null);
+
             this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-0", "quicklink_0", this._updateQuickLinks, null);
             this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-1", "quicklink_1", this._updateQuickLinks, null);
             this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-2", "quicklink_2", this._updateQuickLinks, null);
@@ -1563,6 +1584,29 @@ MyApplet.prototype = {
     },
 
     _updateQuickLinks: function() {
+
+        this.menu.quicklinksCheckboxes = [];
+        this.menu.quicklinksCheckboxes[0] = this.quicklink_0_checkbox;
+        this.menu.quicklinksCheckboxes[1] = this.quicklink_1_checkbox;
+        this.menu.quicklinksCheckboxes[2] = this.quicklink_2_checkbox;
+        this.menu.quicklinksCheckboxes[3] = this.quicklink_3_checkbox;
+        this.menu.quicklinksCheckboxes[4] = this.quicklink_4_checkbox;
+        this.menu.quicklinksCheckboxes[5] = this.quicklink_5_checkbox;
+        this.menu.quicklinksCheckboxes[6] = this.quicklink_6_checkbox;
+        this.menu.quicklinksCheckboxes[7] = this.quicklink_7_checkbox;
+        this.menu.quicklinksCheckboxes[8] = this.quicklink_8_checkbox;
+        this.menu.quicklinksCheckboxes[9] = this.quicklink_9_checkbox;
+        this.menu.quicklinksCheckboxes[10] = this.quicklink_10_checkbox;
+        this.menu.quicklinksCheckboxes[11] = this.quicklink_11_checkbox;
+        this.menu.quicklinksCheckboxes[12] = this.quicklink_12_checkbox;
+        this.menu.quicklinksCheckboxes[13] = this.quicklink_13_checkbox;
+        this.menu.quicklinksCheckboxes[14] = this.quicklink_14_checkbox;
+        this.menu.quicklinksCheckboxes[15] = this.quicklink_15_checkbox;
+        this.menu.quicklinksCheckboxes[16] = this.quicklink_16_checkbox;
+        this.menu.quicklinksCheckboxes[17] = this.quicklink_17_checkbox;
+        this.menu.quicklinksCheckboxes[18] = this.quicklink_18_checkbox;
+        this.menu.quicklinksCheckboxes[19] = this.quicklink_19_checkbox;
+
         this.menu.quicklinks = [];
         this.menu.quicklinks[0] = this.quicklink_0;
         this.menu.quicklinks[1] = this.quicklink_1;
@@ -1584,6 +1628,13 @@ MyApplet.prototype = {
         this.menu.quicklinks[17] = this.quicklink_17;
         this.menu.quicklinks[18] = this.quicklink_18;
         this.menu.quicklinks[19] = this.quicklink_19;
+
+        /* remove quicklink if checkbox "Show Quicklink" is false */
+        for(let i in this.menu.quicklinksCheckboxes) {
+            if(!this.menu.quicklinksCheckboxes[i]){
+                this.menu.quicklinks[i] = "";
+            }
+        }
 
         this.menu.quicklinkOptions = this.quicklinkOptions;
         this.rightButtonsBox.addItems();
