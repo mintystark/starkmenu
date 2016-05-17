@@ -41,8 +41,7 @@ Linux Mint 17.3 Cinnamon (Cinnamon-Version 2.8)
 	color : #000; /* change color of user name font */
 }
 .starkmenu-background {
-	border-image: url("menu-bg.png") 67 6 50 6;
-	padding: 59px 1px 30px 1px;
+	padding: 54px 1px 30px 1px;
 }
 .starkmenu-selected-app-box {
     color: black; /* Information, which is shown, if you select apps*/
