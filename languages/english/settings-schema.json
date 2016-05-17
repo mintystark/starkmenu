@@ -1,4 +1,9 @@
 {
+ "overlay-key" : {
+    "type" : "keybinding",
+    "description" : "Keyboard shortcut to open and close the menu",
+    "default" : "Super_L::Super_R"
+ },
  "menu-icon-custom" : {
     "type" : "checkbox",
     "default" : false,
@@ -21,19 +26,19 @@
  },
  "all-programs-label" : {
     "type" : "entry",
-    "default" : "Alle Programme",
+    "default" : "All Programs",
     "description" : "All Programs Text",
     "tooltip" : "Enter custom text for button."
  },
  "favorites-label" : {
     "type" : "entry",
-    "default" : "Favoriten",
+    "default" : "Favorites",
     "description" : "Favorites Text",
     "tooltip" : "Enter custom text for button."
  },
  "shutdown-label" : {
     "type" : "entry",
-    "default" : "Herunterfahren",
+    "default" : "Quit",
     "description" : "Shutdown Text",
     "tooltip" : "Enter custom text for button."
  },
@@ -87,11 +92,6 @@
     "description" : "Size of the Favorite Button Icons:",
     "tooltip" : "Change the Size of the Favorite Buttons Icons"
  },
- "overlay-key" : {
-    "type" : "keybinding",
-    "description" : "Keyboard shortcut to open and close the menu",
-    "default" : "Super_L::Super_R"
- },
  "show-quicklinks" : {
     "type" : "checkbox",
     "default" : true,
@@ -115,6 +115,14 @@
     "description": "Show Quicklinks Shutdown Menu",
     "tooltip": "Choose whether or not to show the Quicklinks Shutdown Menu."
  },
+"show-quicklinks-locklogout-dropmenu" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description": "Show Quicklinks Lock and Logout DropMenu",
+    "tooltip": "Choose whether or not to show the Quicklinks Lock and Logout DropMenu.",
+    "dependency" : "show-quicklinks-shutdown-menu",
+    "indent" : "true"
+ },
  "quicklink-0" : {
     "type": "entry",
     "default": "separator",
@@ -129,19 +137,19 @@
  },
  "quicklink-2" : {
     "type": "entry",
-    "default": "Dokumente,folder-documents,nemo Dokumente",
+    "default": "Documents,folder-documents,nemo Documents",
     "description": "Quicklink",
     "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
  },
  "quicklink-3" : {
     "type": "entry",
-    "default": "Bilder,folder-pictures,nemo Bilder",
+    "default": "Pictures,folder-pictures,nemo Pictures",
     "description": "Quicklink",
     "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
  },
  "quicklink-4" : {
     "type": "entry",
-    "default": "Musik,folder-music,nemo Musik",
+    "default": "Music,folder-music,nemo Music",
     "description": "Quicklink",
     "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
  },
@@ -165,13 +173,13 @@
  },
  "quicklink-8" : {
     "type": "entry",
-    "default": "Anwendungsverwaltung,mintinstall,gksu mintinstall",
+    "default": "Software Manager,mintinstall,gksu mintinstall",
     "description": "Quicklink",
     "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
  },
  "quicklink-9" : {
     "type": "entry",
-    "default": "Systemeinstellungen,preferences-system,cinnamon-settings",
+    "default": "System Settings,preferences-system,cinnamon-settings",
     "description": "Quicklink",
     "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
  },
@@ -183,7 +191,7 @@
  },
  "quicklink-11" : {
     "type": "entry",
-    "default": "Hilfe,help,yelp",
+    "default": "Help,help,yelp",
     "description": "Quicklink",
     "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
  },

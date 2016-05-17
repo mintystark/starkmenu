@@ -1,0 +1,252 @@
+{
+ "overlay-key" : {
+    "type" : "keybinding",
+    "description" : "Keyboard shortcut to open and close the menu",
+    "default" : "Super_L::Super_R"
+ },
+ "menu-icon-custom" : {
+    "type" : "checkbox",
+    "default" : false,
+    "description" : "Use a custom icon",
+    "tooltip" : "Unchecking this allows the theme to set the icon"
+ },
+ "menu-icon" : {
+    "type" : "iconfilechooser",
+    "default" : "/usr/share/cinnamon/theme/menu-symbolic.svg",
+    "description" : "Icon",
+    "tooltip" : "Select an icon to show in the panel.",
+    "dependency" : "menu-icon-custom",
+    "indent" : "true"
+ },
+ "menu-label" : {
+    "type" : "entry",
+    "default" : "Menu",
+    "description" : "Menü Text",
+    "tooltip" : "Enter custom text to show in the panel."
+ },
+ "all-programs-label" : {
+    "type" : "entry",
+    "default" : "Alle Programme",
+    "description" : "Alle Programme Text",
+    "tooltip" : "Einen benutzerdefinierenden Text für den Knopf eingeben."
+ },
+ "favorites-label" : {
+    "type" : "entry",
+    "default" : "Favoriten",
+    "description" : "Favoriten Text",
+    "tooltip" : "Einen benutzerdefinierenden Text für den Knopf eingeben."
+ },
+ "shutdown-label" : {
+    "type" : "entry",
+    "default" : "Quit",
+    "description" : "Herunterfahren Text",
+    "tooltip" : "Einen benutzerdefinierenden Text für den Knopf eingeben."
+ },
+ "show-recent" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description": "Kürzlich verwendete Dateien anzeigen",
+    "tooltip": "Wähle, ob Kürzlich verwendete Dateien im Menü angezeigt werden sollen."
+ },
+ "show-places" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description": "Show bookmarks and places",
+    "tooltip": "Choose whether or not to show bookmarks and places in the menu."
+ },
+ "enable-autoscroll" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description": "Enable autoscrolling in application list",
+    "tooltip": "Choose whether or not to enable smooth autoscrolling in the application list."
+ },
+ "search-filesystem" : {
+    "type" : "checkbox",
+    "default" : false,
+    "description": "Enable filesystem path entry in search box",
+    "tooltip": "Allows path entry in the menu search box."
+ },
+ "activate-on-hover" : {
+    "type" : "checkbox",
+    "default" : false,
+    "description": "Open the menu when I move my mouse over it",
+    "tooltip": "Enable opening the menu when the mouse enters the applet"
+ },
+ "hover-delay" : {
+    "type": "spinbutton",
+    "default" : 50,
+    "min" : 0,
+    "max" : 1000,
+    "step" : 50,
+    "units" : "milliseconds",
+    "description" : "Menu hover delay:",
+    "tooltip" : "Delay between switching categories"
+ },
+ "favorite-icon-size" : {
+    "type": "spinbutton",
+    "default" : 32,
+    "min" : 12,
+    "max" : 64,
+    "step" : 1,
+    "units" : "pixels",
+    "description" : "Size of the Favorite Button Icons:",
+    "tooltip" : "Ändere die Größe der Icons in den Favoriten"
+ },
+ "show-quicklinks" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description": "Zeige Quicklinks-Seitenleiste",
+    "tooltip": "Wähle, ob die Quicklinks-Seitenleiste im Menü angezeigt werden soll."
+ },
+ "quicklink-options" : {
+    "type": "combobox",
+    "default": "both",
+    "options": {
+         "Icons und Labels": "both",
+         "Nur Icons": "icons",
+         "Nur Labels": "labels"
+     },
+    "description": "Quicklinks Optionen",
+    "tooltip": "Wähle aus, ob Icons und/oder Labels in der Quicklinks-Seitenleiste angezeigt werden sollen."
+ },
+ "show-quicklinks-shutdown-menu" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description": "Zeige das Quicklinks-Herunterfahren-Menü",
+    "tooltip": "Wähle, ob das Quicklinks-Herunterfahren-Menü im Menü angezeigt werden soll."
+ },
+"show-quicklinks-locklogout-dropmenu" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description": "Zeige Quicklinks-Abmelden-Sperren-DropdownMenü",
+    "tooltip": "Wähle, ob das Quicklinks-Abmelden-Sperren-DropdownMenü im Menü angezeigt werden soll.",
+    "dependency" : "show-quicklinks-shutdown-menu",
+    "indent" : "true"
+ },
+ "quicklink-0" : {
+    "type": "entry",
+    "default": "separator",
+    "description": "Quicklink",
+    "tooltip": "Dein Quicklink-Eintrag: Titel, Icon, Befehl. Wenn das Icon keine Endung enthält, wird nach dem Icon mit dem ähnlichstem Namen im aktuellen Thema gesucht. Anderenfalls wird das Icon durch den Pfad gefunden."
+ },
+ "quicklink-1" : {
+    "type": "entry",
+    "default": "Home,folder-home,nemo",
+    "description": "Quicklink",
+    "tooltip": "Dein Quicklink-Eintrag: Titel, Icon, Befehl. Wenn das Icon keine Endung enthält, wird nach dem Icon mit dem ähnlichstem Namen im aktuellen Thema gesucht. Anderenfalls wird das Icon durch den Pfad gefunden."
+ },
+ "quicklink-2" : {
+    "type": "entry",
+    "default": "Dokumente,folder-documents,nemo Dokumente",
+    "description": "Quicklink",
+    "tooltip": "Dein Quicklink-Eintrag: Titel, Icon, Befehl. Wenn das Icon keine Endung enthält, wird nach dem Icon mit dem ähnlichstem Namen im aktuellen Thema gesucht. Anderenfalls wird das Icon durch den Pfad gefunden."
+ },
+ "quicklink-3" : {
+    "type": "entry",
+    "default": "Bilder,folder-pictures,nemo Bilder",
+    "description": "Quicklink",
+    "tooltip": "Dein Quicklink-Eintrag: Titel, Icon, Befehl. Wenn das Icon keine Endung enthält, wird nach dem Icon mit dem ähnlichstem Namen im aktuellen Thema gesucht. Anderenfalls wird das Icon durch den Pfad gefunden."
+ },
+ "quicklink-4" : {
+    "type": "entry",
+    "default": "Musik,folder-music,nemo Musik",
+    "description": "Quicklink",
+    "tooltip": "Dein Quicklink-Eintrag: Titel, Icon, Befehl. Wenn das Icon keine Endung enthält, wird nach dem Icon mit dem ähnlichstem Namen im aktuellen Thema gesucht. Anderenfalls wird das Icon durch den Pfad gefunden."
+ },
+ "quicklink-5" : {
+    "type": "entry",
+    "default": "Videos,folder-videos,nemo Videos",
+    "description": "Quicklink",
+    "tooltip": "Dein Quicklink-Eintrag: Titel, Icon, Befehl. Wenn das Icon keine Endung enthält, wird nach dem Icon mit dem ähnlichstem Namen im aktuellen Thema gesucht. Anderenfalls wird das Icon durch den Pfad gefunden."
+ },
+ "quicklink-6" : {
+    "type": "entry",
+    "default": "separator",
+    "description": "Quicklink",
+    "tooltip": "Dein Quicklink-Eintrag: Titel, Icon, Befehl. Wenn das Icon keine Endung enthält, wird nach dem Icon mit dem ähnlichstem Namen im aktuellen Thema gesucht. Anderenfalls wird das Icon durch den Pfad gefunden."
+ },
+ "quicklink-7" : {
+    "type": "entry",
+    "default": "Computer,computer,nemo computer:///",
+    "description": "Quicklink",
+    "tooltip": "Dein Quicklink-Eintrag: Titel, Icon, Befehl. Wenn das Icon keine Endung enthält, wird nach dem Icon mit dem ähnlichstem Namen im aktuellen Thema gesucht. Anderenfalls wird das Icon durch den Pfad gefunden."
+ },
+ "quicklink-8" : {
+    "type": "entry",
+    "default": "Anwendungsverwaltung,mintinstall,gksu mintinstall",
+    "description": "Quicklink",
+    "tooltip": "Dein Quicklink-Eintrag: Titel, Icon, Befehl. Wenn das Icon keine Endung enthält, wird nach dem Icon mit dem ähnlichstem Namen im aktuellen Thema gesucht. Anderenfalls wird das Icon durch den Pfad gefunden."
+ },
+ "quicklink-9" : {
+    "type": "entry",
+    "default": "Systemeinstellungen,preferences-system,cinnamon-settings",
+    "description": "Quicklink",
+    "tooltip": "Dein Quicklink-Eintrag: Titel, Icon, Befehl. Wenn das Icon keine Endung enthält, wird nach dem Icon mit dem ähnlichstem Namen im aktuellen Thema gesucht. Anderenfalls wird das Icon durch den Pfad gefunden."
+ },
+ "quicklink-10" : {
+    "type": "entry",
+    "default": "Terminal,terminal,gnome-terminal",
+    "description": "Quicklink",
+    "tooltip": "Dein Quicklink-Eintrag: Titel, Icon, Befehl. Wenn das Icon keine Endung enthält, wird nach dem Icon mit dem ähnlichstem Namen im aktuellen Thema gesucht. Anderenfalls wird das Icon durch den Pfad gefunden."
+ },
+ "quicklink-11" : {
+    "type": "entry",
+    "default": "Hilfe,help,yelp",
+    "description": "Quicklink",
+    "tooltip": "Dein Quicklink-Eintrag: Titel, Icon, Befehl. Wenn das Icon keine Endung enthält, wird nach dem Icon mit dem ähnlichstem Namen im aktuellen Thema gesucht. Anderenfalls wird das Icon durch den Pfad gefunden."
+ },
+ "quicklink-12" : {
+    "type": "entry",
+    "default": "separator",
+    "description": "Quicklink",
+    "tooltip": "Dein Quicklink-Eintrag: Titel, Icon, Befehl. Wenn das Icon keine Endung enthält, wird nach dem Icon mit dem ähnlichstem Namen im aktuellen Thema gesucht. Anderenfalls wird das Icon durch den Pfad gefunden."
+ },
+ "quicklink-13" : {
+    "type": "entry",
+    "default": "",
+    "description": "Quicklink",
+    "tooltip": "Dein Quicklink-Eintrag: Titel, Icon, Befehl. Wenn das Icon keine Endung enthält, wird nach dem Icon mit dem ähnlichstem Namen im aktuellen Thema gesucht. Anderenfalls wird das Icon durch den Pfad gefunden."
+ },
+ "quicklink-14" : {
+    "type": "entry",
+    "default": "",
+    "description": "Quicklink",
+    "tooltip": "Dein Quicklink-Eintrag: Titel, Icon, Befehl. Wenn das Icon keine Endung enthält, wird nach dem Icon mit dem ähnlichstem Namen im aktuellen Thema gesucht. Anderenfalls wird das Icon durch den Pfad gefunden."
+ },
+ "quicklink-15" : {
+    "type": "entry",
+    "default": "",
+    "description": "Quicklink",
+    "tooltip": "Dein Quicklink-Eintrag: Titel, Icon, Befehl. Wenn das Icon keine Endung enthält, wird nach dem Icon mit dem ähnlichstem Namen im aktuellen Thema gesucht. Anderenfalls wird das Icon durch den Pfad gefunden."
+ },
+ "quicklink-16" : {
+    "type": "entry",
+    "default": "",
+    "description": "Quicklink",
+    "tooltip": "Dein Quicklink-Eintrag: Titel, Icon, Befehl. Wenn das Icon keine Endung enthält, wird nach dem Icon mit dem ähnlichstem Namen im aktuellen Thema gesucht. Anderenfalls wird das Icon durch den Pfad gefunden."
+ },
+ "quicklink-17" : {
+    "type": "entry",
+    "default": "",
+    "description": "Quicklink",
+    "tooltip": "Dein Quicklink-Eintrag: Titel, Icon, Befehl. Wenn das Icon keine Endung enthält, wird nach dem Icon mit dem ähnlichstem Namen im aktuellen Thema gesucht. Anderenfalls wird das Icon durch den Pfad gefunden."
+ },
+ "quicklink-18" : {
+    "type": "entry",
+    "default": "",
+    "description": "Quicklink",
+    "tooltip": "Dein Quicklink-Eintrag: Titel, Icon, Befehl. Wenn das Icon keine Endung enthält, wird nach dem Icon mit dem ähnlichstem Namen im aktuellen Thema gesucht. Anderenfalls wird das Icon durch den Pfad gefunden."
+ },
+ "quicklink-19" : {
+    "type": "entry",
+    "default": "",
+    "description": "Quicklink",
+    "tooltip": "Dein Quicklink-Eintrag: Titel, Icon, Befehl. Wenn das Icon keine Endung enthält, wird nach dem Icon mit dem ähnlichstem Namen im aktuellen Thema gesucht. Anderenfalls wird das Icon durch den Pfad gefunden."
+ },
+  "menu-editor-button" : {
+    "type" : "button",
+    "description" : "Open the menu editor",
+    "callback" : "_launch_editor",
+    "tooltip" : "Press this button to customize your menu entries."
+ }
+}

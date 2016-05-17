@@ -1,4 +1,9 @@
 {
+ "overlay-key" : {
+    "type" : "keybinding",
+    "description" : "Keyboard shortcut to open and close the menu",
+    "default" : "Super_L::Super_R"
+ },
  "menu-icon-custom" : {
     "type" : "checkbox",
     "default" : false,
@@ -33,7 +38,7 @@
  },
  "shutdown-label" : {
     "type" : "entry",
-    "default" : "Shutdown",
+    "default" : "Quit",
     "description" : "Shutdown Text",
     "tooltip" : "Enter custom text for button."
  },
@@ -87,11 +92,6 @@
     "description" : "Size of the Favorite Button Icons:",
     "tooltip" : "Change the Size of the Favorite Buttons Icons"
  },
- "overlay-key" : {
-    "type" : "keybinding",
-    "description" : "Keyboard shortcut to open and close the menu",
-    "default" : "Super_L::Super_R"
- },
  "show-quicklinks" : {
     "type" : "checkbox",
     "default" : true,
@@ -114,6 +114,14 @@
     "default" : true,
     "description": "Show Quicklinks Shutdown Menu",
     "tooltip": "Choose whether or not to show the Quicklinks Shutdown Menu."
+ },
+"show-quicklinks-locklogout-dropmenu" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description": "Show Quicklinks Lock and Logout DropMenu",
+    "tooltip": "Choose whether or not to show the Quicklinks Lock and Logout DropMenu.",
+    "dependency" : "show-quicklinks-shutdown-menu",
+    "indent" : "true"
  },
  "quicklink-0" : {
     "type": "entry",
@@ -171,7 +179,7 @@
  },
  "quicklink-9" : {
     "type": "entry",
-    "default": "Control Center,control-center2,cinnamon-settings",
+    "default": "System Settings,preferences-system,cinnamon-settings",
     "description": "Quicklink",
     "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
  },
