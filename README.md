@@ -17,8 +17,7 @@ Linux Mint 17.3 Cinnamon (Cinnamon-Version 2.8)
 4. Move "CinnXPStarkMenu@NikoKrause" folder to path "~/.local/share/cinnamon/applets/"
 5. Add applet to panel
 
-* For German Translation replace "settings-schema.json" file with "/languages/YOURLANGUAGE/settings-schema.json" file.
-* -> Maybe you have to delete afterwards the "CinnXPStarkMenu@NikoKrause" folder in "~/.cinnamon/configs/" and restart Cinnamon with Ctrl+Alt+Esc
+* For German Translation replace "settings-schema.json" file with "/languages/YOURLANGUAGE/settings-schema.json" file. --> Maybe you have to delete afterwards the "CinnXPStarkMenu@NikoKrause" folder in "~/.cinnamon/configs/" and restart Cinnamon with Ctrl+Alt+Esc
 
 ### If in use with CinnXP theme by petruzzi4prez you have to make some changes:
 1. Open "CinnXP/cinnamon/cinnamon.css"
