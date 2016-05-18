@@ -127,24 +127,18 @@ ApplicationContextMenuItem.prototype = {
     activate: function (event) {
         switch (this._action){
             case "add_to_panel":
-                let winListApplet = false;
-                try {
-                    winListApplet = imports.ui.appletManager.applets['WindowListGroup@jake.phy@gmail.com'];
-                } catch (e) {}
-                if (winListApplet) winListApplet.applet.GetAppFavorites().addFavorite(this._appButton.app.get_id());
-                else {
-                    let settings = new Gio.Settings({ schema: 'org.cinnamon' });
-                    let desktopFiles = settings.get_strv('panel-launchers');
-                    desktopFiles.push(this._appButton.app.get_id());
-                    settings.set_strv('panel-launchers', desktopFiles);
-                    if (!Main.AppletManager.get_object_for_uuid("panel-launchers@cinnamon.org")){
-                        var new_applet_id = global.settings.get_int("next-applet-id");
-                        global.settings.set_int("next-applet-id", (new_applet_id + 1));
-                        var enabled_applets = global.settings.get_strv("enabled-applets");
-                        enabled_applets.push("panel1:right:0:panel-launchers@cinnamon.org:" + new_applet_id);
-                        global.settings.set_strv("enabled-applets", enabled_applets);
-                    }
+                if (!Main.AppletManager.get_role_provider_exists(Main.AppletManager.Roles.PANEL_LAUNCHER)) {
+                    let new_applet_id = global.settings.get_int("next-applet-id");
+                    global.settings.set_int("next-applet-id", (new_applet_id + 1));
+                    let enabled_applets = global.settings.get_strv("enabled-applets");
+                    enabled_applets.push("panel1:right:0:panel-launchers@cinnamon.org:" + new_applet_id);
+                    global.settings.set_strv("enabled-applets", enabled_applets);
                 }
+
+                let launcherApplet = Main.AppletManager.get_role_provider(Main.AppletManager.Roles.PANEL_LAUNCHER);
+                launcherApplet.acceptNewLauncher(this._appButton.app.get_id());
+
+                this._appButton.toggleMenu();
                 break;
             case "add_to_desktop":
                 let file = Gio.file_new_for_path(this._appButton.app.get_app_info().get_filename());
@@ -156,15 +150,21 @@ ApplicationContextMenuItem.prototype = {
                 }catch(e){
                     global.log(e);
                 }
+                this._appButton.toggleMenu();
                 break;
             case "add_to_favorites":
                 AppFavorites.getAppFavorites().addFavorite(this._appButton.app.get_id());
-                break;
+                this._appButton.toggleMenu();
+                break;                
             case "remove_from_favorites":
                 AppFavorites.getAppFavorites().removeFavorite(this._appButton.app.get_id());
+                this._appButton.toggleMenu();
                 break;
-        }
-        this._appButton.toggleMenu();
+            case "uninstall":
+                Util.spawnCommandLine("gksu -m '" + _("Please provide your password to uninstall this application") + "' /usr/bin/cinnamon-remove-application '" + this._appButton.app.get_app_info().get_filename() + "'");
+                this._appButton.appsMenuButton.menu.close();
+                break;
+        }        
         return false;
     }
 
@@ -231,6 +231,10 @@ GenericApplicationButton.prototype = {
                 this.menu.addMenuItem(menuItem);
             }else{
                 menuItem = new ApplicationContextMenuItem(this, _("Add to favorites"), "add_to_favorites");
+                this.menu.addMenuItem(menuItem);
+            }
+            if (this.appsMenuButton._canUninstallApps) {
+                menuItem = new ApplicationContextMenuItem(this, _("Uninstall"), "uninstall");
                 this.menu.addMenuItem(menuItem);
             }
         }
@@ -1423,6 +1427,7 @@ MyApplet.prototype = {
             this._applicationsBoxWidth = 0;
             this.menuIsOpening = false;
 
+            this._canUninstallApps = GLib.file_test("/usr/bin/cinnamon-remove-application", GLib.FileTest.EXISTS);
             this.RecentManager = new DocInfo.DocManager();
 
             this._display();
