@@ -48,6 +48,12 @@ Linux Mint 17.3 Cinnamon (Cinnamon-Version 2.8)
     padding-bottom: 0.3em; /* prevent button "All Programs" and "Favorites" from jumping */
     spacing: 12px; /* prevent menu from jumping, when arrow besides Shutdown is pressed */
 }
+.starkmenu-favorites-box-locklogout {  
+        background-color: white;
+    border: 0px solid white;
+    padding-bottom: 0.3em; /* prevent button "All Programs" and "Favorites" from jumping */
+    spacing: 7px; /* prevent menu from jumping, when arrow besides Shutdown is pressed */
+}
 .starkmenu-applications-box {
     padding: 0px 0px 0px 0px;
     background-color: #D3E5FA;

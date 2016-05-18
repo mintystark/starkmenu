@@ -1122,7 +1122,14 @@ RightButtonsBox.prototype = {
                 if(this.menu.quicklinks[i] == 'separator')
                 {
                     this.separator = new PopupMenu.PopupSeparatorMenuItem();
-                    this.separator.actor.set_style("padding: 0em 0em; min-width: 1px;");
+
+                    if(this.menu.quicklinkOptions == 'labels') {
+                        this.separator.actor.set_style("padding: 0em 1.0em; min-width: 1px;");
+                    } else if(this.menu.quicklinkOptions == 'both') { 
+                        this.separator.actor.set_style("padding: 0em 2.25em; min-width: 1px;");
+                    } else {
+                        this.separator.actor.set_style("padding: 0em 1em; min-width: 1px;");
+                    }
 
                     this.itemsBox.add_actor(this.separator.actor);
                 }
@@ -1561,11 +1568,15 @@ MyApplet.prototype = {
                     this.rightButtonsBox.shutDownIconBox.hide();
                     this.rightButtonsBox.shutDownMenuBox.show();
                     this.rightButtonsBox.shutDownMenuBox.set_style('min-height: 80px');
+                    this.leftPaneBox.remove_style_class_name("starkmenu-favorites-box-locklogout");
+                    this.leftPaneBox.add_style_class_name("starkmenu-favorites-box");
                 } else {
                     this.rightButtonsBox.shutdown.actor.hide();
                     this.rightButtonsBox.shutdownMenu.actor.hide();
                     this.rightButtonsBox.shutDownIconBox.show();
                     this.rightButtonsBox.shutDownMenuBox.hide();
+                    this.leftPaneBox.remove_style_class_name("starkmenu-favorites-box");
+                    this.leftPaneBox.add_style_class_name("starkmenu-favorites-box-locklogout");
                 }
             }
             else
@@ -2456,11 +2467,13 @@ MyApplet.prototype = {
     switchPanes: function(pane) {
         if (pane == "apps") {
             this.leftPane.set_child(this.appsBox);
+            this.separator.actor.hide();
             this.appsButton.label.set_text(" "+_(this.favoritesLabel));
             this.rightButtonsBox.actor.hide();
             this._appletStyles("apps");
         }else {
             this.leftPane.set_child(this.favsBox);
+            this.separator.actor.show();
             this.appsButton.label.set_text(" "+_(this.allProgramsLabel));
             if(this.menu.showQuicklinks)
             {
