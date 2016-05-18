@@ -305,7 +305,7 @@ TransientButton.prototype = {
             this.actor.set_style_class_name('menu-application-button');
         } catch (e) {
             this.handler = null;
-            let iconName = this.isPath ? 'gnome-folder' : 'unknown';
+            let iconName = this.isPath ? 'folder' : 'unknown';
             this.icon = new St.Icon({icon_name: iconName, icon_size: APPLICATION_ICON_SIZE, icon_type: St.IconType.FULLCOLOR,});
             // @todo Would be nice to indicate we don't have a handler for this file.
             this.actor.set_style_class_name('menu-application-button');
@@ -1147,18 +1147,18 @@ RightButtonsBox.prototype = {
 
         this.shutdown = new TextBoxItem(_("Quit"), "system-shutdown", "Session.ShutdownRemote()", this.menu, this.hoverIcon, false);
         this.shutdown2 = new TextBoxItem(_("Quit"), "system-shutdown", "Session.ShutdownRemote()", this.menu, this.hoverIcon, false);
-        this.logout = new TextBoxItem(_("Logout"), "gnome-logout", "Session.LogoutRemote(0)", this.menu, this.hoverIcon, false);
+        this.logout = new TextBoxItem(_("Logout"), "system-log-out", "Session.LogoutRemote(0)", this.menu, this.hoverIcon, false);
 
         let screensaver_settings = new Gio.Settings({ schema: "org.cinnamon.desktop.screensaver" });
         let screensaver_dialog = Gio.file_new_for_path("/usr/bin/cinnamon-screensaver-command");
         if (screensaver_dialog.query_exists(null)) {
             if (screensaver_settings.get_boolean("ask-for-away-message"))
             {
-                this.lock = new TextBoxItem(_("Lock screen"), "gnome-lockscreen", "Util.spawnCommandLine('cinnamon-screensaver-lock-dialog')", this.menu, this.hoverIcon, false);
+                this.lock = new TextBoxItem(_("Lock screen"), "system-lock-screen", "Util.spawnCommandLine('cinnamon-screensaver-lock-dialog')", this.menu, this.hoverIcon, false);
             }
             else
             {
-                this.lock = new TextBoxItem(_("Lock screen"), "gnome-lockscreen", "Util.spawnCommandLine('cinnamon-screensaver-command --lock')", this.menu, this.hoverIcon, false);
+                this.lock = new TextBoxItem(_("Lock screen"), "system-lock-screen", "Util.spawnCommandLine('cinnamon-screensaver-command --lock')", this.menu, this.hoverIcon, false);
             }
         }
 
@@ -1582,6 +1582,11 @@ MyApplet.prototype = {
             else
             {
                 this.rightButtonsBox.shutdown.actor.hide();
+		this.rightButtonsBox.shutdownMenu.actor.hide();
+		this.rightButtonsBox.shutDownMenuBox.hide();
+                this.leftPaneBox.remove_style_class_name("starkmenu-favorites-box");
+                this.leftPaneBox.add_style_class_name("starkmenu-favorites-box-locklogout");
+
                 this.rightButtonsBox.shutDownIconBox.hide(); /* prevents box to growth if showQuicklinksLockLogoutDropMenu button is pressed multiple times*/
                 this.rightButtonsBox.shutDownIconBox.show();
             }
