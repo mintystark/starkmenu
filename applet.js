@@ -790,7 +790,8 @@ AllProgramsItem.prototype = {
         this._triangle.destroy();
         this._triangle = new St.Label();
         this.label = new St.Label({
-            text: " " + label
+            text: " " + label,
+            style: "padding-left: 20px"
         });
         this.icon = new St.Icon({
             style_class: 'popup-menu-icon',
