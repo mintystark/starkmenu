@@ -42,6 +42,18 @@
     "description" : "Herunterfahren Text",
     "tooltip" : "Einen benutzerdefinierenden Text für den Knopf eingeben."
  },
+ "show-category-icons" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Kategoriesymbole anzeigen",
+    "tooltip" : "Legt fest, ob Symbole an Kategorien angezeigt werden."
+ },
+ "show-application-icons" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Anwendungssymbole anzeigen",
+    "tooltip" : "Legt fest, ob Symbole an Anwendungen angezeigt werden."
+ },
  "show-recent" : {
     "type" : "checkbox",
     "default" : true,

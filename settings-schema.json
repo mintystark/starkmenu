@@ -42,6 +42,18 @@
     "description" : "Shutdown Text",
     "tooltip" : "Enter custom text for button."
  },
+ "show-category-icons" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Show category icons",
+    "tooltip" : "Choose whether or not to show icons on categories."
+ },
+ "show-application-icons" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Show application icons",
+    "tooltip" : "Choose whether or not to show icons on applications."
+ },
  "show-recent" : {
     "type" : "checkbox",
     "default" : true,
