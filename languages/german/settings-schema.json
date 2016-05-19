@@ -115,11 +115,16 @@
     "description": "Zeige das Quicklinks-Herunterfahren-Menü",
     "tooltip": "Wähle, ob das Quicklinks-Herunterfahren-Menü im Menü angezeigt werden soll."
  },
-"show-quicklinks-locklogout-dropmenu" : {
-    "type" : "checkbox",
-    "default" : true,
-    "description": "Zeige Quicklinks-Abmelden-Sperren-DropdownMenü",
-    "tooltip": "Wähle, ob das Quicklinks-Abmelden-Sperren-DropdownMenü im Menü angezeigt werden soll.",
+ "quicklinks-shutdown-menu-options" : {
+    "type": "combobox",
+    "default": "dropdown",
+    "options": {
+	 "DropDown": "dropdown",
+	 "Vertikal": "vertical",
+         "Horizontal": "horizontal"
+     },
+    "description": "Herunterfahren-Menü Layout",
+    "tooltip": "Wähle das Layout des Herunterfahren-Menüs aus.",
     "dependency" : "show-quicklinks-shutdown-menu",
     "indent" : true
  },

@@ -115,13 +115,18 @@
     "description": "Show Quicklinks Shutdown Menu",
     "tooltip": "Choose whether or not to show the Quicklinks Shutdown Menu."
  },
-"show-quicklinks-locklogout-dropmenu" : {
-    "type" : "checkbox",
-    "default" : true,
-    "description": "Show Quicklinks Lock and Logout DropMenu",
-    "tooltip": "Choose whether or not to show the Quicklinks Lock and Logout DropMenu.",
+ "quicklinks-shutdown-menu-options" : {
+    "type": "combobox",
+    "default": "dropdown",
+    "options": {
+	 "DropDown": "dropdown",
+	 "Vertical": "vertical",
+         "Horizontal": "horizontal"
+     },
+    "description": "Shutdown Menu Layout",
+    "tooltip": "Choose the layout of the Shutdown Menu.",
     "dependency" : "show-quicklinks-shutdown-menu",
-    "indent" : "true"
+    "indent" : true
  },
  "quicklink-0-checkbox" : {
     "type" : "checkbox",

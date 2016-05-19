@@ -1078,6 +1078,9 @@ RightButtonsBox.prototype = {
         this.shutDownIconBox = new St.BoxLayout({
             vertical: true
         });
+	this.shutDownIconBoxXP = new St.BoxLayout({
+            vertical: false
+        });
         this.shutdownBox = new St.BoxLayout({
             vertical: false
         });
@@ -1100,7 +1103,9 @@ RightButtonsBox.prototype = {
         }
         this.shutdown._update(quicklinkOptions);
         this.shutdown2._update(quicklinkOptions);
+        this.shutdown3._update(quicklinkOptions);
         this.logout._update(quicklinkOptions);
+	this.logout2._update(quicklinkOptions);
         this.lock._update(quicklinkOptions);
 
         if(quicklinkOptions == 'icons')
@@ -1166,7 +1171,9 @@ RightButtonsBox.prototype = {
 
         this.shutdown = new TextBoxItem(_("Quit"), "system-shutdown", "Session.ShutdownRemote()", this.menu, this.hoverIcon, false);
         this.shutdown2 = new TextBoxItem(_("Quit"), "system-shutdown", "Session.ShutdownRemote()", this.menu, this.hoverIcon, false);
+        this.shutdown3 = new TextBoxItem(_("Quit"), "system-shutdown", "Session.ShutdownRemote()", this.menu, this.hoverIcon, false);
         this.logout = new TextBoxItem(_("Logout"), "system-log-out", "Session.LogoutRemote(0)", this.menu, this.hoverIcon, false);
+        this.logout2 = new TextBoxItem(_("Logout"), "system-log-out", "Session.LogoutRemote(0)", this.menu, this.hoverIcon, false);
 
         let screensaver_settings = new Gio.Settings({ schema: "org.cinnamon.desktop.screensaver" });
         let screensaver_dialog = Gio.file_new_for_path("/usr/bin/cinnamon-screensaver-command");
@@ -1193,10 +1200,14 @@ RightButtonsBox.prototype = {
         this.shutDownIconBox.add_actor(this.logout.actor);
         this.shutDownIconBox.add_actor(this.lock.actor);
 
+	this.shutDownIconBoxXP.add_actor(this.logout2.actor);
+	this.shutDownIconBoxXP.add_actor(this.shutdown3.actor);
+
         this.itemsBox.add_actor(this.shutDownMenuBox);
         this.shutDownMenuBox.set_style('min-height: 80px');
 
         this.itemsBox.add_actor(this.shutDownIconBox);
+	this.itemsBox.add_actor(this.shutDownIconBoxXP);
     },
 
     _getPreferredHeight: function (actor, forWidth, alloc) {
@@ -1462,7 +1473,7 @@ MyApplet.prototype = {
             this.settings.bindProperty(Settings.BindingDirection.IN, "show-quicklinks-shutdown-menu", "showQuicklinksShutdownMenu", this._updateQuickLinksShutdownView, null);
             this._updateQuickLinksShutdownView();
 
-	    this.settings.bindProperty(Settings.BindingDirection.IN, "show-quicklinks-locklogout-dropmenu", "showQuicklinksLockLogoutDropMenu", this._updateQuickLinksShutdownView, null);
+	    this.settings.bindProperty(Settings.BindingDirection.IN, "quicklinks-shutdown-menu-options", "QuicklinksShutdownMenuOptions", this._updateQuickLinksShutdownView, null);
             this._updateQuickLinksShutdownView();
 
             this.settings.bindProperty(Settings.BindingDirection.IN, "overlay-key", "overlayKey", this._updateKeybinding, null);
@@ -1580,44 +1591,64 @@ MyApplet.prototype = {
 
     _updateQuickLinksShutdownView : function(){
         this.menu.showQuicklinksShutdownMenu = this.showQuicklinksShutdownMenu;
-        this.menu.showQuicklinksLockLogoutDropMenu = this.showQuicklinksLockLogoutDropMenu;
+        this.menu.QuicklinksShutdownMenuOptions = this.QuicklinksShutdownMenuOptions;
         if(this.menu.showQuicklinksShutdownMenu)
         {
             if(this.quicklinkOptions != 'icons')
             {
-               if(this.showQuicklinksLockLogoutDropMenu) {
+               if(this.QuicklinksShutdownMenuOptions == 'dropdown') {
                     this.rightButtonsBox.shutdown.actor.show();
                     this.rightButtonsBox.shutdownMenu.actor.show();
                     this.rightButtonsBox.shutDownIconBox.hide();
+		    this.rightButtonsBox.shutDownIconBoxXP.hide();
                     this.rightButtonsBox.shutDownMenuBox.show();
                     this.rightButtonsBox.shutDownMenuBox.set_style('min-height: 80px');
                     this.leftPaneBox.remove_style_class_name("starkmenu-favorites-box-locklogout");
                     this.leftPaneBox.add_style_class_name("starkmenu-favorites-box");
-                } else {
+                } else if(this.QuicklinksShutdownMenuOptions == 'vertical') {
                     this.rightButtonsBox.shutdown.actor.hide();
                     this.rightButtonsBox.shutdownMenu.actor.hide();
                     this.rightButtonsBox.shutDownIconBox.show();
+		    this.rightButtonsBox.shutDownIconBoxXP.hide();
                     this.rightButtonsBox.shutDownMenuBox.hide();
                     this.leftPaneBox.remove_style_class_name("starkmenu-favorites-box");
                     this.leftPaneBox.add_style_class_name("starkmenu-favorites-box-locklogout");
-                }
+                } else {
+		    this.rightButtonsBox.shutdown.actor.hide();
+                    this.rightButtonsBox.shutdownMenu.actor.hide();
+                    this.rightButtonsBox.shutDownIconBox.hide();
+		    this.rightButtonsBox.shutDownIconBoxXP.show();
+                    this.rightButtonsBox.shutDownMenuBox.hide();
+                    this.leftPaneBox.remove_style_class_name("starkmenu-favorites-box");
+                    this.leftPaneBox.add_style_class_name("starkmenu-favorites-box-locklogout");
+		}
             }
             else
             {
-                this.rightButtonsBox.shutdown.actor.hide();
-		this.rightButtonsBox.shutdownMenu.actor.hide();
-		this.rightButtonsBox.shutDownMenuBox.hide();
-                this.leftPaneBox.remove_style_class_name("starkmenu-favorites-box");
-                this.leftPaneBox.add_style_class_name("starkmenu-favorites-box-locklogout");
-
-                this.rightButtonsBox.shutDownIconBox.hide(); /* prevents box to growth if showQuicklinksLockLogoutDropMenu button is pressed multiple times*/
-                this.rightButtonsBox.shutDownIconBox.show();
+		if(this.QuicklinksShutdownMenuOptions == 'horizontal') {
+	    	    this.rightButtonsBox.shutdown.actor.hide();
+		    this.rightButtonsBox.shutdownMenu.actor.hide();
+    		    this.rightButtonsBox.shutDownMenuBox.hide();
+                    this.leftPaneBox.remove_style_class_name("starkmenu-favorites-box");
+                    this.leftPaneBox.add_style_class_name("starkmenu-favorites-box-locklogout");
+		    this.rightButtonsBox.shutDownIconBoxXP.show();
+                    this.rightButtonsBox.shutDownIconBox.hide();
+		} else {
+                    this.rightButtonsBox.shutdown.actor.hide();
+		    this.rightButtonsBox.shutdownMenu.actor.hide();
+    		    this.rightButtonsBox.shutDownMenuBox.hide();
+                    this.leftPaneBox.remove_style_class_name("starkmenu-favorites-box");
+                    this.leftPaneBox.add_style_class_name("starkmenu-favorites-box-locklogout");
+		    this.rightButtonsBox.shutDownIconBoxXP.hide();
+                    this.rightButtonsBox.shutDownIconBox.show();
+		}
             }
         }
         else
         {
             this.rightButtonsBox.shutdown.actor.hide();
             this.rightButtonsBox.shutdownMenu.actor.hide();
+	    this.rightButtonsBox.shutDownIconBoxXP.hide();
             this.rightButtonsBox.shutDownIconBox.hide();
             this.rightButtonsBox.shutDownMenuBox.hide();
         }
