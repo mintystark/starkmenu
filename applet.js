@@ -2550,6 +2550,7 @@ MyApplet.prototype = {
         this.appsButton = new AllProgramsItem(_(this.allProgramsLabel), "forward", this, false);
 
         this.leftPaneBox = new St.BoxLayout({ style_class: 'menu-favorites-box', vertical: true });
+	this.leftPaneBox.add_style_class_name("local-favorites-box-padding");
 	this.leftPaneBox.add_style_class_name("starkmenu-favorites-box");
 
 

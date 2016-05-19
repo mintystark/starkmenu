@@ -18,3 +18,15 @@
   font-size: 16px;
   padding-left: 6px;
 }
+
+.local-favorites-box-padding {
+  padding-bottom: 0.3em; /* prevent button "All Programs" and "Favorites" from jumping */
+}
+
+.local-favorites-box-padding:spacing-shutdown-dropdown {
+    spacing: 12px; /* fix jumping and spacing issues of shutdown menu */
+}
+
+.local-favorites-box-padding:spacing-shutdown-classic {
+    spacing: 7px; /* fix jumping and spacing issues of shutdown menu */
+}

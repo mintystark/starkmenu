@@ -45,13 +45,6 @@ Linux Mint 17.3 Cinnamon (Cinnamon-Version 2.8)
 .starkmenu-favorites-box {  
         background-color: white;
     border: 0px solid white;
-    padding-bottom: 0.3em; /* prevent button "All Programs" and "Favorites" from jumping */
-}
-.starkmenu-favorites-box:spacing-shutdown-dropdown {  
-    spacing: 12px; /* fix jumping and spacing issues of shutdown menu */
-}
-.starkmenu-favorites-box:spacing-shutdown-classic {  
-    spacing: 7px; /* fix jumping and spacing issues of shutdown menu */
 }
 .starkmenu-applications-box {
     padding: 0px 0px 0px 0px;
