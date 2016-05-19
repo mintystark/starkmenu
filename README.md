@@ -69,4 +69,4 @@ Linux Mint 17.3 Cinnamon (Cinnamon-Version 2.8)
 
 ###### ToDo and Bugs (help and hints are welcome):
 * Find a better way to translate the settings-schema.json file
-* Change position of FavoriteButtons through DragAndDrop doesn't work properly
+* [Minor Bug] After removing favorite with largest name, the favorites box should resize while menu is still open, but it doesn't.

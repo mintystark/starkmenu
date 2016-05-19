@@ -372,6 +372,7 @@ ApplicationButton.prototype = {
         GenericApplicationButton.prototype._init.call(this, appsMenuButton, app, true);
         this.category = new Array();
         this.actor.set_style_class_name('menu-application-button');
+
         this.icon = this.app.create_icon_texture(APPLICATION_ICON_SIZE);
         this.addActor(this.icon);
         this.name = this.app.get_name();
@@ -390,7 +391,7 @@ ApplicationButton.prototype = {
         let nbFavorites = favorites.length;
         let monitorHeight = Main.layoutManager.primaryMonitor.height;
         let real_size = (0.7*monitorHeight) / nbFavorites;
-        let icon_size = 0.6*real_size;
+        let icon_size = 0.6*real_size / global.ui.scale;
         if (icon_size>MAX_FAV_ICON_SIZE) icon_size = MAX_FAV_ICON_SIZE;
         return this.app.create_icon_texture(icon_size);
     },
@@ -587,7 +588,12 @@ FavoritesButton.prototype = {
         this.addActor(this.label);
 
         this._draggable = DND.makeDraggable(this.actor);
+        this._draggable.connect('drag-end', Lang.bind(this, this._onDragEnd));
         this.isDraggableApp = true;
+    },
+
+    _onDragEnd: function() {
+        this.actor.get_parent()._delegate._clearDragPlaceholder()
     },
 
     get_app_id: function() {
@@ -1270,10 +1276,6 @@ FavoritesBox.prototype = {
     handleDragOver : function(source, actor, x, y, time) {
         let app = source.app;
 
-        // Don't allow favoriting of transient apps
-        if (app == null || app.is_window_backed() || (!(source instanceof FavoritesButton) && app.get_id() in AppFavorites.getAppFavorites().getFavoriteMap()))
-            return DND.DragMotionResult.NO_DROP;
-
         let favorites = AppFavorites.getAppFavorites().getFavorites();
         let numFavorites = favorites.length;
 
@@ -1291,38 +1293,41 @@ FavoritesBox.prototype = {
             numChildren--;
         }
 
-        let pos = Math.round(y * numFavorites / boxHeight);
+        let pos = Math.round(y * numChildren / boxHeight);
 
-        if (pos != this._dragPlaceholderPos && pos <= numFavorites) {
-            if (this._animatingPlaceholdersCount > 0) {
-                let appChildren = children.filter(function(actor) {
-                    return (actor._delegate instanceof FavoritesButton);
-                });
-                this._dragPlaceholderPos = children.indexOf(appChildren[pos]);
-            } else {
+        //if (pos != this._dragPlaceholderPos && pos <= numFavorites) {
+	if(pos <= numChildren) {
+        //    if (this._animatingPlaceholdersCount > 0) {
+        //        let appChildren = children.filter(function(actor) {
+        //            return (actor._delegate instanceof FavoritesButton);
+        //        });
+        //        this._dragPlaceholderPos = children.indexOf(appChildren[pos]);
+        //    } else {
                 this._dragPlaceholderPos = pos;
-            }
+        //    }
 
-            // Don't allow positioning before or after self
-            if (favPos != -1 && (pos == favPos || pos == favPos + 1)) {
-                if (this._dragPlaceholder) {
-                    this._dragPlaceholder.animateOutAndDestroy();
-                    this._animatingPlaceholdersCount++;
-                    this._dragPlaceholder.actor.connect('destroy',
-                        Lang.bind(this, function() {
-                            this._animatingPlaceholdersCount--;
-                        }));
-                }
-                this._dragPlaceholder = null;
+        //    // Don't allow positioning before or after self
+        //    if (favPos != -1 && (pos == favPos || pos == favPos + 1)) {
+        //        if (this._dragPlaceholder) {
+        //            this._dragPlaceholder.animateOutAndDestroy();
+        //            this._animatingPlaceholdersCount++;
+        //            this._dragPlaceholder.actor.connect('destroy',
+        //                Lang.bind(this, function() {
+        //                    this._animatingPlaceholdersCount--;
+        //                }));
+        //        }
+        //        this._dragPlaceholder = null;
 
-                return DND.DragMotionResult.CONTINUE;
-            }
+        //        return DND.DragMotionResult.CONTINUE;
+        //    }
 
             // If the placeholder already exists, we just move
             // it, but if we are adding it, expand its size in
             // an animation
             let fadeIn;
             if (this._dragPlaceholder) {
+	        let parentPlaceHolder = this._dragPlaceholder.actor.get_parent();
+                if(parentPlaceHolder) parentPlaceHolder.remove_actor(this._dragPlaceholder.actor);
                 this._dragPlaceholder.actor.destroy();
                 fadeIn = false;
             } else {
@@ -1334,26 +1339,17 @@ FavoritesBox.prototype = {
             this._dragPlaceholder.child.set_height (source.actor.height);
             this.actor.insert_actor(this._dragPlaceholder.actor,
                                    this._dragPlaceholderPos);
+            this.parentBox.setDragPlaceholder(this._dragPlaceholder);
             if (fadeIn)
                 this._dragPlaceholder.animateIn();
         }
 
-        let srcIsFavorite = (favPos != -1);
-
-        if (srcIsFavorite)
-            return DND.DragMotionResult.MOVE_DROP;
-
-        return DND.DragMotionResult.COPY_DROP;
+        return DND.DragMotionResult.MOVE_DROP;
     },
 
     // Draggable target interface
     acceptDrop : function(source, actor, x, y, time) {
         let app = source.app;
-
-        // Don't allow favoriting of transient apps
-        if (app == null || app.is_window_backed()) {
-            return false;
-        }
 
         let id = app.get_id();
 
@@ -2289,7 +2285,6 @@ MyApplet.prototype = {
         let j = 0;
         for (let i = 0; i < launchers.length; ++i) {
             let app = appSys.lookup_app(launchers[i]);
-            if (!app) app = appSys.lookup_settings_app(launchers[i]);
             if (app) {
                 let button = new FavoritesButton(this, app, launchers.length, this.favorite_icon_size); // + 3 because we're adding 3 system buttons at the bottom
                 this._favoritesButtons[app] = button;
