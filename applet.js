@@ -498,25 +498,30 @@ RecentClearButton.prototype = {
     }
 };
 
-function CategoryButton(app) {
-    this._init(app);
+function CategoryButton(app, showIcon) {
+    this._init(app, showIcon);
 }
 
 CategoryButton.prototype = {
     __proto__: PopupMenu.PopupBaseMenuItem.prototype,
 
-    _init: function(category) {
+    _init: function(category, showIcon) {
         PopupMenu.PopupBaseMenuItem.prototype._init.call(this, {hover: false});
 
         this.actor.set_style_class_name('menu-category-button');
         var label;
+	let icon = null;
         if (category) {
-            let icon = category.get_icon();
-            if (icon && icon.get_names)
-                this.icon_name = icon.get_names().toString();
-            else
+	    if(showIcon) {
+                icon = category.get_icon();
+                if (icon && icon.get_names)
+                    this.icon_name = icon.get_names().toString();
+                else
+                    this.icon_name = "";
+	    } else {
                 this.icon_name = "";
-            label = category.get_name();
+	    }
+	    label = category.get_name();
         } else
             label = _("All Applications");
 
@@ -530,39 +535,51 @@ CategoryButton.prototype = {
     }
 };
 
-function PlaceCategoryButton(app) {
-    this._init(app);
+function PlaceCategoryButton(app, showIcon) {
+    this._init(app, showIcon);
 }
 
 PlaceCategoryButton.prototype = {
     __proto__: PopupMenu.PopupBaseMenuItem.prototype,
 
-    _init: function(category) {
+    _init: function(category, showIcon) {
         PopupMenu.PopupBaseMenuItem.prototype._init.call(this, {hover: false});
         this.actor.set_style_class_name('menu-category-button');
         this.actor._delegate = this;
         this.label = new St.Label({ text: _("Places"), style_class: 'menu-category-button-label' });
-        this.icon = new St.Icon({icon_name: "folder", icon_size: CATEGORY_ICON_SIZE, icon_type: St.IconType.FULLCOLOR});
-        this.addActor(this.icon);
+	if(showIcon) {
+            this.icon = new St.Icon({icon_name: "folder", icon_size: CATEGORY_ICON_SIZE, icon_type: St.IconType.FULLCOLOR});
+            this.addActor(this.icon);
+            this.icon.realize();
+   	} else {
+	    this.icon = null;
+	}
         this.addActor(this.label);
+	this.label.realize();
     }
 };
 
-function RecentCategoryButton(app) {
-    this._init(app);
+function RecentCategoryButton(app, showIcon) {
+    this._init(app, showIcon);
 }
 
 RecentCategoryButton.prototype = {
     __proto__: PopupMenu.PopupBaseMenuItem.prototype,
 
-    _init: function(category) {
+    _init: function(category, showIcon) {
         PopupMenu.PopupBaseMenuItem.prototype._init.call(this, {hover: false});
         this.actor.set_style_class_name('menu-category-button');
         this.actor._delegate = this;
         this.label = new St.Label({ text: _("Recent Files"), style_class: 'menu-category-button-label' });
-        this.icon = new St.Icon({icon_name: "folder-recent", icon_size: CATEGORY_ICON_SIZE, icon_type: St.IconType.FULLCOLOR});
-        this.addActor(this.icon);
+	if(showIcon) {
+            this.icon = new St.Icon({icon_name: "folder-recent", icon_size: CATEGORY_ICON_SIZE, icon_type: St.IconType.FULLCOLOR});
+            this.addActor(this.icon);
+	    this.icon.realize();
+	} else {
+	    this.icon = null;
+	}
         this.addActor(this.label);
+	this.label.realize();
     }
 };
 
@@ -1420,6 +1437,11 @@ MyApplet.prototype = {
             this.settings.bindProperty(Settings.BindingDirection.IN, "menu-icon-custom", "menuIconCustom", this._updateIconAndLabel, null);
             this.settings.bindProperty(Settings.BindingDirection.IN, "menu-icon", "menuIcon", this._updateIconAndLabel, null);
             this.settings.bindProperty(Settings.BindingDirection.IN, "menu-label", "menuLabel", this._updateIconAndLabel, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "overlay-key", "overlayKey", this._updateKeybinding, null);
+	     this.settings.bindProperty(Settings.BindingDirection.IN, "show-category-icons", "showCategoryIcons", this._refreshAll, null); 
+
+            this._updateKeybinding();
+
             this.settings.bindProperty(Settings.BindingDirection.IN, "all-programs-label", "allProgramsLabel", null, null);
             this.settings.bindProperty(Settings.BindingDirection.IN, "favorites-label", "favoritesLabel", null, null);
             this.settings.bindProperty(Settings.BindingDirection.IN, "shutdown-label", "shutdownLabel", null, null);
@@ -1471,9 +1493,6 @@ MyApplet.prototype = {
 
 	    this.settings.bindProperty(Settings.BindingDirection.IN, "quicklinks-shutdown-menu-options", "QuicklinksShutdownMenuOptions", this._updateQuickLinksShutdownView, null);
             this._updateQuickLinksShutdownView();
-
-            this.settings.bindProperty(Settings.BindingDirection.IN, "overlay-key", "overlayKey", this._updateKeybinding, null);
-            this._updateKeybinding();
 
             Main.placesManager.connect('places-updated', Lang.bind(this, this._refreshApps));
             this.RecentManager.connect('changed', Lang.bind(this, this._refreshApps));
@@ -2104,7 +2123,7 @@ MyApplet.prototype = {
                     this.applicationsByCategory[dir.get_menu_id()] = new Array();
                     this._loadCategory(dir);
                     if (this.applicationsByCategory[dir.get_menu_id()].length>0){
-                        let categoryButton = new CategoryButton(dir);
+                        let categoryButton = new CategoryButton(dir, this.showCategoryIcons);
                         this._addEnterEvent(categoryButton, Lang.bind(this, function() {
                             if (!this.searchActive) {
                                 categoryButton.isHovered = true;
@@ -2153,7 +2172,7 @@ MyApplet.prototype = {
 
         // Now generate Places category and places buttons and add to the list
         if (this.showPlaces) {
-            this.placesButton = new PlaceCategoryButton();
+            this.placesButton = new PlaceCategoryButton(null, this.showCategoryIcons);
             this._addEnterEvent(this.placesButton, Lang.bind(this, function() {
                 if (!this.searchActive) {
                     this.placesButton.isHovered = true;
@@ -2202,7 +2221,7 @@ MyApplet.prototype = {
         }
         // Now generate recent category and recent files buttons and add to the list
         if (this.showRecent) {
-            this.recentButton = new RecentCategoryButton();
+            this.recentButton = new RecentCategoryButton(null, this.showCategoryIcons);
             this._addEnterEvent(this.recentButton, Lang.bind(this, function() {
                 if (!this.searchActive) {
                     this.recentButton.isHovered = true;
