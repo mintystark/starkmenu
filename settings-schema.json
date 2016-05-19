@@ -129,7 +129,7 @@
  },
  "quicklinks-shutdown-menu-options" : {
     "type": "combobox",
-    "default": "dropdown",
+    "default": "vertical",
     "options": {
 	 "DropDown": "dropdown",
 	 "Vertical": "vertical",
@@ -226,7 +226,7 @@
  },
  "quicklink-6-checkbox" : {
     "type" : "checkbox",
-    "default" : false,
+    "default" : true,
     "description" : "Show Quicklink in menu",
     "tooltip" : "Choose whether or not to show this Quicklink in the Quicklinks sidebar."
  },
