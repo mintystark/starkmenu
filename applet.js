@@ -1579,9 +1579,10 @@ MyApplet.prototype = {
     },
 
     openMenu: function() {
-        this.menu.open(true);
+        if (!this._applet_context_menu.isOpen) {
+            this.menu.open(false);
+        }        
     },
-
     _updateActivateOnHover: function() {
         if (this._openMenuId) {
             this.actor.disconnect(this._openMenuId);
@@ -1590,6 +1591,10 @@ MyApplet.prototype = {
         if (this.activateOnHover) {
             this._openMenuId = this.actor.connect('enter-event', Lang.bind(this, this.openMenu));
         }
+    },
+
+    _update_hover_delay: function() {
+        this.hover_delay = this.hover_delay_ms / 1000
     },
 
     _updateQuickLinksView : function(){
@@ -1731,10 +1736,6 @@ MyApplet.prototype = {
 
         this.favsBox.style = "min-height: "+(this.rightButtonsBox.actor.get_height()-100)+"px;min-width: 235px;";
 
-    },
-
-    _update_hover_delay: function() {
-        this.hover_delay = this.hover_delay_ms / 1000
     },
 
     on_orientation_changed: function (orientation) {
@@ -2079,13 +2080,13 @@ MyApplet.prototype = {
         this._addEnterEvent(this._allAppsCategoryButton, Lang.bind(this, function() {
             if (!this.searchActive) {
                 this._allAppsCategoryButton.isHovered = true;
-                this._allAppsCategoryButton.actor.style_class = "menu-category-button-selected";
                 if (this.hover_delay > 0) {
                     Tweener.addTween(this, {
                            time: this.hover_delay,
                            onComplete: function () {
                                if (this._allAppsCategoryButton.isHovered) {
                                    this._clearPrevCatSelection(this._allAppsCategoryButton.actor);
+				   this._allAppsCategoryButton.actor.style_class = "menu-category-button-selected";
                                    this._select_category(null, this._allAppsCategoryButton);
                                } else {
                                    this._allAppsCategoryButton.actor.style_class = "menu-category-button";
@@ -2094,6 +2095,7 @@ MyApplet.prototype = {
                     });
                 } else {
                     this._clearPrevCatSelection(this._allAppsCategoryButton.actor);
+		    this._allAppsCategoryButton.actor.style_class = "menu-category-button-selected";
                     this._select_category(null, this._allAppsCategoryButton);
                 }
             }
@@ -2127,13 +2129,13 @@ MyApplet.prototype = {
                         this._addEnterEvent(categoryButton, Lang.bind(this, function() {
                             if (!this.searchActive) {
                                 categoryButton.isHovered = true;
-                                categoryButton.actor.style_class = "menu-category-button-selected";
                                 if (this.hover_delay > 0) {
                                     Tweener.addTween(this, {
                                             time: this.hover_delay,
                                             onComplete: function () {
                                                 if (categoryButton.isHovered) {
                                                     this._clearPrevCatSelection(categoryButton.actor);
+ 						    categoryButton.actor.style_class = "menu-category-button-selected";
                                                     this._select_category(dir, categoryButton);
                                                 } else {
                                                     categoryButton.actor.style_class = "menu-category-button";
@@ -2142,6 +2144,7 @@ MyApplet.prototype = {
                                     });
                                 } else {
                                     this._clearPrevCatSelection(categoryButton.actor);
+				    categoryButton.actor.style_class = "menu-category-button-selected";
                                     this._select_category(dir, categoryButton);
                                 }
                             }
@@ -2176,16 +2179,24 @@ MyApplet.prototype = {
             this._addEnterEvent(this.placesButton, Lang.bind(this, function() {
                 if (!this.searchActive) {
                     this.placesButton.isHovered = true;
-                    this.placesButton.actor.style_class = "menu-category-button-selected";
-                    Tweener.addTween(this, {
-                        time: this.hover_delay,
-                        onComplete: function () {
-                            if (this.placesButton.isHovered) {
-                                this._clearPrevCatSelection(this.placesButton);
-                                this._displayButtons(null, -1);
+                    if(this.hover_delay > 0) {
+                        Tweener.addTween(this, {
+                            time: this.hover_delay,
+                            onComplete: function () {
+                                if (this.placesButton.isHovered) {
+                                    this._clearPrevCatSelection(this.placesButton);
+ 				    this.placesButton.actor.style_class = "menu-category-button-selected";
+                                    this._displayButtons(null, -1);
+                                } else {
+				     this.placesButton.actor.style_class = "menu-category-button-selected";
+				}
                             }
-                        }
-                    });
+                        });
+		    } else {
+		        this._clearPrevCatSelection(this.placesButton);
+                         this.placesButton.actor.style_class = "menu-category-button-selected";
+                         this._displayButtons(null, -1);
+		    }
                 }
                 this._scrollToCategoryButton(this.placesButton);
             }));
@@ -2225,16 +2236,24 @@ MyApplet.prototype = {
             this._addEnterEvent(this.recentButton, Lang.bind(this, function() {
                 if (!this.searchActive) {
                     this.recentButton.isHovered = true;
-                    this.recentButton.actor.style_class = "menu-category-button-selected";
-                    Tweener.addTween(this, {
-                        time: this.hover_delay,
-                        onComplete: function () {
-                            if (this.recentButton.isHovered) {
-                                this._clearPrevCatSelection(this.recentButton.actor);
-                                this._displayButtons(null, null, -1);
+ 	 	    if (this.hover_delay > 0) {
+                        Tweener.addTween(this, {
+                            time: this.hover_delay,
+                            onComplete: function () {
+                                if (this.recentButton.isHovered) {
+                                    this._clearPrevCatSelection(this.recentButton.actor);
+				    this.recentButton.actor.style_class = "menu-category-button-selected";
+                                    this._displayButtons(null, null, -1);
+                                } else {
+				    this.recentButton.actor.style_class = "menu-category-button-selected";
+			        }
                             }
-                        }
-                    });
+                        });
+		    } else {
+			this._clearPrevCatSelection(this.recentButton.actor);
+                        this.recentButton.actor.style_class = "menu-category-button-selected";
+                        this._displayButtons(null, null, -1);
+		    }
                 }
                 this._scrollToCategoryButton(this.recentButton);
             }));
