@@ -1599,24 +1599,24 @@ MyApplet.prototype = {
 		    this.rightButtonsBox.shutDownIconBoxXP.hide();
                     this.rightButtonsBox.shutDownMenuBox.show();
                     this.rightButtonsBox.shutDownMenuBox.set_style('min-height: 80px');
-                    this.leftPaneBox.remove_style_class_name("starkmenu-favorites-box-locklogout");
-                    this.leftPaneBox.add_style_class_name("starkmenu-favorites-box");
+                    this.leftPaneBox.remove_style_pseudo_class("spacing-shutdown-classic");
+                    this.leftPaneBox.add_style_pseudo_class("spacing-shutdown-dropdown");
                 } else if(this.QuicklinksShutdownMenuOptions == 'vertical') {
                     this.rightButtonsBox.shutdown.actor.hide();
                     this.rightButtonsBox.shutdownMenu.actor.hide();
                     this.rightButtonsBox.shutDownIconBox.show();
 		    this.rightButtonsBox.shutDownIconBoxXP.hide();
                     this.rightButtonsBox.shutDownMenuBox.hide();
-                    this.leftPaneBox.remove_style_class_name("starkmenu-favorites-box");
-                    this.leftPaneBox.add_style_class_name("starkmenu-favorites-box-locklogout");
+                    this.leftPaneBox.remove_style_pseudo_class("spacing-shutdown-dropdown");
+                    this.leftPaneBox.add_style_pseudo_class("spacing-shutdown-classic");
                 } else {
 		    this.rightButtonsBox.shutdown.actor.hide();
                     this.rightButtonsBox.shutdownMenu.actor.hide();
                     this.rightButtonsBox.shutDownIconBox.hide();
 		    this.rightButtonsBox.shutDownIconBoxXP.show();
                     this.rightButtonsBox.shutDownMenuBox.hide();
-                    this.leftPaneBox.remove_style_class_name("starkmenu-favorites-box");
-                    this.leftPaneBox.add_style_class_name("starkmenu-favorites-box-locklogout");
+                    this.leftPaneBox.remove_style_pseudo_class("spacing-shutdown-dropdown");
+                    this.leftPaneBox.add_style_pseudo_class("spacing-shutdown-classic");
 		}
             }
             else
@@ -1625,16 +1625,16 @@ MyApplet.prototype = {
 	    	    this.rightButtonsBox.shutdown.actor.hide();
 		    this.rightButtonsBox.shutdownMenu.actor.hide();
     		    this.rightButtonsBox.shutDownMenuBox.hide();
-                    this.leftPaneBox.remove_style_class_name("starkmenu-favorites-box");
-                    this.leftPaneBox.add_style_class_name("starkmenu-favorites-box-locklogout");
+                    this.leftPaneBox.remove_style_pseudo_class("spacing-shutdown-dropdown");
+                    this.leftPaneBox.add_style_pseudo_class("spacing-shutdown-classic");
 		    this.rightButtonsBox.shutDownIconBoxXP.show();
                     this.rightButtonsBox.shutDownIconBox.hide();
 		} else {
                     this.rightButtonsBox.shutdown.actor.hide();
 		    this.rightButtonsBox.shutdownMenu.actor.hide();
     		    this.rightButtonsBox.shutDownMenuBox.hide();
-                    this.leftPaneBox.remove_style_class_name("starkmenu-favorites-box");
-                    this.leftPaneBox.add_style_class_name("starkmenu-favorites-box-locklogout");
+                    this.leftPaneBox.remove_style_pseudo_class("spacing-shutdown-dropdown");
+                    this.leftPaneBox.add_style_pseudo_class("spacing-shutdown-classic");
 		    this.rightButtonsBox.shutDownIconBoxXP.hide();
                     this.rightButtonsBox.shutDownIconBox.show();
 		}
