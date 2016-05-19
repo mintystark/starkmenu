@@ -1,7 +1,7 @@
 # StarkMenu
 A custom menu for Cinnamon based on the look of Windows 7 Menu, derived from StarkMenu@mintystark (fixed by bluedxca93).
 
-This menu is adapted by me to look better with the CinnXP theme by petruzzi4prez.
+This menu is adapted by me to look better with the CinnXP theme by petrucci4prez.
 
 * https://www.dropbox.com/s/lih7li11ktctsgo/CinnXPStarkMenu_1.png
 * https://www.dropbox.com/s/15kod4as1nlmh54/CinnXPStarkMenu_2.png
@@ -19,7 +19,7 @@ Linux Mint 17.3 Cinnamon (Cinnamon-Version 2.8)
 
 * For German Translation replace "settings-schema.json" file with "/languages/YOURLANGUAGE/settings-schema.json" file. --> Maybe you have to delete afterwards the "CinnXPStarkMenu@NikoKrause" folder in "~/.cinnamon/configs/" and restart Cinnamon with Ctrl+Alt+Esc
 
-### If in use with CinnXP theme by petruzzi4prez you have to make some changes:
+### If in use with CinnXP theme by petrucci4prez you have to make some changes:
 1. Open "CinnXP/cinnamon/cinnamon.css"
 2. Add the following lines and save the file:
 
