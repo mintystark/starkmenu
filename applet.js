@@ -190,6 +190,20 @@ GenericApplicationButton.prototype = {
         }
     },
 
+
+    highlight: function() {
+        this.actor.add_style_pseudo_class('highlighted');
+    },
+
+    unhighlight: function() {
+        var app_key = this.app.get_id();
+        if (app_key == null) {
+            app_key = this.app.get_name() + ":" + this.app.get_description();
+        }
+        this.appsMenuButton._knownApps.push(app_key);
+        this.actor.remove_style_pseudo_class('highlighted');
+    },   
+
     _onButtonReleaseEvent: function (actor, event) {
         if (event.get_button()==1){
             this.activate(event);
@@ -203,6 +217,7 @@ GenericApplicationButton.prototype = {
     },
 
     activate: function(event) {
+	this.unhighlight(); 
         this.app.open_new_window(-1);
         this.appsMenuButton.menu.close();
     },
@@ -1414,6 +1429,7 @@ MyApplet.prototype = {
                                              icon_type: St.IconType.SYMBOLIC });
             this._searchIconClickedId = 0;
             this._applicationsButtons = new Array();
+	    this._applicationsButtonFromApp = new Object();
             this._favoritesButtons = new Array();
             this._placesButtons = new Array();
             this._transientButtons = new Array();
@@ -1427,6 +1443,8 @@ MyApplet.prototype = {
             this._applicationsBoxWidth = 0;
             this.menuIsOpening = false;
 
+	    this._knownApps = new Array(); // Used to keep track of apps that are already installed, so we can highlight newly installed ones
+	    this._appsWereRefreshed = false;
             this._canUninstallApps = GLib.file_test("/usr/bin/cinnamon-remove-application", GLib.FileTest.EXISTS);
             this.RecentManager = new DocInfo.DocManager();
 
@@ -1997,13 +2015,14 @@ MyApplet.prototype = {
         this.searchEntry.style = "width:" + favsWidth + "px";
         this.appsButton.box.style = "width:" + favsWidth + "px";
         let scrollBoxHeight = (this.favsBox.get_allocation_box().y2 - this.favsBox.get_allocation_box().y1)-(this.selectedAppBox.get_allocation_box().y2 - this.selectedAppBox.get_allocation_box().y1);
-        this.applicationsScrollBox.style = "width: " + ((scrollWidth) * 0.55) + "px;height: " + scrollBoxHeight + "px;";
-        this.categoriesScrollBox.style = "width: " + ((scrollWidth) * 0.45) + "px;height: " + scrollBoxHeight + "px;";
+        this.applicationsScrollBox.style = "width: " + ((scrollWidth) * 0.55) + "px;height: " + (scrollBoxHeight+6) + "px;";
+        this.categoriesScrollBox.style = "width: " + ((scrollWidth) * 0.45) + "px;height: " + (scrollBoxHeight+6) + "px;";
     },
 
     _refreshApps : function() {
         this.applicationsBox.destroy_all_children();
         this._applicationsButtons = new Array();
+        this._applicationsButtonFromApp = new Object(); 
         this._placesButtons = new Array();
         this._recentButtons = new Array();
         this._applicationsBoxWidth = 0;
@@ -2216,6 +2235,8 @@ MyApplet.prototype = {
         }
 
         this._setCategoriesButtonActive(!this.searchActive);
+
+	this._appsWereRefreshed = true;
     },
 
     _refreshFavs: function () {
@@ -2265,38 +2286,66 @@ MyApplet.prototype = {
 
     _loadCategory: function(dir, top_dir) {
         var iter = dir.iter();
-        var dupe = false;
+        var has_entries = false; 
         var nextType;
         if (!top_dir) top_dir = dir;
         while ((nextType = iter.next()) != CMenu.TreeItemType.INVALID) {
             if (nextType == CMenu.TreeItemType.ENTRY) {
                 var entry = iter.get_entry();
                 if (!entry.get_app_info().get_nodisplay()) {
+                    has_entries = true;
                     var app = appsys.lookup_app_by_tree_entry(entry);
-                    dupe = this.find_dupe(app);
-                    if (!dupe) {
+                    if (!app)
+                        app = appsys.lookup_settings_app_by_tree_entry(entry);
+                    var app_key = app.get_id()
+                    if (app_key == null) {
+                        app_key = app.get_name() + ":" + 
+                            app.get_description();
+                    }
+                    if (!(app_key in this._applicationsButtonFromApp)) {
+
                         let applicationButton = new ApplicationButton(this, app);
+
+                        var app_is_known = false;
+                        for (var i = 0; i < this._knownApps.length; i++) {
+                            if (this._knownApps[i] == app_key) {
+                                app_is_known = true;
+                            }
+                        }
+                        if (!app_is_known) {
+                            if (this._appsWereRefreshed) {
+                                applicationButton.highlight();
+                            }
+                            else {
+                                this._knownApps.push(app_key);
+                            }
+                        }
+
                         applicationButton.actor.connect('realize', Lang.bind(this, this._onApplicationButtonRealized));
                         applicationButton.actor.connect('leave-event', Lang.bind(this, this._appLeaveEvent, applicationButton));
                         this._addEnterEvent(applicationButton, Lang.bind(this, this._appEnterEvent, applicationButton));
                         this._applicationsButtons.push(applicationButton);
                         applicationButton.category.push(top_dir.get_menu_id());
                         this.applicationsByCategory[top_dir.get_menu_id()].push(app.get_name());
+
+                        this._applicationsButtonFromApp[app_key] = applicationButton;
+
                     } else {
-                        for (let i = 0; i < this._applicationsButtons.length; i++) {
-                            if (this._applicationsButtons[i].app == app) {
-                                this._applicationsButtons[i].category.push(dir.get_menu_id());
-                            }
-                        }
+                        this._applicationsButtonFromApp[app_key].category.push(dir.get_menu_id());
                         this.applicationsByCategory[dir.get_menu_id()].push(app.get_name());
                     }
                 }
             } else if (nextType == CMenu.TreeItemType.DIRECTORY) {
                 let subdir = iter.get_directory();
+
                 this.applicationsByCategory[subdir.get_menu_id()] = new Array();
-                this._loadCategory(subdir, top_dir);
+
+		if (this._loadCategory(subdir, top_dir)) {
+                    has_entries = true;
+                }
             }
         }
+	return has_entries;
     },
 
     _appLeaveEvent: function(a, b, applicationButton) {
@@ -2315,17 +2364,6 @@ MyApplet.prototype = {
         this._clearPrevAppSelection(applicationButton.actor);
         applicationButton.actor.style_class = "menu-application-button-selected";
         this._scrollToButton(applicationButton);
-    },
-
-    find_dupe: function(app) {
-        let ret = false;
-        for (let i = 0; i < this._applicationsButtons.length; i++) {
-            if (app == this._applicationsButtons[i].app) {
-                ret = true;
-                break;
-            }
-        }
-        return ret;
     },
 
     _scrollToButton: function(button) {
