@@ -2632,6 +2632,7 @@ MyApplet.prototype = {
 
     _update_autoscroll: function() {
         this.applicationsScrollBox.set_auto_scrolling(this.autoscroll_enabled);
+	this.categoriesScrollBox.set_auto_scrolling(this.autoscroll_enabled);
     },
 
     _clearAllSelections: function() {
