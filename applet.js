@@ -1432,154 +1432,148 @@ MyApplet.prototype = {
 
 	this.initial_load_done = false;
 
-        try {
-            this.set_applet_tooltip(_("Menu"));
+        this.set_applet_tooltip(_("Menu"));
 
-            this.menuManager = new PopupMenu.PopupMenuManager(this);
-            this.menu = new Applet.AppletPopupMenu(this, orientation);
-            this.menuManager.addMenu(this.menu);
+        this.menuManager = new PopupMenu.PopupMenuManager(this);
+        this.menu = new Applet.AppletPopupMenu(this, orientation);
+        this.menuManager.addMenu(this.menu);
 
-            this.actor.connect('key-press-event', Lang.bind(this, this._onSourceKeyPress));
+        this.actor.connect('key-press-event', Lang.bind(this, this._onSourceKeyPress));
 
-            this.settings = new Settings.AppletSettings(this, "CinnXPStarkMenu@NikoKrause", instance_id);
+        this.settings = new Settings.AppletSettings(this, "CinnXPStarkMenu@NikoKrause", instance_id);
 
-            this.settings.bindProperty(Settings.BindingDirection.IN, "show-recent", "showRecent", this._refreshApps, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "show-places", "showPlaces", this._refreshApps, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "show-recent", "showRecent", this._refreshApps, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "show-places", "showPlaces", this._refreshApps, null);
 
-            this.settings.bindProperty(Settings.BindingDirection.IN, "activate-on-hover", "activateOnHover", this._updateActivateOnHover, null);
-            this._updateActivateOnHover();
+        this.settings.bindProperty(Settings.BindingDirection.IN, "activate-on-hover", "activateOnHover", this._updateActivateOnHover, null);
+        this._updateActivateOnHover();
 
-            this.menu.actor.add_style_class_name('menu-background');
-	    this.menu.actor.add_style_class_name("starkmenu-background");
+        this.menu.actor.add_style_class_name('menu-background');
+        this.menu.actor.add_style_class_name("starkmenu-background");
 
-            this.settings.bindProperty(Settings.BindingDirection.IN, "menu-icon-custom", "menuIconCustom", this._updateIconAndLabel, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "menu-icon", "menuIcon", this._updateIconAndLabel, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "menu-label", "menuLabel", this._updateIconAndLabel, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "overlay-key", "overlayKey", this._updateKeybinding, null);
-	    this.settings.bindProperty(Settings.BindingDirection.IN, "show-category-icons", "showCategoryIcons", this._refreshAll, null); 
-	    this.settings.bindProperty(Settings.BindingDirection.IN, "show-application-icons", "showApplicationIcons", this._refreshAll, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "menu-icon-custom", "menuIconCustom", this._updateIconAndLabel, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "menu-icon", "menuIcon", this._updateIconAndLabel, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "menu-label", "menuLabel", this._updateIconAndLabel, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "overlay-key", "overlayKey", this._updateKeybinding, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "show-category-icons", "showCategoryIcons", this._refreshAll, null); 
+        this.settings.bindProperty(Settings.BindingDirection.IN, "show-application-icons", "showApplicationIcons", this._refreshAll, null);
 
-            this._updateKeybinding();
+        this._updateKeybinding();
 
-            this.settings.bindProperty(Settings.BindingDirection.IN, "all-programs-label", "allProgramsLabel", null, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "favorites-label", "favoritesLabel", null, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "shutdown-label", "shutdownLabel", null, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "all-programs-label", "allProgramsLabel", null, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "favorites-label", "favoritesLabel", null, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "shutdown-label", "shutdownLabel", null, null);
 
-            Main.themeManager.connect("theme-set", Lang.bind(this, this._updateIconAndLabel));
-            this._updateIconAndLabel();
+        Main.themeManager.connect("theme-set", Lang.bind(this, this._updateIconAndLabel));
+        this._updateIconAndLabel();
 
 
-            this._searchInactiveIcon = new St.Icon({ style_class: 'menu-search-entry-icon',
-                                               icon_name: 'edit-find',
-                                               icon_type: St.IconType.SYMBOLIC });
-            this._searchActiveIcon = new St.Icon({ style_class: 'menu-search-entry-icon',
-                                             icon_name: 'edit-clear',
-                                             icon_type: St.IconType.SYMBOLIC });
-            this._searchIconClickedId = 0;
-            this._applicationsButtons = new Array();
-	    this._applicationsButtonFromApp = new Object();
-            this._favoritesButtons = new Array();
-            this._placesButtons = new Array();
-            this._transientButtons = new Array();
-            this._recentButtons = new Array();
-            this._selectedItemIndex = null;
-            this._previousTreeItemIndex = null;
-            this._previousSelectedActor = null;
-            this._previousTreeSelectedActor = null;
-            this._activeContainer = null;
-            this._activeActor = null;
-            this._applicationsBoxWidth = 0;
-            this.menuIsOpening = false;
-
-	    this._knownApps = new Array(); // Used to keep track of apps that are already installed, so we can highlight newly installed ones
-	    this._appsWereRefreshed = false;
-            this._canUninstallApps = GLib.file_test("/usr/bin/cinnamon-remove-application", GLib.FileTest.EXISTS);
-            this.RecentManager = new DocInfo.DocManager();
-
-            this._display();
-            this.menu.connect('open-state-changed', Lang.bind(this, this._onOpenStateChanged));
-            appsys.connect('installed-changed', Lang.bind(this, this._refreshApps));
-            AppFavorites.getAppFavorites().connect('changed', Lang.bind(this, this._refreshFavs));
-
-            this.settings.bindProperty(Settings.BindingDirection.IN, "hover-delay", "hover_delay_ms", this._update_hover_delay, null);
-            this._update_hover_delay();
-
-            this.settings.bindProperty(Settings.BindingDirection.IN, "show-quicklinks", "showQuicklinks", this._updateQuickLinksView, null);
-            this._updateQuickLinksView();
-
-            this.settings.bindProperty(Settings.BindingDirection.IN, "show-quicklinks-shutdown-menu", "showQuicklinksShutdownMenu", this._updateQuickLinksShutdownView, null);
-            this._updateQuickLinksShutdownView();
-
-	    this.settings.bindProperty(Settings.BindingDirection.IN, "quicklinks-shutdown-menu-options", "QuicklinksShutdownMenuOptions", this._updateQuickLinksShutdownView, null);
-            this._updateQuickLinksShutdownView();
-
-            Main.placesManager.connect('places-updated', Lang.bind(this, this._refreshApps));
-            this.RecentManager.connect('changed', Lang.bind(this, this._refreshApps));
-
-            this._fileFolderAccessActive = false;
-
-            this._pathCompleter = new Gio.FilenameCompleter();
-            this._pathCompleter.set_dirs_only(false);
-            this.lastAcResults = new Array();
-
-            this.settings.bindProperty(Settings.BindingDirection.IN, "search-filesystem", "searchFilesystem", null, null);
-
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-0-checkbox", "quicklink_0_checkbox", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-1-checkbox", "quicklink_1_checkbox", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-2-checkbox", "quicklink_2_checkbox", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-3-checkbox", "quicklink_3_checkbox", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-4-checkbox", "quicklink_4_checkbox", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-5-checkbox", "quicklink_5_checkbox", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-6-checkbox", "quicklink_6_checkbox", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-7-checkbox", "quicklink_7_checkbox", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-8-checkbox", "quicklink_8_checkbox", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-9-checkbox", "quicklink_9_checkbox", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-10-checkbox", "quicklink_10_checkbox", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-11-checkbox", "quicklink_11_checkbox", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-12-checkbox", "quicklink_12_checkbox", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-13-checkbox", "quicklink_13_checkbox", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-14-checkbox", "quicklink_14_checkbox", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-15-checkbox", "quicklink_15_checkbox", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-16-checkbox", "quicklink_16_checkbox", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-17-checkbox", "quicklink_17_checkbox", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-18-checkbox", "quicklink_18_checkbox", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-19-checkbox", "quicklink_19_checkbox", this._updateQuickLinks, null);
-
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-0", "quicklink_0", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-1", "quicklink_1", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-2", "quicklink_2", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-3", "quicklink_3", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-4", "quicklink_4", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-5", "quicklink_5", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-6", "quicklink_6", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-7", "quicklink_7", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-8", "quicklink_8", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-9", "quicklink_9", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-10", "quicklink_10", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-11", "quicklink_11", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-12", "quicklink_12", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-13", "quicklink_13", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-14", "quicklink_14", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-15", "quicklink_15", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-16", "quicklink_16", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-17", "quicklink_17", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-18", "quicklink_18", this._updateQuickLinks, null);
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-19", "quicklink_19", this._updateQuickLinks, null);
-
-            this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-options", "quicklinkOptions", this._updateQuickLinks, null);
-            this._updateQuickLinks();
-            
-	    // We shouldn't need to call refreshAll() here... since we get a "icon-theme-changed" signal when CSD starts.
-            // The reason we do is in case the Cinnamon icon theme is the same as the one specificed in GTK itself (in .config)
-            // In that particular case we get no signal at all.
-            this._refreshAll();
-
-            St.TextureCache.get_default().connect("icon-theme-changed", Lang.bind(this, this.onIconThemeChanged));
-            
-        }
-        catch (e) {
-            global.logError(e);
-        }
+        this._searchInactiveIcon = new St.Icon({ style_class: 'menu-search-entry-icon',
+                                           icon_name: 'edit-find',
+                                           icon_type: St.IconType.SYMBOLIC });
+        this._searchActiveIcon = new St.Icon({ style_class: 'menu-search-entry-icon',
+                                         icon_name: 'edit-clear',
+                                         icon_type: St.IconType.SYMBOLIC });
+        this._searchIconClickedId = 0;
+        this._applicationsButtons = new Array();
+        this._applicationsButtonFromApp = new Object();
+        this._favoritesButtons = new Array();
+        this._placesButtons = new Array();
+        this._transientButtons = new Array();
+        this._recentButtons = new Array();
+        this._selectedItemIndex = null;
+        this._previousTreeItemIndex = null;
+        this._previousSelectedActor = null;
+        this._previousTreeSelectedActor = null;
+        this._activeContainer = null;
+        this._activeActor = null;
+        this._applicationsBoxWidth = 0;
+        this.menuIsOpening = false;
+    
+        this._knownApps = new Array(); // Used to keep track of apps that are already installed, so we can highlight newly installed ones
+        this._appsWereRefreshed = false;
+        this._canUninstallApps = GLib.file_test("/usr/bin/cinnamon-remove-application", GLib.FileTest.EXISTS);
+        this.RecentManager = new DocInfo.DocManager();
+    
+        this._display();
+        this.menu.connect('open-state-changed', Lang.bind(this, this._onOpenStateChanged));
+        appsys.connect('installed-changed', Lang.bind(this, this._refreshApps));
+        AppFavorites.getAppFavorites().connect('changed', Lang.bind(this, this._refreshFavs));
+    
+        this.settings.bindProperty(Settings.BindingDirection.IN, "hover-delay", "hover_delay_ms", this._update_hover_delay, null);
+        this._update_hover_delay();
+    
+        this.settings.bindProperty(Settings.BindingDirection.IN, "show-quicklinks", "showQuicklinks", this._updateQuickLinksView, null);
+        this._updateQuickLinksView();
+    
+        this.settings.bindProperty(Settings.BindingDirection.IN, "show-quicklinks-shutdown-menu", "showQuicklinksShutdownMenu", this._updateQuickLinksShutdownView, null);
+        this._updateQuickLinksShutdownView();
+    
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklinks-shutdown-menu-options", "QuicklinksShutdownMenuOptions", this._updateQuickLinksShutdownView, null);
+        this._updateQuickLinksShutdownView();
+    
+        Main.placesManager.connect('places-updated', Lang.bind(this, this._refreshApps));
+        this.RecentManager.connect('changed', Lang.bind(this, this._refreshApps));
+    
+        this._fileFolderAccessActive = false;
+    
+        this._pathCompleter = new Gio.FilenameCompleter();
+        this._pathCompleter.set_dirs_only(false);
+        this.lastAcResults = new Array();
+    
+        this.settings.bindProperty(Settings.BindingDirection.IN, "search-filesystem", "searchFilesystem", null, null);
+    
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-0-checkbox", "quicklink_0_checkbox", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-1-checkbox", "quicklink_1_checkbox", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-2-checkbox", "quicklink_2_checkbox", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-3-checkbox", "quicklink_3_checkbox", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-4-checkbox", "quicklink_4_checkbox", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-5-checkbox", "quicklink_5_checkbox", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-6-checkbox", "quicklink_6_checkbox", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-7-checkbox", "quicklink_7_checkbox", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-8-checkbox", "quicklink_8_checkbox", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-9-checkbox", "quicklink_9_checkbox", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-10-checkbox", "quicklink_10_checkbox", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-11-checkbox", "quicklink_11_checkbox", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-12-checkbox", "quicklink_12_checkbox", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-13-checkbox", "quicklink_13_checkbox", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-14-checkbox", "quicklink_14_checkbox", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-15-checkbox", "quicklink_15_checkbox", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-16-checkbox", "quicklink_16_checkbox", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-17-checkbox", "quicklink_17_checkbox", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-18-checkbox", "quicklink_18_checkbox", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-19-checkbox", "quicklink_19_checkbox", this._updateQuickLinks, null);
+    
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-0", "quicklink_0", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-1", "quicklink_1", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-2", "quicklink_2", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-3", "quicklink_3", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-4", "quicklink_4", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-5", "quicklink_5", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-6", "quicklink_6", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-7", "quicklink_7", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-8", "quicklink_8", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-9", "quicklink_9", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-10", "quicklink_10", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-11", "quicklink_11", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-12", "quicklink_12", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-13", "quicklink_13", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-14", "quicklink_14", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-15", "quicklink_15", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-16", "quicklink_16", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-17", "quicklink_17", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-18", "quicklink_18", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-19", "quicklink_19", this._updateQuickLinks, null);
+    
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-options", "quicklinkOptions", this._updateQuickLinks, null);
+        this._updateQuickLinks();
+        
+        // We shouldn't need to call refreshAll() here... since we get a "icon-theme-changed" signal when CSD starts.
+        // The reason we do is in case the Cinnamon icon theme is the same as the one specificed in GTK itself (in .config)
+        // In that particular case we get no signal at all.
+        this._refreshAll();
+    
+        St.TextureCache.get_default().connect("icon-theme-changed", Lang.bind(this, this.onIconThemeChanged));
     },
 
     _updateKeybinding: function() {
