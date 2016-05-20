@@ -2067,7 +2067,10 @@ MyApplet.prototype = {
 
     _clearPrevSelection: function(actor) {
         if (this._previousSelectedActor && this._previousSelectedActor != actor) {
-	    if (this._previousSelectedActor._delegate instanceof ApplicationButton)
+	    if (this._previousSelectedActor._delegate instanceof ApplicationButton ||
+                this._previousSelectedActor._delegate instanceof RecentButton ||
+                this._previousSelectedActor._delegate instanceof PlaceButton ||
+                this._previousSelectedActor._delegate instanceof RecentClearButton)
                 this._previousSelectedActor.style_class = "menu-application-button";
             else if (this._previousSelectedActor._delegate instanceof FavoritesButton ||
                      this._previousSelectedActor._delegate instanceof SystemButton)
