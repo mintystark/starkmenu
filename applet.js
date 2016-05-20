@@ -23,6 +23,7 @@ const GLib = imports.gi.GLib;
 const AccountsService = imports.gi.AccountsService;
 const Settings = imports.ui.settings;
 const Pango = imports.gi.Pango;
+const SearchProviderManager = imports.ui.searchProviderManager;
 
 const Session = new GnomeSession.SessionManager();
 const ICON_SIZE = 16;
@@ -417,6 +418,80 @@ ApplicationButton.prototype = {
         return this.actor;
     }
 };
+
+function SearchProviderResultButton(appsMenuButton, provider, result) {
+    this._init(appsMenuButton, provider, result);
+}
+
+SearchProviderResultButton.prototype = {
+    __proto__: PopupMenu.PopupBaseMenuItem.prototype,
+    
+    _init: function(appsMenuButton, provider, result) {
+        this.provider = provider;
+        this.result = result;
+
+        this.appsMenuButton = appsMenuButton;
+        PopupMenu.PopupBaseMenuItem.prototype._init.call(this, {hover: false});
+        this.actor.set_style_class_name('menu-application-button');
+
+        // We need this fake app to help appEnterEvent/appLeaveEvent 
+        // work with our search result.
+        this.app = {
+            get_app_info: {
+                get_filename: function() {
+                    return result.id;
+                }
+            },
+            get_id: function() {
+                return -1;
+            },
+            get_description: function() {
+                return result.description;
+            },
+            get_name: function() {
+                return result.label;
+            }
+        };
+        
+        this.icon = null;
+        if (result.icon){
+            this.icon = result.icon;
+        }else if (result.icon_app){
+            this.icon = result.icon_app.create_icon_texture(APPLICATION_ICON_SIZE);
+        }else if (result.icon_filename){
+            this.icon = new St.Icon({gicon: new Gio.FileIcon({file: Gio.file_new_for_path(result.icon_filename)}), icon_size: APPLICATION_ICON_SIZE});
+        }
+        
+        if (this.icon){
+            this.addActor(this.icon);
+        }
+        this.label = new St.Label({ text: result.label, style_class: 'menu-application-button-label' });
+        this.addActor(this.label);
+        this.isDraggableApp = false;
+        if (this.icon) {
+            this.icon.realize();
+        }
+        this.label.realize();
+    },
+    
+    _onButtonReleaseEvent: function (actor, event) {
+        if (event.get_button() == 1){
+            this.activate(event);
+        }
+        return true;
+    },
+    
+    activate: function(event) {
+        try{
+            this.provider.on_result_selected(this.result);
+            this.appsMenuButton.menu.close();
+        }
+        catch(e)
+        {
+            global.logError(e);
+        }
+    }
+}
 
 function PlaceButton(appsMenuButton, place, button_name, showIcon) {
     this._init(appsMenuButton, place, button_name, showIcon);
@@ -1489,6 +1564,7 @@ MyApplet.prototype = {
         this._placesButtons = new Array();
         this._transientButtons = new Array();
         this._recentButtons = new Array();
+	this._searchProviderButtons = new Array();
         this._selectedItemIndex = null;
         this._previousTreeItemIndex = null;
         this._previousSelectedActor = null;
@@ -1983,13 +2059,11 @@ MyApplet.prototype = {
             if (symbol == Clutter.Tab) {
                 let text = actor.get_text();
                 let prefix;
-                if (text.lastIndexOf(' ') == -1) {
+                if (text.lastIndexOf(' ') == -1)
                     prefix = text;
-                } else {
+                else
                     prefix = text.substr(text.lastIndexOf(' ') + 1);
-                }
                 let postfix = this._getCompletion(prefix);
-
                 if (postfix != null && postfix.length > 0) {
                     actor.insert_text(postfix, -1);
                     actor.set_cursor_position(text.length + postfix.length);
@@ -2022,7 +2096,7 @@ MyApplet.prototype = {
                 this._previousSelectedActor = null;
             }
             if (this._previousTreeSelectedActor && this._activeContainer !== this.categoriesBox &&
-                    parent !== this._activeContainer && button !== this._previousTreeSelectedActor) {
+                    parent !== this._activeContainer && button !== this._previousTreeSelectedActor && !this.searchActive) {
                 this._previousTreeSelectedActor.style_class = "menu-category-button";
             }
             if (parent != this._activeContainer) {
@@ -2050,6 +2124,7 @@ MyApplet.prototype = {
         if (this._previousSelectedActor && this._previousSelectedActor != actor) {
 	    if (this._previousSelectedActor._delegate instanceof ApplicationButton ||
                 this._previousSelectedActor._delegate instanceof RecentButton ||
+		this._previousSelectedActor._delegate instanceof SearchProviderResultButton ||
                 this._previousSelectedActor._delegate instanceof PlaceButton ||
                 this._previousSelectedActor._delegate instanceof RecentClearButton)
                 this._previousSelectedActor.style_class = "menu-application-button";
@@ -2807,9 +2882,15 @@ MyApplet.prototype = {
                 button.actor.realize();
             }
         }
+
+        this._searchProviderButtons.forEach( function (item, index) {
+            if (item.actor.visible) {
+                item.actor.hide();
+            }
+        });
     },
 
-    _setCategoriesButtonActive: function(active) {
+    _setCategoriesButtonActive: function(active) {         
         try {
             let categoriesButtons = this.categoriesBox.get_children();
             for (var i in categoriesButtons) {
@@ -2827,19 +2908,21 @@ MyApplet.prototype = {
 
      resetSearch: function(){
         this.searchEntry.set_text("");
-	this._previousSearchPattern = "";
+        this._previousSearchPattern = "";
         this.searchActive = false;
-        this._clearAllSelections();
+        this._clearAllSelections(true);
         this._setCategoriesButtonActive(true);
         global.stage.set_key_focus(this.searchEntry);
      },
-
+     
      _onSearchTextChanged: function (se, prop) {
         if (this.menuIsOpening) {
             this.menuIsOpening = false;
-            return false;
+            return;
         } else {
             let searchString = this.searchEntry.get_text();
+            if (searchString == '' && !this.searchActive)
+                return;
             this.searchActive = searchString != '';
             this._fileFolderAccessActive = this.searchActive && this.searchFilesystem;
             this._clearAllSelections();
@@ -2864,7 +2947,7 @@ MyApplet.prototype = {
                 this._setCategoriesButtonActive(true);
                 this._select_category(null, this._allAppsCategoryButton);
             }
-            return false;
+            return;
         }
     },
 
@@ -2908,17 +2991,16 @@ MyApplet.prototype = {
     _doSearch: function(){
         if (this.leftPane.get_child() == this.favsBox) 
 	    this.switchPanes("apps");
-	this._searchTimeoutId = 0;
+        this._searchTimeoutId = 0;
         let pattern = this.searchEntryText.get_text().replace(/^\s+/g, '').replace(/\s+$/g, '').toLowerCase();
         if (pattern==this._previousSearchPattern) return false;
         this._previousSearchPattern = pattern;
         this._activeContainer = null;
         this._activeActor = null;
         this._selectedItemIndex = null;
-        this._previousTreeItemIndex = null;
         this._previousTreeSelectedActor = null;
         this._previousSelectedActor = null;
-
+       
        // _listApplications returns all the applications when the search
        // string is zero length. This will happend if you type a space
        // in the search entry.
@@ -2947,7 +3029,7 @@ MyApplet.prototype = {
         }
 
         this._displayButtons(null, placesResults, recentResults, appResults, acResults);
-
+       
         this.appBoxIter.reloadVisible();
         if (this.appBoxIter.getNumVisibleChildren() > 0) {
             let item_actor = this.appBoxIter.getFirstVisible();
@@ -2957,6 +3039,23 @@ MyApplet.prototype = {
                 item_actor._delegate.emit('enter-event');
             }
         }
+
+        SearchProviderManager.launch_all(pattern, Lang.bind(this, function(provider, results){
+            try{
+            for (var i in results){
+                if (results[i].type != 'software')
+                {
+                    let button = new SearchProviderResultButton(this, provider, results[i]);
+                    button.actor.connect('leave-event', Lang.bind(this, this._appLeaveEvent, button));
+                    this._addEnterEvent(button, Lang.bind(this, this._appEnterEvent, button));
+                    this._searchProviderButtons.push(button);
+                    this.applicationsBox.add_actor(button.actor);
+                    button.actor.realize();
+                }
+            }
+            }catch(e){global.log(e);}
+        }));
+
         return false;
     },
 
