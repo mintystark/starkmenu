@@ -1430,6 +1430,8 @@ MyApplet.prototype = {
     _init: function(orientation, panel_height, instance_id) {
         Applet.TextIconApplet.prototype._init.call(this, orientation, panel_height, instance_id);
 
+	this.initial_load_done = false;
+
         try {
             this.set_applet_tooltip(_("Menu"));
 
@@ -1765,8 +1767,16 @@ MyApplet.prototype = {
 
         this.menu.connect('open-state-changed', Lang.bind(this, this._onOpenStateChanged));
         this._display();
+
+        if (this.initial_load_done)
+            this._refreshAll();
+
         this._updateQuickLinksShutdownView();
         this._updateQuickLinks();
+    },
+
+    on_applet_added_to_panel: function () {
+        this.initial_load_done = true;
     },
 
     _launch_editor: function() {
