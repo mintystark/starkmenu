@@ -3082,11 +3082,11 @@ MyApplet.prototype = {
 
         this._displayButtons(null, placesResults, recentResults, appResults, acResults);
        
-        this.appBoxIter.reloadVisible();
-        if (this.appBoxIter.getNumVisibleChildren() > 0) {
-            let item_actor = this.appBoxIter.getFirstVisible();
-            this._selectedItemIndex = this.appBoxIter.getAbsoluteIndexOfChild(item_actor);
-            this._activeContainer = this.applicationsBox;
+        this.catBoxIter.reloadVisible();
+        if (this.catBoxIter.getNumVisibleChildren() > 0) {
+            let item_actor = this.catBoxIter.getFirstVisible();
+            this._selectedItemIndex = this.catBoxIter.getAbsoluteIndexOfChild(item_actor);
+            this._activeContainer = this.categoriesBox;
             if (item_actor && item_actor != this.searchEntry) {
                 item_actor._delegate.emit('enter-event');
             }
