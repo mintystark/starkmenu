@@ -2065,7 +2065,7 @@ MyApplet.prototype = {
             item_actor = this.favBoxIter.getFirstVisible();
             index = this.favBoxIter.getAbsoluteIndexOfChild(item_actor);
 	    this.switchPanes("favs");
-        } else if (this._activeContainer !== this.categoriesBox && (symbol == Clutter.KEY_Return || symbol == Clutter.KP_Enter)) {
+        } else if (this._activeContainer === this.categoriesBox && (symbol == Clutter.KEY_Return || symbol == Clutter.KP_Enter)) {
             item_actor = this._activeContainer.get_child_at_index(this._selectedItemIndex);
             item_actor._delegate.activate();
             return true;
@@ -3082,11 +3082,11 @@ MyApplet.prototype = {
 
         this._displayButtons(null, placesResults, recentResults, appResults, acResults);
        
-        this.catBoxIter.reloadVisible();
-        if (this.catBoxIter.getNumVisibleChildren() > 0) {
-            let item_actor = this.catBoxIter.getFirstVisible();
-            this._selectedItemIndex = this.catBoxIter.getAbsoluteIndexOfChild(item_actor);
-            this._activeContainer = this.categoriesBox;
+        this.appBoxIter.reloadVisible();
+        if (this.appBoxIter.getNumVisibleChildren() > 0) {
+            let item_actor = this.appBoxIter.getFirstVisible();
+            this._selectedItemIndex = this.appBoxIter.getAbsoluteIndexOfChild(item_actor);
+            this._activeContainer = this.applicationsBox;
             if (item_actor && item_actor != this.searchEntry) {
                 item_actor._delegate.emit('enter-event');
             }
