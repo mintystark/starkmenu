@@ -2065,7 +2065,7 @@ MyApplet.prototype = {
             item_actor = this.favBoxIter.getFirstVisible();
             index = this.favBoxIter.getAbsoluteIndexOfChild(item_actor);
 	    this.switchPanes("favs");
-        } else if (this._activeContainer === this.categoriesBox && (symbol == Clutter.KEY_Return || symbol == Clutter.KP_Enter)) {
+        } else if ((this._activeContainer === this.applicationsBox || this._activeContainer === this.favoritesBox) && (symbol == Clutter.KEY_Return || symbol == Clutter.KP_Enter)) {
             item_actor = this._activeContainer.get_child_at_index(this._selectedItemIndex);
             item_actor._delegate.activate();
             return true;
