@@ -1772,7 +1772,7 @@ MyApplet.prototype = {
             this.rightButtonsBox.shutDownIconBox.hide();
             this.rightButtonsBox.shutDownMenuBox.hide();
         }
-        this.favsBox.style = "min-height: "+(this.rightButtonsBox.actor.get_height()-82)+"px;min-width: 235px;";
+        this.favsBox.style = "min-height: "+(this.rightButtonsBox.actor.get_height()-(this.leftPaneBox.get_theme_node().get_padding(St.Side.TOP)+this.leftPaneBox.get_theme_node().get_padding(St.Side.BOTTOM)+this.searchBox.get_height()+this.appsButton.box.get_height()+this.separator.actor.get_height()))+"px;min-width: 235px;";
     },
 
     _updateQuickLinks: function() {
@@ -1834,7 +1834,7 @@ MyApplet.prototype = {
 
         this._updateQuickLinksShutdownView();
 
-        this.favsBox.style = "min-height: "+(this.rightButtonsBox.actor.get_height()-82)+"px;min-width: 235px;";
+        this.favsBox.style = "min-height: "+(this.rightButtonsBox.actor.get_height()-(this.leftPaneBox.get_theme_node().get_padding(St.Side.TOP)+this.leftPaneBox.get_theme_node().get_padding(St.Side.BOTTOM)+this.searchBox.get_height()+this.appsButton.box.get_height()+this.separator.actor.get_height()))+"px;min-width: 235px;";
 
     },
 
