@@ -1733,24 +1733,18 @@ MyApplet.prototype = {
 		    this.rightButtonsBox.shutDownIconBoxXP.hide();
                     this.rightButtonsBox.shutDownMenuBox.show();
                     this.rightButtonsBox.shutDownMenuBox.set_style('min-height: 80px');
-                    this.leftPaneBox.remove_style_pseudo_class("spacing-shutdown-classic");
-                    this.leftPaneBox.add_style_pseudo_class("spacing-shutdown-dropdown");
                 } else if(this.QuicklinksShutdownMenuOptions == 'vertical') {
                     this.rightButtonsBox.shutdown.actor.hide();
                     this.rightButtonsBox.shutdownMenu.actor.hide();
                     this.rightButtonsBox.shutDownIconBox.show();
 		    this.rightButtonsBox.shutDownIconBoxXP.hide();
                     this.rightButtonsBox.shutDownMenuBox.hide();
-                    this.leftPaneBox.remove_style_pseudo_class("spacing-shutdown-dropdown");
-                    this.leftPaneBox.add_style_pseudo_class("spacing-shutdown-classic");
                 } else {
 		    this.rightButtonsBox.shutdown.actor.hide();
                     this.rightButtonsBox.shutdownMenu.actor.hide();
                     this.rightButtonsBox.shutDownIconBox.hide();
 		    this.rightButtonsBox.shutDownIconBoxXP.show();
                     this.rightButtonsBox.shutDownMenuBox.hide();
-                    this.leftPaneBox.remove_style_pseudo_class("spacing-shutdown-dropdown");
-                    this.leftPaneBox.add_style_pseudo_class("spacing-shutdown-classic");
 		}
             }
             else
@@ -1759,16 +1753,12 @@ MyApplet.prototype = {
 	    	    this.rightButtonsBox.shutdown.actor.hide();
 		    this.rightButtonsBox.shutdownMenu.actor.hide();
     		    this.rightButtonsBox.shutDownMenuBox.hide();
-                    this.leftPaneBox.remove_style_pseudo_class("spacing-shutdown-dropdown");
-                    this.leftPaneBox.add_style_pseudo_class("spacing-shutdown-classic");
 		    this.rightButtonsBox.shutDownIconBoxXP.show();
                     this.rightButtonsBox.shutDownIconBox.hide();
 		} else {
                     this.rightButtonsBox.shutdown.actor.hide();
 		    this.rightButtonsBox.shutdownMenu.actor.hide();
     		    this.rightButtonsBox.shutDownMenuBox.hide();
-                    this.leftPaneBox.remove_style_pseudo_class("spacing-shutdown-dropdown");
-                    this.leftPaneBox.add_style_pseudo_class("spacing-shutdown-classic");
 		    this.rightButtonsBox.shutDownIconBoxXP.hide();
                     this.rightButtonsBox.shutDownIconBox.show();
 		}
@@ -1782,7 +1772,7 @@ MyApplet.prototype = {
             this.rightButtonsBox.shutDownIconBox.hide();
             this.rightButtonsBox.shutDownMenuBox.hide();
         }
-        this.favsBox.style = "min-height: "+(this.rightButtonsBox.actor.get_height()-100)+"px;min-width: 235px;";
+        this.favsBox.style = "min-height: "+(this.rightButtonsBox.actor.get_height()-82)+"px;min-width: 235px;";
     },
 
     _updateQuickLinks: function() {
@@ -1844,7 +1834,7 @@ MyApplet.prototype = {
 
         this._updateQuickLinksShutdownView();
 
-        this.favsBox.style = "min-height: "+(this.rightButtonsBox.actor.get_height()-100)+"px;min-width: 235px;";
+        this.favsBox.style = "min-height: "+(this.rightButtonsBox.actor.get_height()-82)+"px;min-width: 235px;";
 
     },
 
@@ -2198,8 +2188,8 @@ MyApplet.prototype = {
         this.searchEntry.style = "width:" + favsWidth + "px";
         this.appsButton.box.style = "width:" + favsWidth + "px";
         let scrollBoxHeight = (this.favsBox.get_allocation_box().y2 - this.favsBox.get_allocation_box().y1)-(this.selectedAppBox.get_allocation_box().y2 - this.selectedAppBox.get_allocation_box().y1);
-        this.applicationsScrollBox.style = "width: " + ((scrollWidth) * 0.55) + "px;height: " + (scrollBoxHeight+6) + "px;";
-        this.categoriesScrollBox.style = "width: " + ((scrollWidth) * 0.45) + "px;height: " + (scrollBoxHeight+6) + "px;";
+        this.applicationsScrollBox.style = "width: " + ((scrollWidth) * 0.55) + "px;height: " + scrollBoxHeight + "px;";
+        this.categoriesScrollBox.style = "width: " + ((scrollWidth) * 0.45) + "px;height: " + scrollBoxHeight + "px;";
     },
 
     _refreshApps : function() {
@@ -2736,7 +2726,6 @@ MyApplet.prototype = {
         this.appsButton = new AllProgramsItem(_(this.allProgramsLabel), "forward", this, false);
 
         this.leftPaneBox = new St.BoxLayout({ style_class: 'menu-favorites-box', vertical: true });
-	this.leftPaneBox.add_style_class_name("local-favorites-box-padding");
 	this.leftPaneBox.add_style_class_name("starkmenu-favorites-box");
 
 

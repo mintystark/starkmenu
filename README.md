@@ -29,15 +29,14 @@ Linux Mint 17.3 Cinnamon (Cinnamon-Version 2.8)
  * CinnXPStarkMenu 
  * (if CinnXPStarkMenu is used, change some stuff, else use default)
  * ===================================================================*/
-.starkhover-box {
-	background-color: #D3E5FA; /* change background, of the box
-                                      with user name and icon */
+.right-buttons-box {
+    background-color: #D3E5FA;
 }
 .starkhover-label{
 	color : #000; /* change color of user name font */
 }
 .starkmenu-background {
-	padding: 54px 1px 30px 1px;
+	padding: 54px 1px 29px 1px;
 }
 .starkmenu-selected-app-box {
     color: black; /* Information, which is shown, if you select apps*/
@@ -48,7 +47,6 @@ Linux Mint 17.3 Cinnamon (Cinnamon-Version 2.8)
 }
 .starkmenu-applications-box {
     padding: 0px 0px 0px 0px;
-    background-color: #D3E5FA;
 }
 .starkmenu-applications-box StScrollView {
     border-right-width: 1px;
