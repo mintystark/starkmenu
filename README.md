@@ -32,9 +32,6 @@ Linux Mint 17.3 Cinnamon (Cinnamon-Version 2.8)
 .right-buttons-box {
     background-color: #D3E5FA;
 }
-.starkhover-label{
-	color : #000; /* change color of user name font */
-}
 .starkmenu-background {
 	padding: 54px 1px 29px 1px;
 }

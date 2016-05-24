@@ -1017,8 +1017,8 @@ HoverIcon.prototype = {
                       x_align: St.Align.END,
                       y_align: St.Align.START });
 
-        this.userLabel = new St.Label(({ style_class: 'hover-label'}));
-	this.userLabel.add_style_class_name("starkhover-label");
+	this.userLabel = new St.Label(({ style_class: 'user-label'}));
+	this.userLabel.set_style("font-size: 16px;");
 
         this.userBox.add(this.userLabel,
                     { x_fill:  true,
