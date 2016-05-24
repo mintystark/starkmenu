@@ -2873,6 +2873,14 @@ MyApplet.prototype = {
                     this._applicationsButtons[app].closeMenu();
             }
         }
+        for (var app in this._favoritesButtons){
+	    if (app!=excludeApp && this._favoritesButtons[app].menu.isOpen){
+                if (animate)
+                    this._favoritesButtons[app].toggleMenu();
+                else
+                    this._favoritesButtons[app].closeMenu();
+            }
+        }
     },
 
     _onApplicationButtonRealized: function(actor) {
@@ -3022,7 +3030,7 @@ MyApplet.prototype = {
         this.searchEntry.set_text("");
         this._previousSearchPattern = "";
         this.searchActive = false;
-        this._clearAllSelections(true);
+        this._clearAllSelections(false);
         this._setCategoriesButtonActive(true);
         global.stage.set_key_focus(this.searchEntry);
      },
