@@ -1234,6 +1234,16 @@ RightButtonsBox.prototype = {
         this._container.add_actor(this.itemsBox);
     },
 
+    acceptDrop : function(source, actor, x, y, time) {
+        if (source instanceof FavoritesButton){
+            source.actor.destroy();
+            actor.destroy();
+            AppFavorites.getAppFavorites().removeFavorite(source.app.get_id());
+            return true;
+        }
+        return false;
+    },
+
     _update_quicklinks : function(quicklinkOptions) {
 
         for(let i in this.quicklinks)
@@ -1406,7 +1416,7 @@ FavoritesBox.prototype = {
         }
     },
 
-handleDragOver : function(source, actor, x, y, time) {
+    handleDragOver : function(source, actor, x, y, time) {
         let app = source.app;
 
         let favorites = AppFavorites.getAppFavorites().getFavorites();
