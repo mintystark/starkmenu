@@ -2778,12 +2778,14 @@ MyApplet.prototype = {
             this.leftPane.set_child(this.appsBox);
             this.separator.actor.hide();
             this.appsButton.label.set_text(" "+_(this.favoritesLabel));
+	    this.appsButton.icon.set_icon_name("back");
             this.rightButtonsBox.actor.hide();
             this._appletStyles("apps");
         }else {
             this.leftPane.set_child(this.favsBox);
             this.separator.actor.show();
             this.appsButton.label.set_text(" "+_(this.allProgramsLabel));
+	    this.appsButton.icon.set_icon_name("forward");
             if(this.menu.showQuicklinks)
             {
                 this.rightButtonsBox.actor.show();
