@@ -31,6 +31,7 @@ Linux Mint 17.3 Cinnamon (Cinnamon-Version 2.8)
  * ===================================================================*/
 .right-buttons-box {
     background-color: #D3E5FA;
+    padding: 8px;
 }
 .starkmenu-background {
 	padding: 54px 1px 29px 1px;
@@ -44,6 +45,9 @@ Linux Mint 17.3 Cinnamon (Cinnamon-Version 2.8)
 }
 .starkmenu-applications-box {
     padding: 0px 0px 0px 0px;
+}
+.starkmenu-applications-inner-box {
+	background-color: white;
 }
 .starkmenu-applications-box StScrollView {
     border-right-width: 1px;
