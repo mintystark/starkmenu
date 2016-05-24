@@ -2198,7 +2198,7 @@ MyApplet.prototype = {
     },
 
     _appletStyles: function (pane) {
-        let favsWidth = (this.favsBox.get_allocation_box().x2 - this.favsBox.get_allocation_box().x1);
+        let favsWidth = 0.95*(this.favsBox.get_allocation_box().x2 - this.favsBox.get_allocation_box().x1);
         let scrollWidth = this.searchBox.get_width() + this.rightButtonsBox.actor.get_width();
         this.searchEntry.style = "width:" + favsWidth + "px";
         this.appsButton.box.style = "width:" + favsWidth + "px";
