@@ -2693,9 +2693,11 @@ MyApplet.prototype = {
 
         this.categoriesScrollBox = new St.ScrollView({ x_fill: true, y_fill: false, y_align: St.Align.START, style_class: 'vfade menu-applications-scrollbox' });
         this.categoriesScrollBox.set_width(192);
-        this.applicationsBox = new St.BoxLayout({ style_class: 'menu-applications-box', vertical:true });
+
+        this.applicationsBox = new St.BoxLayout({ style_class: 'menu-applications-inner-box', vertical:true });
+        this.applicationsBox.add_style_class_name('menu-applications-box'); //this is to support old themes
         this.applicationsScrollBox = new St.ScrollView({ x_fill: true, y_fill: false, y_align: St.Align.START, style_class: 'vfade menu-applications-scrollbox' });
-        this.applicationsScrollBox.set_width(244);
+        this.applicationsScrollBox.set_width(264);
 
         this.a11y_settings = new Gio.Settings({ schema: "org.cinnamon.desktop.a11y.applications" });
         this.a11y_settings.connect("changed::screen-magnifier-enabled", Lang.bind(this, this._updateVFade));
@@ -2751,7 +2753,8 @@ MyApplet.prototype = {
 
 
 
-        this.mainBox = new St.BoxLayout({ style_class: 'menu-applications-box', vertical:false });
+        this.mainBox = new St.BoxLayout({ style_class: 'menu-applications-outer-box', vertical:false });
+	this.mainBox.add_style_class_name('menu-applications-box'); //this is to support old themes
 	this.mainBox.add_style_class_name("starkmenu-applications-box");
 
         this.applicationsByCategory = {};
