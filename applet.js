@@ -2541,6 +2541,7 @@ MyApplet.prototype = {
                 let button = new FavoritesButton(this, app, launchers.length, this.favorite_icon_size); // + 3 because we're adding 3 system buttons at the bottom
                 this._favoritesButtons[app] = button;
                 this.favoritesBox.add_actor(button.actor, { y_align: St.Align.END, y_fill: false });
+                this.favoritesBox.add_actor(button.menu.actor, { y_align: St.Align.END, y_fill: false });
 
                 this._addEnterEvent(button, Lang.bind(this, this._favEnterEvent, button));
                 button.actor.connect('leave-event', Lang.bind(this, this._favLeaveEvent, button));
@@ -2792,7 +2793,7 @@ MyApplet.prototype = {
         this.favBoxIter = new VisibleChildIterator(this, this.favoritesBox);
         this.favoritesBox._vis_iter = this.favBoxIter;
         Mainloop.idle_add(Lang.bind(this, function() {
-            this._clearAllSelections(true);
+            this._clearAllSelections(false);
         }));
     },
 
@@ -2852,7 +2853,9 @@ MyApplet.prototype = {
         for (var i=0; i<actors.length; i++){
             let actor = actors[i];
             actor.remove_style_pseudo_class("hover");
-            actor.show();
+            if (hide_apps) {
+                actor.hide();
+            }
         }
     },
 
