@@ -2300,9 +2300,7 @@ MyApplet.prototype = {
                 let dir = dirs[i];
                 if (dir.get_is_nodisplay())
                     continue;
-		this.applicationsByCategory[dir.get_menu_id()] = new Array();
-		this._loadCategory(dir);
-		if (this.applicationsByCategory[dir.get_menu_id()].length>0){
+                if (this._loadCategory(dir)) {
 		    let categoryButton = new CategoryButton(dir, this.showCategoryIcons);
                     this._addEnterEvent(categoryButton, Lang.bind(this, function() {
                         if (!this.searchActive) {
@@ -2589,20 +2587,14 @@ MyApplet.prototype = {
                         this._addEnterEvent(applicationButton, Lang.bind(this, this._appEnterEvent, applicationButton));
                         this._applicationsButtons.push(applicationButton);
                         applicationButton.category.push(top_dir.get_menu_id());
-                        this.applicationsByCategory[top_dir.get_menu_id()].push(app.get_name());
-
                         this._applicationsButtonFromApp[app_key] = applicationButton;
 
                     } else {
                         this._applicationsButtonFromApp[app_key].category.push(dir.get_menu_id());
-                        this.applicationsByCategory[dir.get_menu_id()].push(app.get_name());
                     }
                 }
             } else if (nextType == CMenu.TreeItemType.DIRECTORY) {
                 let subdir = iter.get_directory();
-
-                this.applicationsByCategory[subdir.get_menu_id()] = new Array();
-
 		if (this._loadCategory(subdir, top_dir)) {
                     has_entries = true;
                 }
@@ -2754,7 +2746,6 @@ MyApplet.prototype = {
 	this.mainBox.add_style_class_name('menu-applications-box'); //this is to support old themes
 	this.mainBox.add_style_class_name("starkmenu-applications-box");
 
-        this.applicationsByCategory = {};
         this._refreshApps();
 
         this.leftPane.set_child(this.favsBox, { y_align: St.Align.END,y_fill: false });
