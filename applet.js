@@ -607,7 +607,7 @@ RecentClearButton.prototype = {
         this.addActor(this.icon);
         this.addActor(this.label);
     },
-
+    
     _onButtonReleaseEvent: function (actor, event) {
         if (event.get_button()==1){
             this.appsMenuButton.menu.close();
@@ -700,7 +700,7 @@ RecentCategoryButton.prototype = {
 	    this.icon = null;
 	}
         this.addActor(this.label);
-	this.label.realize();
+        this.label.realize();
     }
 };
 
@@ -710,17 +710,21 @@ function FavoritesButton(appsMenuButton, app, nbFavorites, iconSize) {
 
 FavoritesButton.prototype = {
     __proto__: GenericApplicationButton.prototype,
-
+    
     _init: function(appsMenuButton, app, nbFavorites, iconSize) {
         GenericApplicationButton.prototype._init.call(this, appsMenuButton, app, true);
         let monitorHeight = Main.layoutManager.primaryMonitor.height;
-        let real_size = (0.7*monitorHeight) / nbFavorites;
+        let real_size = (0.7 * monitorHeight) / nbFavorites;
         let icon_size = iconSize;//0.6*real_size;
-        if (icon_size>MAX_FAV_ICON_SIZE) icon_size = MAX_FAV_ICON_SIZE;
-        this.actor.style = "padding-top: "+(icon_size/3)+"px;padding-bottom: "+(icon_size/3)+"px; margin:auto;"
+        if (icon_size > MAX_FAV_ICON_SIZE)
+            icon_size = MAX_FAV_ICON_SIZE;
+        this.actor.style = "padding-top: "+(icon_size / 3)+"px;padding-bottom: "+(icon_size / 3)+"px; margin:auto;"
 
-        this.actor.add_style_class_name('menu-favorites-button');
-        this.addActor(app.create_icon_texture(icon_size));
+        this.actor.add_style_class_name('menu-favorites-button');    
+        let icon = app.create_icon_texture(icon_size);
+
+        this.addActor(icon);
+        icon.realize()
 
         this.label = new St.Label({ text: this.app.get_name(), style_class: 'menu-application-button-label' });
         this.addActor(this.label);
@@ -731,13 +735,13 @@ FavoritesButton.prototype = {
     },
 
     _onDragEnd: function() {
-        this.actor.get_parent()._delegate._clearDragPlaceholder()
+        this.actor.get_parent()._delegate._clearDragPlaceholder();
     },
 
     get_app_id: function() {
         return this.app.get_id();
     },
-
+    
     getDragActor: function() {
         return new Clutter.Clone({ source: this.actor });
     },
@@ -1610,7 +1614,7 @@ MyApplet.prototype = {
     
         this._display();
         this.menu.connect('open-state-changed', Lang.bind(this, this._onOpenStateChanged));
-        appsys.connect('installed-changed', Lang.bind(this, this._refreshApps));
+        appsys.connect('installed-changed', Lang.bind(this, this._refreshAll));
         AppFavorites.getAppFavorites().connect('changed', Lang.bind(this, this._refreshFavs));
     
         this.settings.bindProperty(Settings.BindingDirection.IN, "hover-delay", "hover_delay_ms", this._update_hover_delay, null);
@@ -2297,31 +2301,31 @@ MyApplet.prototype = {
             this._addEnterEvent(this.recentButton, Lang.bind(this, function() {
                 if (!this.searchActive) {
                     this.recentButton.isHovered = true;
- 	 	    if (this.hover_delay > 0) {
+                    if (this.hover_delay > 0) {
                         Tweener.addTween(this, {
                             time: this.hover_delay,
                             onComplete: function () {
                                 if (this.recentButton.isHovered) {
                                     this._clearPrevCatSelection(this.recentButton.actor);
-				                    this.recentButton.actor.style_class = "menu-category-button-selected";
+                                    this.recentButton.actor.style_class = "menu-category-button-selected";
                                     this._displayButtons(null, null, -1);
                                 } else {
-				                    this.recentButton.actor.style_class = "menu-category-button";
-			                    }
+                                    this.recentButton.actor.style_class = "menu-category-button";
+                                }
                             }
                         });
-		    } else {
-			this._clearPrevCatSelection(this.recentButton.actor);
+                    } else {
+                        this._clearPrevCatSelection(this.recentButton.actor);
                         this.recentButton.actor.style_class = "menu-category-button-selected";
                         this._displayButtons(null, null, -1);
-		    }
+                    }
                 }
             }));
             this.recentButton.actor.connect('leave-event', Lang.bind(this, function () {
                 if (!this.searchActive) {
                     this.recentButton.actor.style_class = "menu-category-button";
                 }
-
+               
                 if (this._previousTreeSelectedActor === null) {
                     this._previousTreeSelectedActor = this.recentButton.actor;
                 } else {
@@ -2338,7 +2342,7 @@ MyApplet.prototype = {
             }));
             this.categoriesBox.add_actor(this.recentButton.actor);
             this._categoryButtons.push(this.recentButton);
-
+            
             for (let id = 0; id < MAX_RECENT_FILES && id < this.RecentManager._infosByTimestamp.length; id++) {
                 let button = new RecentButton(this, this.RecentManager._infosByTimestamp[id], this.showApplicationIcons);
                 this._addEnterEvent(button, Lang.bind(this, function() {
@@ -2372,7 +2376,6 @@ MyApplet.prototype = {
 
         this._setCategoriesButtonActive(!this.searchActive);
 
-        this._appsWereRefreshed = true;
     },
 
     _refreshApps : function() {
@@ -2542,16 +2545,16 @@ MyApplet.prototype = {
         this.selectedAppDescription.set_text("");
     },
 
-    _refreshFavs: function () {
+    _refreshFavs : function() {
         //Remove all favorites
-	this.favoritesBox.destroy_all_children();
+        this.favoritesBox.destroy_all_children();
 
         //Load favorites again
         this._favoritesButtons = new Array();
         let launchers = global.settings.get_strv('favorite-apps');
         let appSys = Cinnamon.AppSystem.get_default();
         let j = 0;
-        for (let i = 0; i < launchers.length; ++i) {
+        for ( let i = 0; i < launchers.length; ++i ) {
             let app = appSys.lookup_app(launchers[i]);
             if (app) {
                 let button = new FavoritesButton(this, app, launchers.length, this.favorite_icon_size); // + 3 because we're adding 3 system buttons at the bottom
@@ -2602,26 +2605,25 @@ MyApplet.prototype = {
                                 this._knownApps.push(app_key);
                             }
                         }
-
+                    
                         applicationButton.actor.connect('realize', Lang.bind(this, this._onApplicationButtonRealized));
                         applicationButton.actor.connect('leave-event', Lang.bind(this, this._appLeaveEvent, applicationButton));
                         this._addEnterEvent(applicationButton, Lang.bind(this, this._appEnterEvent, applicationButton));
                         this._applicationsButtons.push(applicationButton);
                         applicationButton.category.push(top_dir.get_menu_id());
                         this._applicationsButtonFromApp[app_key] = applicationButton;
-
                     } else {
                         this._applicationsButtonFromApp[app_key].category.push(dir.get_menu_id());
                     }
                 }
             } else if (nextType == CMenu.TreeItemType.DIRECTORY) {
                 let subdir = iter.get_directory();
-		if (this._loadCategory(subdir, top_dir)) {
+                if (this._loadCategory(subdir, top_dir)) {
                     has_entries = true;
                 }
             }
         }
-	return has_entries;
+        return has_entries;
     },
 
     _appLeaveEvent: function(a, b, applicationButton) {
@@ -2637,7 +2639,7 @@ MyApplet.prototype = {
             this.selectedAppDescription.set_text(applicationButton.app.get_description());
         else
             this.selectedAppDescription.set_text("");
-	    this._previousVisibleIndex = this.appBoxIter.getVisibleIndex(applicationButton.actor);
+        this._previousVisibleIndex = this.appBoxIter.getVisibleIndex(applicationButton.actor);
         this._clearPrevSelection(applicationButton.actor);
         applicationButton.actor.style_class = "menu-application-button-selected";
     },
