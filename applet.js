@@ -2366,11 +2366,11 @@ MyApplet.prototype = {
                             onComplete: function () {
                                 if (this.placesButton.isHovered) {
                                     this._clearPrevCatSelection(this.placesButton);
- 				    this.placesButton.actor.style_class = "menu-category-button-selected";
+ 				                    this.placesButton.actor.style_class = "menu-category-button-selected";
                                     this._displayButtons(null, -1);
                                 } else {
-				     this.placesButton.actor.style_class = "menu-category-button-selected";
-				}
+				                    this.placesButton.actor.style_class = "menu-category-button";
+				                }
                             }
                         });
 		    } else {
@@ -2429,11 +2429,11 @@ MyApplet.prototype = {
                             onComplete: function () {
                                 if (this.recentButton.isHovered) {
                                     this._clearPrevCatSelection(this.recentButton.actor);
-				    this.recentButton.actor.style_class = "menu-category-button-selected";
+				                    this.recentButton.actor.style_class = "menu-category-button-selected";
                                     this._displayButtons(null, null, -1);
                                 } else {
-				    this.recentButton.actor.style_class = "menu-category-button-selected";
-			        }
+				                    this.recentButton.actor.style_class = "menu-category-button";
+			                    }
                             }
                         });
 		    } else {
