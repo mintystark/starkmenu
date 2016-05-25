@@ -1,6 +1,7 @@
 {
-    "uuid": "CinnXPStarkMenu@NikoKrause",
-    "name": "CinnXPStarkMenu",
-    "description": "StarkMenu adapted for CinnXP theme",
-    "icon": "applications-other"
+ "uuid": "CinnXPStarkMenu@NikoKrause",
+ "name": "CinnXPStarkMenu",
+ "description": "StarkMenu adapted for CinnXP theme",
+ "icon": "applications-other",
+ "max-instances": -1
 }
