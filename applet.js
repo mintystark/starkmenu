@@ -2033,6 +2033,7 @@ MyApplet.prototype = {
                 this._previousTreeSelectedActor._delegate.isHovered = false;
                 item_actor = this.catBoxIter.getPrevVisible(this._activeActor)
                 index = this.catBoxIter.getAbsoluteIndexOfChild(item_actor);
+                this._scrollToCategoryButton(item_actor._delegate);
             }
         } else if (symbol == Clutter.KEY_Down) {
             if (this._activeContainer != this.categoriesBox) {
@@ -2048,6 +2049,7 @@ MyApplet.prototype = {
                 item_actor = this.catBoxIter.getNextVisible(this._activeActor)
                 index = this.catBoxIter.getAbsoluteIndexOfChild(item_actor);
                 this._previousTreeSelectedActor._delegate.emit('leave-event');
+                this._scrollToCategoryButton(item_actor._delegate);
             }
         } else if (symbol == Clutter.KEY_Right && (this._activeContainer !== this.applicationsBox)) {
             if (this._activeContainer == this.categoriesBox) {
@@ -2634,6 +2636,15 @@ MyApplet.prototype = {
         if (current_scroll_value > button.actor.get_allocation_box().y1-10) new_scroll_value = button.actor.get_allocation_box().y1-10;
         if (box_height+current_scroll_value < button.actor.get_allocation_box().y2+10) new_scroll_value = button.actor.get_allocation_box().y2-box_height+10;
         if (new_scroll_value!=current_scroll_value) this.applicationsScrollBox.get_vscroll_bar().get_adjustment().set_value(new_scroll_value);
+    },
+
+    _scrollToCategoryButton: function(button) {
+        var current_scroll_value = this.categoriesScrollBox.get_vscroll_bar().get_adjustment().get_value();
+        var box_height = this.categoriesScrollBox.get_allocation_box().y2-this.categoriesScrollBox.get_allocation_box().y1;
+        var new_scroll_value = current_scroll_value;
+        if (current_scroll_value > button.actor.get_allocation_box().y1-10) new_scroll_value = button.actor.get_allocation_box().y1-10;
+        if (box_height+current_scroll_value < button.actor.get_allocation_box().y2+10) new_scroll_value = button.actor.get_allocation_box().y2-box_height+10;
+        if (new_scroll_value!=current_scroll_value) this.categoriesScrollBox.get_vscroll_bar().get_adjustment().set_value(new_scroll_value);
     },
 
     _display : function() {
