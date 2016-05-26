@@ -1793,7 +1793,11 @@ MyApplet.prototype = {
             this.rightButtonsBox.shutDownIconBox.hide();
             this.rightButtonsBox.shutDownMenuBox.hide();
         }
-        this.favsBox.style = "min-height: "+(this.rightButtonsBox.actor.get_height()-(this.leftPaneBox.get_theme_node().get_padding(St.Side.TOP)+this.leftPaneBox.get_theme_node().get_padding(St.Side.BOTTOM)+this.searchBox.get_height()+this.appsButton.box.get_height()+this.separator.actor.get_height()))+"px;min-width: 235px;";
+        
+        if (this.rightButtonsBox.actor.get_height() > 421) {
+            this.favsBox.style = "min-height: "+(this.rightButtonsBox.actor.get_height()-(this.leftPaneBox.get_theme_node().get_padding(St.Side.TOP)+this.leftPaneBox.get_theme_node().get_padding(St.Side.BOTTOM)+this.searchBox.get_height()+this.appsButton.box.get_height()+this.separator.actor.get_height()))+"px;min-width: 235px;";
+        }
+        
     },
 
     _updateQuickLinks: function() {
@@ -1855,7 +1859,9 @@ MyApplet.prototype = {
 
         this._updateQuickLinksShutdownView();
 
-        this.favsBox.style = "min-height: "+(this.rightButtonsBox.actor.get_height()-(this.leftPaneBox.get_theme_node().get_padding(St.Side.TOP)+this.leftPaneBox.get_theme_node().get_padding(St.Side.BOTTOM)+this.searchBox.get_height()+this.appsButton.box.get_height()+this.separator.actor.get_height()))+"px;min-width: 235px;";
+        if (this.rightButtonsBox.actor.get_height() > 421) {
+            this.favsBox.style = "min-height: "+(this.rightButtonsBox.actor.get_height()-(this.leftPaneBox.get_theme_node().get_padding(St.Side.TOP)+this.leftPaneBox.get_theme_node().get_padding(St.Side.BOTTOM)+this.searchBox.get_height()+this.appsButton.box.get_height()+this.separator.actor.get_height()))+"px;min-width: 235px;";
+        }
 
     },
 
@@ -2210,9 +2216,9 @@ MyApplet.prototype = {
         let scrollWidth = this.searchBox.get_width() + this.rightButtonsBox.actor.get_width();
         this.searchEntry.style = "width:" + favsWidth + "px";
         this.appsButton.box.style = "width:" + favsWidth + "px";
-        let scrollBoxHeight = (this.favsBox.get_allocation_box().y2 - this.favsBox.get_allocation_box().y1)-(this.selectedAppBox.get_allocation_box().y2 - this.selectedAppBox.get_allocation_box().y1);
-        this.applicationsScrollBox.style = "width: " + ((scrollWidth) * 0.55) + "px;height: " + scrollBoxHeight + "px;";
-        this.categoriesScrollBox.style = "width: " + ((scrollWidth) * 0.45) + "px;height: " + scrollBoxHeight + "px;";
+        let scrollBoxHeight = (this.favsBox.get_allocation_box().y2 - this.favsBox.get_allocation_box().y1)+this.separator.actor.get_height()-(this.selectedAppBox.get_allocation_box().y2 - this.selectedAppBox.get_allocation_box().y1+this.applicationsScrollBox.get_theme_node().get_border_width(St.Side.TOP)+this.applicationsScrollBox.get_theme_node().get_border_width(St.Side.BOTTOM));
+        this.applicationsScrollBox.style = "width: " + ((scrollWidth) * 0.6) + "px;height: " + scrollBoxHeight + "px;";
+        this.categoriesScrollBox.style = "height: " + scrollBoxHeight + "px;";
     },
 
     _refreshPlacesAndRecent : function() {
@@ -2671,7 +2677,7 @@ MyApplet.prototype = {
         this.leftPane = new St.Bin();
 
         this.favsBox = new St.BoxLayout({vertical: true});
-        this.favsBox.style = "min-height: 152px;min-width: 235px;";
+        this.favsBox.style = "min-height: 421px;min-width: 235px;";
 
         this.appsBox = new St.BoxLayout({vertical: true});
 
@@ -2703,13 +2709,13 @@ MyApplet.prototype = {
 
 
         this.categoriesScrollBox = new St.ScrollView({ x_fill: true, y_fill: false, y_align: St.Align.START, style_class: 'vfade menu-applications-scrollbox' });
-        this.categoriesScrollBox.set_width(210);
+        //this.categoriesScrollBox.set_width(210);
 
         this.applicationsBox = new St.BoxLayout({ style_class: 'menu-applications-inner-box', vertical:true });
         this.applicationsBox.add_style_class_name('menu-applications-box'); //this is to support old themes
         this.applicationsBox.add_style_class_name('starkmenu-applications-inner-box');
         this.applicationsScrollBox = new St.ScrollView({ x_fill: true, y_fill: false, y_align: St.Align.START, style_class: 'vfade menu-applications-scrollbox' });
-        this.applicationsScrollBox.set_width(264);
+        //this.applicationsScrollBox.set_width(264);
 
         this.a11y_settings = new Gio.Settings({ schema: "org.cinnamon.desktop.a11y.applications" });
         this.a11y_settings.connect("changed::screen-magnifier-enabled", Lang.bind(this, this._updateVFade));
