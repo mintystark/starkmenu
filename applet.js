@@ -27,16 +27,20 @@ const Pango = imports.gi.Pango;
 const SearchProviderManager = imports.ui.searchProviderManager;
 
 const Session = new GnomeSession.SessionManager();
+
 const ICON_SIZE = 16;
 const MAX_FAV_ICON_SIZE = 64;
 const CATEGORY_ICON_SIZE = 22;
 const APPLICATION_ICON_SIZE = 22;
-const HOVER_ICON_SIZE = 48;
 const MAX_RECENT_FILES = 20;
+const HOVER_ICON_SIZE = 48;
+
+const INITIAL_BUTTON_LOAD = 30;
 
 const USER_DESKTOP_PATH = FileUtils.getUserDesktopDir();
 
 let appsys = Cinnamon.AppSystem.get_default();
+let visiblePane = "favs";
 
 /* VisibleChildIterator takes a container (boxlayout, etc.)
  * and creates an array of its visible children and their index
@@ -1837,6 +1841,16 @@ MyApplet.prototype = {
     _update_hover_delay: function() {
         this.hover_delay = this.hover_delay_ms / 1000
     },
+    
+    _appletStyles: function(pane) {
+        let favsWidth = 0.95 * (this.favsBox.get_allocation_box().x2 - this.favsBox.get_allocation_box().x1);
+        let scrollWidth = this.searchBox.get_width() + this.rightButtonsBox.actor.get_width();
+        this.searchEntry.style = "width:" + favsWidth + "px";
+        this.appsButton.box.style = "width:" + favsWidth + "px";
+        let scrollBoxHeight = (this.favsBox.get_allocation_box().y2 - this.favsBox.get_allocation_box().y1) + this.separator.actor.get_height() - (this.selectedAppBox.get_allocation_box().y2 - this.selectedAppBox.get_allocation_box().y1 + this.applicationsScrollBox.get_theme_node().get_border_width(St.Side.TOP) + this.applicationsScrollBox.get_theme_node().get_border_width(St.Side.BOTTOM));
+        this.applicationsScrollBox.style = "width: " + ((scrollWidth) * 0.6) + "px;height: " + scrollBoxHeight + "px;";
+        this.categoriesScrollBox.style = "height: " + scrollBoxHeight + "px;";
+    },
 
     _updateQuickLinksView: function() {
         this.menu.showQuicklinks = this.showQuicklinks;
@@ -2017,25 +2031,20 @@ MyApplet.prototype = {
     _onOpenStateChanged: function(menu, open) {
         if (open) {
             this.menuIsOpening = true;
-            this.actor.add_style_pseudo_class('active');
-            this.switchPanes("favs");
-            this._appletStyles();
+            this.actor.add_style_pseudo_class('active');;
             global.stage.set_key_focus(this.searchEntry);
             this._selectedItemIndex = null;
             this._activeContainer = null;
             this._activeActor = null;
-
-            let monitorHeight = Main.layoutManager.primaryMonitor.height;
             
-            this.initButtonLoad = 30;
-            let n = Math.min(this._applicationsButtons.length,
-                             this.initButtonLoad)
+            this.switchPanes("favs")
+            
+            let n = Math.min(this._applicationsButtons.length, INITIAL_BUTTON_LOAD);
             for (let i = 0; i < n; i++) {
-                if (!this._applicationsButtons[i].actor.visible) {
-                    this._applicationsButtons[i].actor.show();
-                }
+                this._applicationsButtons[i].actor.show();
             }
-            Mainloop.idle_add(Lang.bind(this, this._initial_cat_selection));
+            //this._allAppsCategoryButton.actor.style_class = "menu-category-button-selected";
+            Mainloop.idle_add(Lang.bind(this, this._initial_cat_selection, n));
         } else {
             this.actor.remove_style_pseudo_class('active');
             if (this.searchActive) {
@@ -2050,12 +2059,10 @@ MyApplet.prototype = {
         }
     },
 
-    _initial_cat_selection: function () {
+    _initial_cat_selection: function (start_index) {
         let n = this._applicationsButtons.length;
-        for (let i = this.initButtonLoad; i < n; i++) {
-            if (!this._applicationsButtons[i].actor.visible) {
-                this._applicationsButtons[i].actor.show();
-            }
+        for (let i = start_index; i < n; i++) {
+            this._applicationsButtons[i].actor.show();
         }
     },
 
@@ -2187,7 +2194,8 @@ MyApplet.prototype = {
                 item_actor = (this._previousTreeSelectedActor != null) ? this._previousTreeSelectedActor : this.catBoxIter.getFirstVisible();
                 index = this.catBoxIter.getAbsoluteIndexOfChild(item_actor);
                 this._previousTreeSelectedActor = item_actor;
-                this.switchPanes("apps");
+                if(visiblePane == "favs")
+                    this.switchPanes("apps");
             }
             index = item_actor.get_parent()._vis_iter.getAbsoluteIndexOfChild(item_actor);
         } else if (symbol == Clutter.KEY_Left && this._activeContainer === this.applicationsBox && !this.searchActive) {
@@ -2309,16 +2317,6 @@ MyApplet.prototype = {
                 child.style_class = "menu-category-button";
             }));
         }
-    },
-
-    _appletStyles: function(pane) {
-        let favsWidth = 0.95 * (this.favsBox.get_allocation_box().x2 - this.favsBox.get_allocation_box().x1);
-        let scrollWidth = this.searchBox.get_width() + this.rightButtonsBox.actor.get_width();
-        this.searchEntry.style = "width:" + favsWidth + "px";
-        this.appsButton.box.style = "width:" + favsWidth + "px";
-        let scrollBoxHeight = (this.favsBox.get_allocation_box().y2 - this.favsBox.get_allocation_box().y1) + this.separator.actor.get_height() - (this.selectedAppBox.get_allocation_box().y2 - this.selectedAppBox.get_allocation_box().y1 + this.applicationsScrollBox.get_theme_node().get_border_width(St.Side.TOP) + this.applicationsScrollBox.get_theme_node().get_border_width(St.Side.BOTTOM));
-        this.applicationsScrollBox.style = "width: " + ((scrollWidth) * 0.6) + "px;height: " + scrollBoxHeight + "px;";
-        this.categoriesScrollBox.style = "height: " + scrollBoxHeight + "px;";
     },
 
     _refreshPlacesAndRecent: function() {
@@ -2951,6 +2949,7 @@ MyApplet.prototype = {
             this.appsButton.icon.set_icon_name("back");
             this.rightButtonsBox.actor.hide();
             this._appletStyles("apps");
+            visiblePane = "apps";
         } else {
             this.leftPane.set_child(this.favsBox);
             this.separator.actor.show();
@@ -2960,6 +2959,8 @@ MyApplet.prototype = {
                 this.rightButtonsBox.actor.show();
             }
             this._appletStyles("favs");
+            visiblePane = "favs";
+            this._allAppsCategoryButton.actor.style_class = "menu-category-button-selected";
         }
         this.rightButtonsBox.shutdown.label.set_text(_(this.shutdownLabel));
     },
