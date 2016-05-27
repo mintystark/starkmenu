@@ -54,12 +54,6 @@
     "description" : "Anwendungssymbole anzeigen",
     "tooltip" : "Legt fest, ob Symbole an Anwendungen angezeigt werden."
  },
- "show-recent" : {
-    "type" : "checkbox",
-    "default" : true,
-    "description": "Kürzlich verwendete Dateien anzeigen",
-    "tooltip": "Wähle, ob Kürzlich verwendete Dateien im Menü angezeigt werden sollen."
- },
  "show-places" : {
     "type" : "checkbox",
     "default" : true,
