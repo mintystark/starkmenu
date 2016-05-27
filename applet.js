@@ -1805,7 +1805,7 @@ MyApplet.prototype = {
 
     _updateKeybinding: function() {
         Main.keybindingManager.addHotKey("overlay-key", this.overlayKey, Lang.bind(this, function() {
-            this.menu.toggle();
+            if (!Main.overview.visible && !Main.expo.visible) this.menu.toggle_with_options(false);
         }));
     },
 
@@ -1995,7 +1995,7 @@ MyApplet.prototype = {
     },
 
     on_applet_clicked: function(event) {
-        this.menu.toggle();
+        this.menu.toggle_with_options(false);
     },
 
     _onSourceKeyPress: function(actor, event) {
