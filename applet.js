@@ -2768,7 +2768,7 @@ MyApplet.prototype = {
         this.searchBox = new St.BoxLayout({
             style_class: 'menu-search-box'
         });
-        this.searchBox.set_style("padding-right: 0px;padding-left: 0px");
+        this.searchBox.set_style("padding-right: 0px;padding-left: 0px;height:26px;");
 
         this.searchEntry = new St.Entry({
             name: 'menu-search-entry',
