@@ -1664,7 +1664,6 @@ MyApplet.prototype = {
 
         this.settings = new Settings.AppletSettings(this, "CinnXPStarkMenu@NikoKrause", instance_id);
 
-        this.settings.bindProperty(Settings.BindingDirection.IN, "show-recent", "showRecent", this._refreshPlacesAndRecent, null);
         this.settings.bindProperty(Settings.BindingDirection.IN, "show-places", "showPlaces", this._refreshPlacesAndRecent, null);
 
         this.settings.bindProperty(Settings.BindingDirection.IN, "activate-on-hover", "activateOnHover", this._updateActivateOnHover, null);
@@ -2026,7 +2025,7 @@ MyApplet.prototype = {
             this._activeActor = null;
 
             let monitorHeight = Main.layoutManager.primaryMonitor.height;
-            this._select_category(null, this._allAppsCategoryButton);
+            Mainloop.idle_add(Lang.bind(this, this._initial_cat_selection));
         } else {
             this.actor.remove_style_pseudo_class('active');
             if (this.searchActive) {
@@ -2039,6 +2038,10 @@ MyApplet.prototype = {
             this.closeApplicationsContextMenus(null, false);
             this._clearAllSelections(false);
         }
+    },
+
+    _initial_cat_selection: function () {
+        this._select_category(null, this._allAppsCategoryButton);
     },
 
     destroy: function() {
