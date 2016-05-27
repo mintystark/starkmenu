@@ -1664,6 +1664,7 @@ MyApplet.prototype = {
 
         this.settings = new Settings.AppletSettings(this, "CinnXPStarkMenu@NikoKrause", instance_id);
 
+        this.settings.bindProperty(Settings.BindingDirection.IN, "show-recent", "showRecent", this._refreshPlacesAndRecent, null);
         this.settings.bindProperty(Settings.BindingDirection.IN, "show-places", "showPlaces", this._refreshPlacesAndRecent, null);
 
         this.settings.bindProperty(Settings.BindingDirection.IN, "activate-on-hover", "activateOnHover", this._updateActivateOnHover, null);
@@ -2025,6 +2026,15 @@ MyApplet.prototype = {
             this._activeActor = null;
 
             let monitorHeight = Main.layoutManager.primaryMonitor.height;
+            
+            this.initButtonLoad = 30;
+            let n = Math.min(this._applicationsButtons.length,
+                             this.initButtonLoad)
+            for (let i = 0; i < n; i++) {
+                if (!this._applicationsButtons[i].actor.visible) {
+                    this._applicationsButtons[i].actor.show();
+                }
+            }
             Mainloop.idle_add(Lang.bind(this, this._initial_cat_selection));
         } else {
             this.actor.remove_style_pseudo_class('active');
@@ -2041,7 +2051,12 @@ MyApplet.prototype = {
     },
 
     _initial_cat_selection: function () {
-        this._select_category(null, this._allAppsCategoryButton);
+        let n = this._applicationsButtons.length;
+        for (let i = this.initButtonLoad; i < n; i++) {
+            if (!this._applicationsButtons[i].actor.visible) {
+                this._applicationsButtons[i].actor.show();
+            }
+        }
     },
 
     destroy: function() {
