@@ -1,4 +1,10 @@
 {
+ "mintmenu-layout" : {
+    "type" : "checkbox",
+    "default" : false,
+    "description" : "Use Mint menu for MATE layout",
+    "tooltip" : "Checking this allows to change the menus layout, which looks like Mint menu for MATE"
+ },
  "overlay-key" : {
     "type" : "keybinding",
     "description" : "Keyboard shortcut to open and close the menu",
