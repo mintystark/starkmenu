@@ -1127,7 +1127,7 @@ TextBoxItem.prototype = {
                 style_class: 'menu-category-button-label'
             });
             this.addActor(this.leftLabel);
-            this.actor.style = "padding-top: 2px; padding-bottom: 2px;";
+            this.actor.style = "padding-top: 4px; padding-bottom: 4px;";
         }
 
         this.label_icon = new St.Icon({
