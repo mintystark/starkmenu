@@ -1,9 +1,27 @@
 {
- "mintmenu-layout" : {
-    "type" : "checkbox",
-    "default" : false,
-    "description" : "Use Mint menu for MATE layout",
-    "tooltip" : "Checking this allows to change the menus layout, which looks like Mint menu for MATE"
+ "separator-menu-layout": {
+    "type": "separator"
+ },
+ "head-menu-layout" : {
+    "type" : "header",
+    "description" : "Stark-Menu/MATE-Menu"
+ },
+ "menu-layout" : {
+    "type": "combobox",
+    "default": "stark-menu",
+    "options": {
+	    "Stark-Menu": "stark-menu",
+	    "MATE-Menu": "mate-menu"
+     },
+    "description" : "Layout of the menu: ",
+    "tooltip" : "Checking this box allows you to use MATE-Menu layout, else Stark-Menu layout is used"
+ },
+ "separator-settings": {
+    "type": "separator"
+ },
+ "head-settings" : {
+    "type" : "header",
+    "description" : "General Settings"
  },
  "overlay-key" : {
     "type" : "keybinding",
@@ -22,43 +40,13 @@
     "description" : "Icon",
     "tooltip" : "Select an icon to show in the panel.",
     "dependency" : "menu-icon-custom",
-    "indent" : "true"
+    "indent" : true
  },
  "menu-label" : {
     "type" : "entry",
     "default" : "Menu",
     "description" : "Menu Text",
     "tooltip" : "Enter custom text to show in the panel."
- },
- "all-programs-label" : {
-    "type" : "entry",
-    "default" : "All Programs",
-    "description" : "All Programs Text",
-    "tooltip" : "Enter custom text for button."
- },
- "favorites-label" : {
-    "type" : "entry",
-    "default" : "Favorites",
-    "description" : "Favorites Text",
-    "tooltip" : "Enter custom text for button."
- },
- "shutdown-label" : {
-    "type" : "entry",
-    "default" : "Quit",
-    "description" : "Shutdown Text",
-    "tooltip" : "Enter custom text for button."
- },
- "show-category-icons" : {
-    "type" : "checkbox",
-    "default" : true,
-    "description" : "Show category icons",
-    "tooltip" : "Choose whether or not to show icons on categories."
- },
- "show-application-icons" : {
-    "type" : "checkbox",
-    "default" : true,
-    "description" : "Show application icons",
-    "tooltip" : "Choose whether or not to show icons on applications."
  },
  "show-places" : {
     "type" : "checkbox",
@@ -94,7 +82,32 @@
     "description" : "Menu hover delay:",
     "tooltip" : "Delay between switching categories"
  },
- "favorite-icon-size" : {
+ "menu-editor-button" : {
+    "type" : "button",
+    "description" : "Open the menu editor",
+    "callback" : "_launch_editor",
+    "tooltip" : "Press this button to customize your menu entries."
+ },
+ "separator-show-hide-icons": {
+    "type": "separator"
+ },
+ "head-button-show-hide-icons" : {
+    "type" : "header",
+    "description" : "Symbols"
+ },
+ "show-category-icons" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Show category icons",
+    "tooltip" : "Choose whether or not to show icons on categories."
+ },
+ "show-application-icons" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Show application icons",
+    "tooltip" : "Choose whether or not to show icons on applications."
+ },
+  "favorite-icon-size" : {
     "type": "spinbutton",
     "default" : 32,
     "min" : 12,
@@ -102,7 +115,71 @@
     "step" : 1,
     "units" : "pixels",
     "description" : "Size of the Favorite Button Icons:",
-    "tooltip" : "Change the Size of the Favorite Buttons Icons"
+    "tooltip" : "Change the size of the Favorite Buttons Icons"
+ },
+ "separator-button-label": {
+    "type": "separator"
+ },
+ "head-button-label" : {
+    "type" : "header",
+    "description" : "Labels on buttons in the menu"
+ },
+ "show-user-icon-label" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Show username",
+    "tooltip" : "Choose whether or not to show the username."
+ },
+ "all-programs-label" : {
+    "type" : "entry",
+    "default" : "All Programs",
+    "description" : "All Programs Button Text",
+    "tooltip" : "Enter custom text for button."
+ },
+ "favorites-label" : {
+    "type" : "entry",
+    "default" : "Favorites",
+    "description" : "Favorites Button Text",
+    "tooltip" : "Enter custom text for button."
+ },
+ "shutdown-label" : {
+    "type" : "entry",
+    "default" : "Quit",
+    "description" : "Quit Button Text",
+    "tooltip" : "Enter custom text for button."
+ },
+ "separator-shutdown-menu": {
+    "type": "separator"
+ },
+ "head-shutdown-menu" : {
+    "type" : "header",
+    "description" : "Quit/Logout/Lock screen"
+ },
+ "show-quicklinks-shutdown-menu" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description": "Show Shutdown Menu",
+    "tooltip": "Choose whether or not to show the Shutdown Menu."
+ },
+ "quicklinks-shutdown-menu-options" : {
+    "type": "combobox",
+    "default": "vertical",
+    "options": {
+	    "DropDown": "dropdown",
+	    "Vertikal": "vertical",
+        "Horizontal": "horizontal"
+     },
+    "description": "Shutdown Menu Layout",
+    "tooltip": "Choose the layout of the Shutdown Menu.",
+    "dependency" : "show-quicklinks-shutdown-menu",
+    "indent" : true
+ },
+ "separator-quicklinks-settings": {
+    "type": "separator"
+ },
+ "head-quicklinks-settings" : {
+    "type" : "header",
+    "description" : "Quicklinks Sidebar"
  },
  "show-quicklinks" : {
     "type" : "checkbox",
@@ -114,31 +191,12 @@
     "type": "combobox",
     "default": "both",
     "options": {
-         "Both Icons and Labels": "both",
-         "Icons Only": "icons",
-         "Labels Only": "labels"
+         "Icons und Labels": "both",
+         "Nur Icons": "icons",
+         "Nur Labels": "labels"
      },
     "description": "Quicklinks Options",
-    "tooltip": "Allows the icons or Labels to be shown in the Quicklinks sidebar."
- },
- "show-quicklinks-shutdown-menu" : {
-    "type" : "checkbox",
-    "default" : true,
-    "description": "Show Quicklinks Shutdown Menu",
-    "tooltip": "Choose whether or not to show the Quicklinks Shutdown Menu."
- },
- "quicklinks-shutdown-menu-options" : {
-    "type": "combobox",
-    "default": "vertical",
-    "options": {
-	 "DropDown": "dropdown",
-	 "Vertical": "vertical",
-         "Horizontal": "horizontal"
-     },
-    "description": "Shutdown Menu Layout",
-    "tooltip": "Choose the layout of the Shutdown Menu.",
-    "dependency" : "show-quicklinks-shutdown-menu",
-    "indent" : true
+    "tooltip": "Choose whether to show icons and/or labels in the Quicklinks Sidebar."
  },
  "quicklink-0-checkbox" : {
     "type" : "checkbox",
@@ -235,10 +293,9 @@
     "default": "Downloads,folder-downloads,nemo Downloads",
     "description": "Quicklink",
     "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
-    "dependency" : "quicklink-5-checkbox",
+    "dependency" : "quicklink-6-checkbox",
     "indent" : true
  },
-
  "quicklink-7-checkbox" : {
     "type" : "checkbox",
     "default" : true,
@@ -420,11 +477,5 @@
     "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
     "dependency" : "quicklink-19-checkbox",
     "indent" : true
- },
-  "menu-editor-button" : {
-    "type" : "button",
-    "description" : "Open the menu editor",
-    "callback" : "_launch_editor",
-    "tooltip" : "Press this button to customize your menu entries."
  }
 }

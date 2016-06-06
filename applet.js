@@ -26,6 +26,8 @@ const Settings = imports.ui.settings;
 const Pango = imports.gi.Pango;
 const SearchProviderManager = imports.ui.searchProviderManager;
 
+const Tooltips = imports.ui.tooltips;
+
 const Session = new GnomeSession.SessionManager();
 
 const ICON_SIZE = 16;
@@ -379,6 +381,10 @@ TransientButton.prototype = {
     }
 }
 
+String.prototype.replaceAt=function(index, character) {
+    return this.substr(0, index) + character + this.substr(index+character.length);
+}
+
 function ApplicationButton(appsMenuButton, app, showIcon) {
     this._init(appsMenuButton, app, showIcon);
 }
@@ -411,6 +417,25 @@ ApplicationButton.prototype = {
             this.icon.realize();
         }
         this.label.realize();
+        
+                
+        let appDescriptionTooltipString = this.app.get_description() + "";
+        let lastSpacePosition = 0;
+        if(appDescriptionTooltipString.length > 80) {
+            lastSpacePosition = appDescriptionTooltipString.lastIndexOf(" ", 79);
+            appDescriptionTooltipString = appDescriptionTooltipString.replaceAt(lastSpacePosition, "\n");
+        }
+        if(appDescriptionTooltipString.length > 160) {
+            lastSpacePosition = appDescriptionTooltipString.lastIndexOf(" ", lastSpacePosition+80);
+            appDescriptionTooltipString = appDescriptionTooltipString.replaceAt(lastSpacePosition, "\n");
+        }
+        
+        if(appDescriptionTooltipString == "null")
+            this.tooltip = new Tooltips.Tooltip(this.actor, _("No description"));
+        else
+            this.tooltip = new Tooltips.Tooltip(this.actor, appDescriptionTooltipString);
+        
+        //this.tooltip = new Tooltips.Tooltip(this.actor, (this.app.get_description() + "").replace(/(.{50})/g, "$1\n"));
     },
 
     get_app_id: function() {
@@ -972,10 +997,6 @@ FavoritesButton.prototype = {
     }
 };
 
-function TextBoxItem(label, icon, func, parent, hoverIcon) {
-    this._init(label, icon, func, parent, hoverIcon);
-}
-
 function AppPopupSubMenuMenuItem() {
     this._init.apply(this, arguments);
 }
@@ -1074,6 +1095,10 @@ AppPopupSubMenuMenuItem.prototype = {
     }
 };
 
+function TextBoxItem(label, icon, func, parent, hoverIcon) {
+    this._init(label, icon, func, parent, hoverIcon);
+}
+
 TextBoxItem.prototype = {
     __proto__: AppPopupSubMenuMenuItem.prototype,
 
@@ -1094,29 +1119,50 @@ TextBoxItem.prototype = {
         this._triangle.destroy();
         this._triangle = new St.Label();
         this.label_text = label;
+        
+        if(this.label_text == "") {
+            this.label_text = "  "
+            this.leftLabel = new St.Label({
+                text: this.label_text,
+                style_class: 'menu-category-button-label'
+            });
+            this.addActor(this.leftLabel);
+            this.actor.style = "padding-top: 2px; padding-bottom: 2px;";
+        }
 
         this.label_icon = new St.Icon({
             icon_name: this.icon,
             icon_size: 18,
             icon_type: St.IconType.FULLCOLOR,
         });
-        this.addActor(this.label_icon);
+        
         this.label = new St.Label({
             text: this.label_text,
             style_class: 'menu-category-button-label'
         });
+    
+        this.addActor(this.label_icon);
         this.addActor(this.label);
     },
 
-    _update: function(quicklinkOptions) {
+    _update: function(quicklinkOptions, QuicklinksShutdownMenuOptions) {
 
         this.removeActor(this.label_icon);
         this.removeActor(this.label);
 
-        if (quicklinkOptions == 'both' || quicklinkOptions == 'icons') {
+        if (quicklinkOptions == 'both' || quicklinkOptions == 'icons' || QuicklinksShutdownMenuOptions == "horizontal") {
+        
+            let iconSize = 18;
+            if(quicklinkOptions == 'icons')
+                iconSize = 26;
+            else if(QuicklinksShutdownMenuOptions == "horizontal")
+                iconSize = 22;
+            else
+                iconSize = 18;
+                
             this.name_icon = new St.Icon({
                 icon_name: this.icon,
-                icon_size: (quicklinkOptions == 'icons' ? 26 : 18),
+                icon_size: iconSize,
                 icon_type: St.IconType.FULLCOLOR,
             });
 
@@ -1135,7 +1181,7 @@ TextBoxItem.prototype = {
             }
 
             this.label_icon.set_gicon(icon);
-            this.label_icon.set_icon_size((quicklinkOptions == 'icons' ? 26 : 18));
+            this.label_icon.set_icon_size(iconSize);
 
             if (!iconFile.query_exists(null)) {
                 this.label_icon = this.name_icon;
@@ -1285,10 +1331,12 @@ HoverIcon.prototype = {
             x_align: St.Align.END,
             y_align: St.Align.START
         });
-
-        this.userLabel = new St.Label(({
-            style_class: 'user-label'
+        
+        this.userLabelColor = new St.BoxLayout(({
+            style_class: 'menu-background'
         }));
+
+        this.userLabel = new St.Label();
         this.userLabel.set_style("font-size: 16px;");
 
         this.userBox.add(this.userLabel, {
@@ -1528,17 +1576,18 @@ RightButtonsBox.prototype = {
         return false;
     },
 
-    _update_quicklinks: function(quicklinkOptions) {
+    _update_quicklinks: function(quicklinkOptions, showUserIconLabel, QuicklinksShutdownMenuOptions) {
 
         for (let i in this.quicklinks) {
             this.quicklinks[i]._update(quicklinkOptions);
         }
-        this.shutdown._update(quicklinkOptions);
-        this.shutdown2._update(quicklinkOptions);
-        this.shutdown3._update(quicklinkOptions);
-        this.logout._update(quicklinkOptions);
-        this.logout2._update(quicklinkOptions);
-        this.lock._update(quicklinkOptions);
+        this.shutdown._update(quicklinkOptions, QuicklinksShutdownMenuOptions);
+        this.shutdown2._update(quicklinkOptions, QuicklinksShutdownMenuOptions);
+        this.shutdown3._update(quicklinkOptions, QuicklinksShutdownMenuOptions);
+        this.logout._update(quicklinkOptions, QuicklinksShutdownMenuOptions);
+        this.logout2._update(quicklinkOptions, QuicklinksShutdownMenuOptions);
+        this.lock._update(quicklinkOptions, QuicklinksShutdownMenuOptions);
+        this.lock2._update(quicklinkOptions, QuicklinksShutdownMenuOptions);
 
         if (quicklinkOptions == 'icons') {
             this.hoverIcon.userLabel.hide();
@@ -1550,7 +1599,14 @@ RightButtonsBox.prototype = {
 
         }
         else {
-            this.hoverIcon.userLabel.show();
+            if(showUserIconLabel) {
+                this.hoverIcon.userLabel.show();
+            } else {
+                this.hoverIcon.userLabel.hide();
+                let centerWidth = (this.actor.get_width() - (HOVER_ICON_SIZE + 4)) / 2;
+                this.hoverIcon.userBox.style = "padding-left:"+ centerWidth +"px; padding-right:"+ centerWidth +"px;";
+            }
+
             this.hoverIcon._userIcon.set_icon_size(HOVER_ICON_SIZE);
             this.hoverIcon.icon.set_icon_size(HOVER_ICON_SIZE);
             this.shutDownIconBox.hide();
@@ -1596,9 +1652,9 @@ RightButtonsBox.prototype = {
 
         this.shutdown = new TextBoxItem(_("Quit"), "system-shutdown", "Session.ShutdownRemote()", this.menu, this.hoverIcon, false);
         this.shutdown2 = new TextBoxItem(_("Quit"), "system-shutdown", "Session.ShutdownRemote()", this.menu, this.hoverIcon, false);
-        this.shutdown3 = new TextBoxItem(_("Quit"), "system-shutdown", "Session.ShutdownRemote()", this.menu, this.hoverIcon, false);
+        this.shutdown3 = new TextBoxItem("", "system-shutdown", "Session.ShutdownRemote()", this.menu, this.hoverIcon, false);
         this.logout = new TextBoxItem(_("Logout"), "system-log-out", "Session.LogoutRemote(0)", this.menu, this.hoverIcon, false);
-        this.logout2 = new TextBoxItem(_("Logout"), "system-log-out", "Session.LogoutRemote(0)", this.menu, this.hoverIcon, false);
+        this.logout2 = new TextBoxItem("", "system-log-out", "Session.LogoutRemote(0)", this.menu, this.hoverIcon, false);
 
         let screensaver_settings = new Gio.Settings({
             schema: "org.cinnamon.desktop.screensaver"
@@ -1607,9 +1663,11 @@ RightButtonsBox.prototype = {
         if (screensaver_dialog.query_exists(null)) {
             if (screensaver_settings.get_boolean("ask-for-away-message")) {
                 this.lock = new TextBoxItem(_("Lock screen"), "system-lock-screen", "Util.spawnCommandLine('cinnamon-screensaver-lock-dialog')", this.menu, this.hoverIcon, false);
+                this.lock2 = new TextBoxItem("", "system-lock-screen", "Util.spawnCommandLine('cinnamon-screensaver-lock-dialog')", this.menu, this.hoverIcon, false);
             }
             else {
                 this.lock = new TextBoxItem(_("Lock screen"), "system-lock-screen", "Util.spawnCommandLine('cinnamon-screensaver-command --lock')", this.menu, this.hoverIcon, false);
+                this.lock2 = new TextBoxItem("", "system-lock-screen", "Util.spawnCommandLine('cinnamon-screensaver-command --lock')", this.menu, this.hoverIcon, false);
             }
         }
 
@@ -1625,8 +1683,9 @@ RightButtonsBox.prototype = {
         this.shutDownIconBox.add_actor(this.logout.actor);
         this.shutDownIconBox.add_actor(this.lock.actor);
 
-        this.shutDownIconBoxXP.add_actor(this.logout2.actor);
         this.shutDownIconBoxXP.add_actor(this.shutdown3.actor);
+        this.shutDownIconBoxXP.add_actor(this.logout2.actor);
+        this.shutDownIconBoxXP.add_actor(this.lock2.actor);
 
         this.itemsBox.add_actor(this.shutDownMenuBox);
         this.shutDownMenuBox.set_style('min-height: 80px');
@@ -1823,7 +1882,7 @@ MyApplet.prototype = {
         this.menu.actor.add_style_class_name("starkmenu-background");
         this.menu.connect('open-state-changed', Lang.bind(this, this._onOpenStateChanged));
         
-        this.settings.bindProperty(Settings.BindingDirection.IN, "mintmenu-layout", "mintmenuLayout", this._updateMenuLayout, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "menu-layout", "menuLayout", this._updateMenuLayout, null);
 
         this.settings.bindProperty(Settings.BindingDirection.IN, "menu-icon-custom", "menuIconCustom", this._updateIconAndLabel, null);
         this.settings.bindProperty(Settings.BindingDirection.IN, "menu-icon", "menuIcon", this._updateIconAndLabel, null);
@@ -1889,9 +1948,8 @@ MyApplet.prototype = {
         this._updateQuickLinksView();
 
         this.settings.bindProperty(Settings.BindingDirection.IN, "show-quicklinks-shutdown-menu", "showQuicklinksShutdownMenu", this._updateQuickLinksShutdownView, null);
-        this._updateQuickLinksShutdownView();
-
-        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklinks-shutdown-menu-options", "QuicklinksShutdownMenuOptions", this._updateQuickLinksShutdownView, null);
+        
+        this.settings.bindProperty(Settings.BindingDirection.IN, "quicklinks-shutdown-menu-options", "QuicklinksShutdownMenuOptions", this._updateQuickLinks, null);
         this._updateQuickLinksShutdownView();
 
         this._fileFolderAccessActive = false;
@@ -1943,6 +2001,7 @@ MyApplet.prototype = {
         this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-19", "quicklink_19", this._updateQuickLinks, null);
 
         this.settings.bindProperty(Settings.BindingDirection.IN, "quicklink-options", "quicklinkOptions", this._updateQuickLinks, null);
+        this.settings.bindProperty(Settings.BindingDirection.IN, "show-user-icon-label", "showUserIconLabel", this._updateQuickLinks, null);
         this._updateQuickLinks();
 
         // We shouldn't need to call refreshAll() here... since we get a "icon-theme-changed" signal when CSD starts.
@@ -1998,9 +2057,9 @@ MyApplet.prototype = {
     _appletStyles: function(pane) {
         let favsWidth = 0.95 * (this.favsBox.get_allocation_box().x2 - this.favsBox.get_allocation_box().x1);
         //let scrollWidth = this.searchBox.get_width() + this.rightButtonsBox.actor.get_width();
-        this.searchEntry.style = "width:" + favsWidth + "px";
+        this.searchEntry.style = "width:" + favsWidth + "px; padding-left: 6px; padding-right: 6px;";
         this.appsButton.box.style = "width:" + favsWidth + "px";
-        let scrollBoxHeight = (this.favsBox.get_allocation_box().y2 - this.favsBox.get_allocation_box().y1) + this.separator.actor.get_height() - (this.selectedAppBox.get_allocation_box().y2 - this.selectedAppBox.get_allocation_box().y1 + this.applicationsScrollBox.get_theme_node().get_border_width(St.Side.TOP) + this.applicationsScrollBox.get_theme_node().get_border_width(St.Side.BOTTOM));
+        let scrollBoxHeight = (this.favsBox.get_allocation_box().y2 - this.favsBox.get_allocation_box().y1) + this.separator.actor.get_height() - (this.applicationsScrollBox.get_theme_node().get_border_width(St.Side.TOP) + this.applicationsScrollBox.get_theme_node().get_border_width(St.Side.BOTTOM));
         this.applicationsScrollBox.style = "width: 26.5em;height: " + scrollBoxHeight + "px;";
         this.categoriesScrollBox.style = "height: " + scrollBoxHeight + "px;";
     },
@@ -2066,9 +2125,9 @@ MyApplet.prototype = {
         }
 
         if (this.rightButtonsBox.actor.get_height() > 421) {
-            this.favsBox.style = "min-height: " + (this.rightButtonsBox.actor.get_height() - (this.leftPaneBox.get_theme_node().get_padding(St.Side.TOP) + this.leftPaneBox.get_theme_node().get_padding(St.Side.BOTTOM) + this.searchBox.get_height() + this.appsButton.box.get_height() + this.separator.actor.get_height())) + "px;min-width: 235px;";
+            this.favsBox.style = "min-height: " + (this.rightButtonsBox.actor.get_height() - (this.leftPaneBox.get_theme_node().get_padding(St.Side.TOP) + this.leftPaneBox.get_theme_node().get_padding(St.Side.BOTTOM) + this.searchBox.get_height() + this.appsButton.box.get_height() + this.separator.actor.get_height())+1) + "px;min-width: 235px;";
         }
-
+        
     },
 
     _updateQuickLinks: function() {
@@ -2126,12 +2185,12 @@ MyApplet.prototype = {
 
         this.menu.quicklinkOptions = this.quicklinkOptions;
         this.rightButtonsBox.addItems();
-        this.rightButtonsBox._update_quicklinks(this.quicklinkOptions);
+        this.rightButtonsBox._update_quicklinks(this.quicklinkOptions, this.showUserIconLabel, this.QuicklinksShutdownMenuOptions);
 
         this._updateQuickLinksShutdownView();
 
         if (this.rightButtonsBox.actor.get_height() > 421) {
-            this.favsBox.style = "min-height: " + (this.rightButtonsBox.actor.get_height() - (this.leftPaneBox.get_theme_node().get_padding(St.Side.TOP) + this.leftPaneBox.get_theme_node().get_padding(St.Side.BOTTOM) + this.searchBox.get_height() + this.appsButton.box.get_height() + this.separator.actor.get_height())) + "px;min-width: 235px;";
+            this.favsBox.style = "min-height: " + (this.rightButtonsBox.actor.get_height() - (this.leftPaneBox.get_theme_node().get_padding(St.Side.TOP) + this.leftPaneBox.get_theme_node().get_padding(St.Side.BOTTOM) + this.searchBox.get_height() + this.appsButton.box.get_height() + this.separator.actor.get_height())+1) + "px;min-width: 235px;";
         }
 
     },
@@ -2196,7 +2255,7 @@ MyApplet.prototype = {
                 this._select_category(null, this._allAppsCategoryButton);
             }
             
-            if(!this.mintmenuLayout)
+            if(this.menuLayout == "stark-menu")
                 this.switchPanes("favs");
                 
             
@@ -3086,6 +3145,7 @@ MyApplet.prototype = {
         this.searchBox = new St.BoxLayout({
             style_class: 'menu-search-box'
         });
+        this.searchBox.add_style_class_name("starkmenu-search-box");
         this.searchBox.set_style("padding-right: 0px;padding-left: 0px;height:26px;");
 
         this.searchEntry = new St.Entry({
@@ -3107,7 +3167,7 @@ MyApplet.prototype = {
         });
         //this.selectedAppBox.add_style_class_name("starkmenu-selected-app-box");
         
-        if (this.selectedAppBox.peek_theme_node() == null || this.selectedAppBox.get_theme_node().get_length('height') == 0) this.selectedAppBox.set_height(0 * global.ui_scale);
+        //if (this.selectedAppBox.peek_theme_node() == null || this.selectedAppBox.get_theme_node().get_length('height') == 0) this.selectedAppBox.set_height(0 * global.ui_scale);
 
         this.selectedAppTitle = new St.Label({
             style_class: 'menu-selected-app-title',
@@ -3231,7 +3291,7 @@ MyApplet.prototype = {
         this.mainBox.add_actor(this.rightButtonsBox.actor);
         
         section.actor.add_actor(this.mainBox);
-        section.actor.add_actor(this.selectedAppBox);
+        //section.actor.add_actor(this.selectedAppBox);
         
         this.appBoxIter = new VisibleChildIterator(this.applicationsBox);
         this.applicationsBox._vis_iter = this.appBoxIter;
@@ -3247,7 +3307,7 @@ MyApplet.prototype = {
     _updateMenuLayout: function() {
         this.mainBox.remove_actor(this.rightButtonsBox.actor);
         this.mainBox.remove_actor(this.leftPaneBox);
-        if(this.mintmenuLayout) {
+        if(this.menuLayout == "mate-menu") {
             this.mainBox.add_actor(this.rightButtonsBox.actor);
             this.mainBox.add_actor(this.leftPaneBox);
         } else {
@@ -3263,7 +3323,7 @@ MyApplet.prototype = {
             this.separator.actor.hide();
             this.appsButton.label.set_text(" " + _(this.favoritesLabel));
             this.appsButton.icon.set_icon_name("back");
-            if(!this.mintmenuLayout)
+            if(this.menuLayout == "stark-menu")
                 this.rightButtonsBox.actor.hide();
             this._appletStyles("apps");
             visiblePane = "apps";

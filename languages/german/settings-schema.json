@@ -1,9 +1,27 @@
 {
- "mintmenu-layout" : {
-    "type" : "checkbox",
-    "default" : false,
-    "description" : "Anordnung wie im Mint-Menü für MATE",
-    "tooltip" : "Diese Auswahl ändert die Anordnung des Menüs wie im Mint-Menü für MATE"
+ "separator-menu-layout": {
+    "type": "separator"
+ },
+ "head-menu-layout" : {
+    "type" : "header",
+    "description" : "Stark-Menü/MATE-Menü"
+ },
+ "menu-layout" : {
+    "type": "combobox",
+    "default": "stark-menu",
+    "options": {
+	    "Stark-Menü": "stark-menu",
+	    "MATE-Menü": "mate-menu"
+     },
+    "description" : "Layout des Menüs: ",
+    "tooltip" : "Bei Aktivierung des Kontrollkästchen wird das MATE-Menü benutzt, bei Deaktivierung das Stark-Menü"
+ },
+ "separator-settings": {
+    "type": "separator"
+ },
+ "head-settings" : {
+    "type" : "header",
+    "description" : "Allgemeine Einstellungen"
  },
  "overlay-key" : {
     "type" : "keybinding",
@@ -29,36 +47,6 @@
     "default" : "Menu",
     "description" : "Menü Text",
     "tooltip" : "Enter custom text to show in the panel."
- },
- "all-programs-label" : {
-    "type" : "entry",
-    "default" : "Alle Programme",
-    "description" : "Alle Programme Text",
-    "tooltip" : "Einen benutzerdefinierenden Text für den Knopf eingeben."
- },
- "favorites-label" : {
-    "type" : "entry",
-    "default" : "Favoriten",
-    "description" : "Favoriten Text",
-    "tooltip" : "Einen benutzerdefinierenden Text für den Knopf eingeben."
- },
- "shutdown-label" : {
-    "type" : "entry",
-    "default" : "Quit",
-    "description" : "Herunterfahren Text",
-    "tooltip" : "Einen benutzerdefinierenden Text für den Knopf eingeben."
- },
- "show-category-icons" : {
-    "type" : "checkbox",
-    "default" : true,
-    "description" : "Kategoriesymbole anzeigen",
-    "tooltip" : "Legt fest, ob Symbole an Kategorien angezeigt werden."
- },
- "show-application-icons" : {
-    "type" : "checkbox",
-    "default" : true,
-    "description" : "Anwendungssymbole anzeigen",
-    "tooltip" : "Legt fest, ob Symbole an Anwendungen angezeigt werden."
  },
  "show-places" : {
     "type" : "checkbox",
@@ -94,15 +82,104 @@
     "description" : "Menu hover delay:",
     "tooltip" : "Delay between switching categories"
  },
- "favorite-icon-size" : {
+ "menu-editor-button" : {
+    "type" : "button",
+    "description" : "Open the menu editor",
+    "callback" : "_launch_editor",
+    "tooltip" : "Press this button to customize your menu entries."
+ },
+ "separator-show-hide-icons": {
+    "type": "separator"
+ },
+ "head-button-show-hide-icons" : {
+    "type" : "header",
+    "description" : "Symbole"
+ },
+ "show-category-icons" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Kategoriesymbole anzeigen",
+    "tooltip" : "Legt fest, ob Symbole an Kategorien angezeigt werden."
+ },
+ "show-application-icons" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Anwendungssymbole anzeigen",
+    "tooltip" : "Legt fest, ob Symbole an Anwendungen angezeigt werden."
+ },
+  "favorite-icon-size" : {
     "type": "spinbutton",
     "default" : 32,
     "min" : 12,
     "max" : 64,
     "step" : 1,
     "units" : "pixels",
-    "description" : "Size of the Favorite Button Icons:",
+    "description" : "Größe der Favoritensymbole:",
     "tooltip" : "Ändere die Größe der Icons in den Favoriten"
+ },
+ "separator-button-label": {
+    "type": "separator"
+ },
+ "head-button-label" : {
+    "type" : "header",
+    "description" : "Beschriftung von Knöpfen im Menü"
+ },
+ "show-user-icon-label" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Benutzername anzeigen",
+    "tooltip" : "Legt fest, ob der Benutzername neben dem Benutzersymbol angezeigt werden."
+ },
+ "all-programs-label" : {
+    "type" : "entry",
+    "default" : "Alle Programme",
+    "description" : "Beschriftung für ''Alle Programme''-Knopf: ",
+    "tooltip" : "Einen benutzerdefinierenden Text für den Knopf eingeben."
+ },
+ "favorites-label" : {
+    "type" : "entry",
+    "default" : "Favoriten",
+    "description" : "Beschriftung für ''Favoriten''-Knopf: ",
+    "tooltip" : "Einen benutzerdefinierenden Text für den Knopf eingeben."
+ },
+ "shutdown-label" : {
+    "type" : "entry",
+    "default" : "Quit",
+    "description" : "Beschriftung für ''Beenden''-Knopf: ",
+    "tooltip" : "Einen benutzerdefinierenden Text für den Knopf eingeben."
+ },
+ "separator-shutdown-menu": {
+    "type": "separator"
+ },
+ "head-shutdown-menu" : {
+    "type" : "header",
+    "description" : "Beenden/Abmelden/Bidschirm sperren"
+ },
+ "show-quicklinks-shutdown-menu" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description": "Zeige das Beenden-Menü",
+    "tooltip": "Wähle, ob das Beenden-Menü angezeigt werden soll."
+ },
+ "quicklinks-shutdown-menu-options" : {
+    "type": "combobox",
+    "default": "vertical",
+    "options": {
+	    "DropDown": "dropdown",
+	    "Vertikal": "vertical",
+        "Horizontal": "horizontal"
+     },
+    "description": "Anordnung des Beenden-Menüs: ",
+    "tooltip": "Wähle das Layout des Beenden-Menüs aus.",
+    "dependency" : "show-quicklinks-shutdown-menu",
+    "indent" : true
+ },
+ "separator-quicklinks-settings": {
+    "type": "separator"
+ },
+ "head-quicklinks-settings" : {
+    "type" : "header",
+    "description" : "Quicklinks-Seitenleiste"
  },
  "show-quicklinks" : {
     "type" : "checkbox",
@@ -120,25 +197,6 @@
      },
     "description": "Quicklinks Optionen",
     "tooltip": "Wähle aus, ob Icons und/oder Labels in der Quicklinks-Seitenleiste angezeigt werden sollen."
- },
- "show-quicklinks-shutdown-menu" : {
-    "type" : "checkbox",
-    "default" : true,
-    "description": "Zeige das Quicklinks-Herunterfahren-Menü",
-    "tooltip": "Wähle, ob das Quicklinks-Herunterfahren-Menü im Menü angezeigt werden soll."
- },
- "quicklinks-shutdown-menu-options" : {
-    "type": "combobox",
-    "default": "vertical",
-    "options": {
-	 "DropDown": "dropdown",
-	 "Vertikal": "vertical",
-         "Horizontal": "horizontal"
-     },
-    "description": "Herunterfahren-Menü Layout",
-    "tooltip": "Wähle das Layout des Herunterfahren-Menüs aus.",
-    "dependency" : "show-quicklinks-shutdown-menu",
-    "indent" : true
  },
  "quicklink-0-checkbox" : {
     "type" : "checkbox",
@@ -419,11 +477,5 @@
     "tooltip": "Dein Quicklink-Eintrag: Titel, Icon, Befehl. Wenn das Icon keine Endung enthält, wird nach dem Icon mit dem ähnlichstem Namen im aktuellen Thema gesucht. Anderenfalls wird das Icon durch den Pfad gefunden.",
     "dependency" : "quicklink-19-checkbox",
     "indent" : true
- },
-  "menu-editor-button" : {
-    "type" : "button",
-    "description" : "Open the menu editor",
-    "callback" : "_launch_editor",
-    "tooltip" : "Press this button to customize your menu entries."
  }
 }
