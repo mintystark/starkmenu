@@ -1327,6 +1327,7 @@ HoverIcon.prototype = {
         this._userIcon = new St.Icon({
             style_class: 'hover-user-icon'
         });
+        this._userIcon.add_style_class_name("starkhover-user-icon");
 
         this.userBox.connect('button-press-event', Lang.bind(this, function() {
             parent.toggle();

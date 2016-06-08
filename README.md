@@ -55,6 +55,9 @@ Linux Mint 17.3 Cinnamon (Cinnamon-Version 2.8)
     background-color: #ece9d8;
     color: black;
 }
+.starkmenu-search-box {
+	padding-bottom: 0px;
+}
 ```
 -------------------------------------------------------------------------------------------------
 
