@@ -435,7 +435,6 @@ ApplicationButton.prototype = {
         else
             this.tooltip = new Tooltips.Tooltip(this.actor, appDescriptionTooltipString);
         
-        //this.tooltip = new Tooltips.Tooltip(this.actor, (this.app.get_description() + "").replace(/(.{50})/g, "$1\n"));
     },
 
     get_app_id: function() {
@@ -974,6 +973,22 @@ FavoritesButton.prototype = {
         this._draggable = DND.makeDraggable(this.actor);
         this._draggable.connect('drag-end', Lang.bind(this, this._onDragEnd));
         this.isDraggableApp = true;
+        
+        let appDescriptionTooltipString = this.app.get_description() + "";
+        let lastSpacePosition = 0;
+        if(appDescriptionTooltipString.length > 80) {
+            lastSpacePosition = appDescriptionTooltipString.lastIndexOf(" ", 79);
+            appDescriptionTooltipString = appDescriptionTooltipString.replaceAt(lastSpacePosition, "\n");
+        }
+        if(appDescriptionTooltipString.length > 160) {
+            lastSpacePosition = appDescriptionTooltipString.lastIndexOf(" ", lastSpacePosition+80);
+            appDescriptionTooltipString = appDescriptionTooltipString.replaceAt(lastSpacePosition, "\n");
+        }
+        
+        if(appDescriptionTooltipString == "null")
+            this.tooltip = new Tooltips.Tooltip(this.actor, _("No description"));
+        else
+            this.tooltip = new Tooltips.Tooltip(this.actor, appDescriptionTooltipString);
     },
 
     _onDragEnd: function() {
@@ -1643,7 +1658,7 @@ RightButtonsBox.prototype = {
                 else {
                     let split = this.menu.quicklinks[i].split(',');
                     if (split.length == 3) {
-                        this.quicklinks[i] = new TextBoxItem(_(split[0]), split[1], "Util.spawnCommandLine('" + split[2] + "')", this.menu, this.hoverIcon, false);
+                        this.quicklinks[i] = new TextBoxItem(_(split[0]), _(split[1]), "Util.spawnCommandLine('" + _(split[2]) + "')", this.menu, this.hoverIcon, false);
                         this.itemsBox.add_actor(this.quicklinks[i].actor);
                     }
                 }
@@ -1852,6 +1867,25 @@ FavoritesBox.prototype = {
         return true;
     }
 }
+
+//----------------------------------------------------------------
+//
+// l10n
+//
+//----------------------------------------------------------------------
+
+const Gettext = imports.gettext
+Gettext.bindtextdomain("CinnXPStarkMenu@NikoKrause", GLib.get_home_dir() + "/.local/share/locale")
+
+function _(str) {
+  return Gettext.dgettext("CinnXPStarkMenu@NikoKrause", str)
+}
+
+//----------------------------------------------------------------------
+//
+// MyApplet
+//
+//----------------------------------------------------------------------
 
 function MyApplet(orientation, panel_height, instance_id) {
     this._init(orientation, panel_height, instance_id);

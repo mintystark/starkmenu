@@ -1,7 +1,4 @@
 {
- "separator-menu-layout": {
-    "type": "separator"
- },
  "head-menu-layout" : {
     "type" : "header",
     "description" : "Stark-Menu/MATE-Menu"
@@ -79,7 +76,7 @@
     "max" : 1000,
     "step" : 50,
     "units" : "milliseconds",
-    "description" : "Menu hover delay:",
+    "description" : "Menu hover delay: ",
     "tooltip" : "Delay between switching categories"
  },
  "menu-editor-button" : {
@@ -114,7 +111,7 @@
     "max" : 64,
     "step" : 1,
     "units" : "pixels",
-    "description" : "Size of the Favorite Button Icons:",
+    "description" : "Size of the Favorite Button Icons: ",
     "tooltip" : "Change the size of the Favorite Buttons Icons"
  },
  "separator-button-label": {
@@ -133,19 +130,19 @@
  "all-programs-label" : {
     "type" : "entry",
     "default" : "All Programs",
-    "description" : "All Programs Button Text",
+    "description" : "All Programs Button Text: ",
     "tooltip" : "Enter custom text for button."
  },
  "favorites-label" : {
     "type" : "entry",
     "default" : "Favorites",
-    "description" : "Favorites Button Text",
+    "description" : "Favorites Button Text: ",
     "tooltip" : "Enter custom text for button."
  },
  "shutdown-label" : {
     "type" : "entry",
     "default" : "Quit",
-    "description" : "Quit Button Text",
+    "description" : "Quit Button Text: ",
     "tooltip" : "Enter custom text for button."
  },
  "separator-shutdown-menu": {
@@ -158,19 +155,19 @@
  "show-quicklinks-shutdown-menu" : {
     "type" : "checkbox",
     "default" : true,
-    "description": "Show Shutdown Menu",
-    "tooltip": "Choose whether or not to show the Shutdown Menu."
+    "description": "Show Quit Menu",
+    "tooltip": "Choose whether or not to show the Quit Menu."
  },
  "quicklinks-shutdown-menu-options" : {
     "type": "combobox",
     "default": "vertical",
     "options": {
 	    "DropDown": "dropdown",
-	    "Vertikal": "vertical",
+	    "Vertical": "vertical",
         "Horizontal": "horizontal"
      },
-    "description": "Shutdown Menu Layout",
-    "tooltip": "Choose the layout of the Shutdown Menu.",
+    "description": "Quit Menu Layout",
+    "tooltip": "Choose the layout of the Quit Menu.",
     "dependency" : "show-quicklinks-shutdown-menu",
     "indent" : true
  },
@@ -191,9 +188,9 @@
     "type": "combobox",
     "default": "both",
     "options": {
-         "Icons und Labels": "both",
-         "Nur Icons": "icons",
-         "Nur Labels": "labels"
+         "Icons and Labels": "both",
+         "Icons only": "icons",
+         "Labels only": "labels"
      },
     "description": "Quicklinks Options",
     "tooltip": "Choose whether to show icons and/or labels in the Quicklinks Sidebar."
