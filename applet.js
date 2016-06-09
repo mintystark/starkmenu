@@ -431,7 +431,7 @@ ApplicationButton.prototype = {
         }
         
         if(appDescriptionTooltipString == "null")
-            this.tooltip = new Tooltips.Tooltip(this.actor, _("No description"));
+            this.tooltip = new Tooltips.Tooltip(this.actor, _("No description available"));
         else
             this.tooltip = new Tooltips.Tooltip(this.actor, appDescriptionTooltipString);
         
@@ -986,7 +986,7 @@ FavoritesButton.prototype = {
         }
         
         if(appDescriptionTooltipString == "null")
-            this.tooltip = new Tooltips.Tooltip(this.actor, _("No description"));
+            this.tooltip = new Tooltips.Tooltip(this.actor, _("No description available"));
         else
             this.tooltip = new Tooltips.Tooltip(this.actor, appDescriptionTooltipString);
     },

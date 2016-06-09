@@ -41,7 +41,7 @@ msgid "Uninstall"
 msgstr ""
 
 #: applet.js:434
-msgid "No description"
+msgid "No description available"
 msgstr ""
 
 #: applet.js:696
