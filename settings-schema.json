@@ -1,39 +1,49 @@
 {
+ "head-menu-layout" : {
+    "type" : "header",
+    "description" : "Stark-Menu/MATE-Menu"
+ },
+ "menu-layout" : {
+    "type": "combobox",
+    "default": "stark-menu",
+    "options": {
+	    "Stark-Menu": "stark-menu",
+	    "MATE-Menu": "mate-menu"
+     },
+    "description" : "Layout of the menu: ",
+    "tooltip" : "Checking this box allows you to use MATE-Menu layout, else Stark-Menu layout is used"
+ },
+ "separator-settings": {
+    "type": "separator"
+ },
+ "head-settings" : {
+    "type" : "header",
+    "description" : "General Settings"
+ },
+ "overlay-key" : {
+    "type" : "keybinding",
+    "description" : "Keyboard shortcut to open and close the menu",
+    "default" : "Super_L::Super_R"
+ },
+ "menu-icon-custom" : {
+    "type" : "checkbox",
+    "default" : false,
+    "description" : "Use a custom icon",
+    "tooltip" : "Unchecking this allows the theme to set the icon"
+ },
  "menu-icon" : {
     "type" : "iconfilechooser",
-    "default" : "/usr/share/cinnamon/theme/menu.png",
-    "description": "Icon",
-    "tooltip": "Select an icon to show in the panel."
+    "default" : "/usr/share/cinnamon/theme/menu-symbolic.svg",
+    "description" : "Icon",
+    "tooltip" : "Select an icon to show in the panel.",
+    "dependency" : "menu-icon-custom",
+    "indent" : true
  },
  "menu-label" : {
     "type" : "entry",
     "default" : "Menu",
     "description" : "Menu Text",
     "tooltip" : "Enter custom text to show in the panel."
- },
- "all-programs-label" : {
-    "type" : "entry",
-    "default" : "All Programs",
-    "description" : "All Programs Text",
-    "tooltip" : "Enter custom text for button."
- },
- "favorites-label" : {
-    "type" : "entry",
-    "default" : "Favorites",
-    "description" : "Favorites Text",
-    "tooltip" : "Enter custom text for button."
- },
- "shutdown-label" : {
-    "type" : "entry",
-    "default" : "Shutdown",
-    "description" : "Shutdown Text",
-    "tooltip" : "Enter custom text for button."
- },
- "show-recent" : {
-    "type" : "checkbox",
-    "default" : true,
-    "description": "Show recent files",
-    "tooltip": "Choose whether or not to show a recent file list in the menu."
  },
  "show-places" : {
     "type" : "checkbox",
@@ -61,23 +71,112 @@
  },
  "hover-delay" : {
     "type": "spinbutton",
-    "default" : 50,
+    "default" : 0,
     "min" : 0,
     "max" : 1000,
     "step" : 50,
     "units" : "milliseconds",
-    "description" : "Menu hover delay:",
+    "description" : "Menu hover delay: ",
     "tooltip" : "Delay between switching categories"
  },
- "favorite-icon-size" : {
+ "menu-editor-button" : {
+    "type" : "button",
+    "description" : "Open the menu editor",
+    "callback" : "_launch_editor",
+    "tooltip" : "Press this button to customize your menu entries."
+ },
+ "separator-show-hide-icons": {
+    "type": "separator"
+ },
+ "head-button-show-hide-icons" : {
+    "type" : "header",
+    "description" : "Symbols"
+ },
+ "show-category-icons" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Show category icons",
+    "tooltip" : "Choose whether or not to show icons on categories."
+ },
+ "show-application-icons" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Show application icons",
+    "tooltip" : "Choose whether or not to show icons on applications."
+ },
+  "favorite-icon-size" : {
     "type": "spinbutton",
     "default" : 32,
     "min" : 12,
     "max" : 64,
     "step" : 1,
     "units" : "pixels",
-    "description" : "Size of the Fovorite Button Icons:",
-    "tooltip" : "Change the Size of the Favorite Buttons Icons"
+    "description" : "Size of the Favorite Button Icons: ",
+    "tooltip" : "Change the size of the Favorite Buttons Icons"
+ },
+ "separator-button-label": {
+    "type": "separator"
+ },
+ "head-button-label" : {
+    "type" : "header",
+    "description" : "Labels on buttons in the menu"
+ },
+ "show-user-icon-label" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Show username",
+    "tooltip" : "Choose whether or not to show the username."
+ },
+ "all-programs-label" : {
+    "type" : "entry",
+    "default" : "All Programs",
+    "description" : "All Programs Button Text: ",
+    "tooltip" : "Enter custom text for button."
+ },
+ "favorites-label" : {
+    "type" : "entry",
+    "default" : "Favorites",
+    "description" : "Favorites Button Text: ",
+    "tooltip" : "Enter custom text for button."
+ },
+ "shutdown-label" : {
+    "type" : "entry",
+    "default" : "Quit",
+    "description" : "Quit Button Text: ",
+    "tooltip" : "Enter custom text for button."
+ },
+ "separator-shutdown-menu": {
+    "type": "separator"
+ },
+ "head-shutdown-menu" : {
+    "type" : "header",
+    "description" : "Quit/Logout/Lock screen"
+ },
+ "show-quicklinks-shutdown-menu" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description": "Show Quit Menu",
+    "tooltip": "Choose whether or not to show the Quit Menu."
+ },
+ "quicklinks-shutdown-menu-options" : {
+    "type": "combobox",
+    "default": "vertical",
+    "options": {
+	    "DropDown": "dropdown",
+	    "Vertical": "vertical",
+        "Horizontal": "horizontal"
+     },
+    "description": "Quit Menu Layout",
+    "tooltip": "Choose the layout of the Quit Menu.",
+    "dependency" : "show-quicklinks-shutdown-menu",
+    "indent" : true
+ },
+ "separator-quicklinks-settings": {
+    "type": "separator"
+ },
+ "head-quicklinks-settings" : {
+    "type" : "header",
+    "description" : "Quicklinks Sidebar"
  },
  "show-quicklinks" : {
     "type" : "checkbox",
@@ -89,143 +188,291 @@
     "type": "combobox",
     "default": "both",
     "options": {
-         "Both Icons and Labels": "both",
-         "Icons Only": "icons",
-         "Labels Only": "labels"
+         "Icons and Labels": "both",
+         "Icons only": "icons",
+         "Labels only": "labels"
      },
     "description": "Quicklinks Options",
-    "tooltip": "Allows the icons or Labels to be shown in the Quicklinks sidebar."
+    "tooltip": "Choose whether to show icons and/or labels in the Quicklinks Sidebar."
  },
- "show-quicklinks-shutdown-menu" : {
+ "quicklink-0-checkbox" : {
     "type" : "checkbox",
     "default" : true,
-    "description": "Show Quicklinks Shutdown Menu",
-    "tooltip": "Choose whether or not to show the Quicklinks Shutdown Menu."
+    "description" : "Show Quicklink in menu",
+    "tooltip" : "Choose whether or not to show this Quicklink in the Quicklinks sidebar."
  },
  "quicklink-0" : {
     "type": "entry",
     "default": "separator",
     "description": "Quicklink",
-    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
+    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
+    "dependency" : "quicklink-0-checkbox",
+    "indent" : true
+ },
+ "quicklink-1-checkbox" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Show Quicklink in menu",
+    "tooltip" : "Choose whether or not to show this Quicklink in the Quicklinks sidebar."
  },
  "quicklink-1" : {
     "type": "entry",
     "default": "Home,folder-home,nemo",
     "description": "Quicklink",
-    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
+    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
+    "dependency" : "quicklink-1-checkbox",
+    "indent" : true
+ },
+ "quicklink-2-checkbox" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Show Quicklink in menu",
+    "tooltip" : "Choose whether or not to show this Quicklink in the Quicklinks sidebar."
  },
  "quicklink-2" : {
     "type": "entry",
     "default": "Documents,folder-documents,nemo Documents",
     "description": "Quicklink",
-    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
+    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
+    "dependency" : "quicklink-2-checkbox",
+    "indent" : true
+ },
+ "quicklink-3-checkbox" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Show Quicklink in menu",
+    "tooltip" : "Choose whether or not to show this Quicklink in the Quicklinks sidebar."
  },
  "quicklink-3" : {
     "type": "entry",
     "default": "Pictures,folder-pictures,nemo Pictures",
     "description": "Quicklink",
-    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
+    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
+    "dependency" : "quicklink-3-checkbox",
+    "indent" : true
+ },
+ "quicklink-4-checkbox" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Show Quicklink in menu",
+    "tooltip" : "Choose whether or not to show this Quicklink in the Quicklinks sidebar."
  },
  "quicklink-4" : {
     "type": "entry",
     "default": "Music,folder-music,nemo Music",
     "description": "Quicklink",
-    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
+    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
+    "dependency" : "quicklink-4-checkbox",
+    "indent" : true
+ },
+ "quicklink-5-checkbox" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Show Quicklink in menu",
+    "tooltip" : "Choose whether or not to show this Quicklink in the Quicklinks sidebar."
  },
  "quicklink-5" : {
     "type": "entry",
     "default": "Videos,folder-videos,nemo Videos",
     "description": "Quicklink",
-    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
+    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
+    "dependency" : "quicklink-5-checkbox",
+    "indent" : true
+ },
+ "quicklink-6-checkbox" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Show Quicklink in menu",
+    "tooltip" : "Choose whether or not to show this Quicklink in the Quicklinks sidebar."
  },
  "quicklink-6" : {
     "type": "entry",
-    "default": "separator",
+    "default": "Downloads,folder-downloads,nemo Downloads",
     "description": "Quicklink",
-    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
+    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
+    "dependency" : "quicklink-6-checkbox",
+    "indent" : true
+ },
+ "quicklink-7-checkbox" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Show Quicklink in menu",
+    "tooltip" : "Choose whether or not to show this Quicklink in the Quicklinks sidebar."
  },
  "quicklink-7" : {
     "type": "entry",
-    "default": "Computer,computer,nemo computer:///",
+    "default": "separator",
     "description": "Quicklink",
-    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
+    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
+    "dependency" : "quicklink-7-checkbox",
+    "indent" : true
+ },
+ "quicklink-8-checkbox" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Show Quicklink in menu",
+    "tooltip" : "Choose whether or not to show this Quicklink in the Quicklinks sidebar."
  },
  "quicklink-8" : {
     "type": "entry",
-    "default": "Software Manager,package-manager,gksu mintinstall",
+    "default": "Computer,computer,nemo computer:///",
     "description": "Quicklink",
-    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
+    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
+    "dependency" : "quicklink-8-checkbox",
+    "indent" : true
+ },
+ "quicklink-9-checkbox" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Show Quicklink in menu",
+    "tooltip" : "Choose whether or not to show this Quicklink in the Quicklinks sidebar."
  },
  "quicklink-9" : {
     "type": "entry",
-    "default": "Control Center,control-center2,cinnamon-settings",
+    "default": "Software Manager,mintinstall,gksu mintinstall",
     "description": "Quicklink",
-    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
+    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
+    "dependency" : "quicklink-9-checkbox",
+    "indent" : true
+ },
+ "quicklink-10-checkbox" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Show Quicklink in menu",
+    "tooltip" : "Choose whether or not to show this Quicklink in the Quicklinks sidebar."
  },
  "quicklink-10" : {
     "type": "entry",
-    "default": "Terminal,terminal,gnome-terminal",
+    "default": "System Settings,preferences-system,cinnamon-settings",
     "description": "Quicklink",
-    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
+    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
+    "dependency" : "quicklink-10-checkbox",
+    "indent" : true
+ },
+ "quicklink-11-checkbox" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Show Quicklink in menu",
+    "tooltip" : "Choose whether or not to show this Quicklink in the Quicklinks sidebar."
  },
  "quicklink-11" : {
     "type": "entry",
-    "default": "Help,help,yelp",
+    "default": "Terminal,terminal,gnome-terminal",
     "description": "Quicklink",
-    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
+    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
+    "dependency" : "quicklink-11-checkbox",
+    "indent" : true
+ },
+ "quicklink-12-checkbox" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Show Quicklink in menu",
+    "tooltip" : "Choose whether or not to show this Quicklink in the Quicklinks sidebar."
  },
  "quicklink-12" : {
     "type": "entry",
-    "default": "separator",
+    "default": "Help,help,yelp",
     "description": "Quicklink",
-    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
+    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
+    "dependency" : "quicklink-12-checkbox",
+    "indent" : true
+ },
+ "quicklink-13-checkbox" : {
+    "type" : "checkbox",
+    "default" : true,
+    "description" : "Show Quicklink in menu",
+    "tooltip" : "Choose whether or not to show this Quicklink in the Quicklinks sidebar."
  },
  "quicklink-13" : {
     "type": "entry",
-    "default": "",
+    "default": "separator",
     "description": "Quicklink",
-    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
+    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
+    "dependency" : "quicklink-13-checkbox",
+    "indent" : true
+ },
+ "quicklink-14-checkbox" : {
+    "type" : "checkbox",
+    "default" : false,
+    "description" : "Show Quicklink in menu",
+    "tooltip" : "Choose whether or not to show this Quicklink in the Quicklinks sidebar."
  },
  "quicklink-14" : {
     "type": "entry",
     "default": "",
     "description": "Quicklink",
-    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
+    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
+    "dependency" : "quicklink-14-checkbox",
+    "indent" : true
+ },
+ "quicklink-15-checkbox" : {
+    "type" : "checkbox",
+    "default" : false,
+    "description" : "Show Quicklink in menu",
+    "tooltip" : "Choose whether or not to show this Quicklink in the Quicklinks sidebar."
  },
  "quicklink-15" : {
     "type": "entry",
     "default": "",
     "description": "Quicklink",
-    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
+    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
+    "dependency" : "quicklink-15-checkbox",
+    "indent" : true
+ },
+ "quicklink-16-checkbox" : {
+    "type" : "checkbox",
+    "default" : false,
+    "description" : "Show Quicklink in menu",
+    "tooltip" : "Choose whether or not to show this Quicklink in the Quicklinks sidebar."
  },
  "quicklink-16" : {
     "type": "entry",
     "default": "",
     "description": "Quicklink",
-    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
+    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
+    "dependency" : "quicklink-16-checkbox",
+    "indent" : true
+ },
+ "quicklink-17-checkbox" : {
+    "type" : "checkbox",
+    "default" : false,
+    "description" : "Show Quicklink in menu",
+    "tooltip" : "Choose whether or not to show this Quicklink in the Quicklinks sidebar."
  },
  "quicklink-17" : {
     "type": "entry",
     "default": "",
     "description": "Quicklink",
-    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
+    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
+    "dependency" : "quicklink-17-checkbox",
+    "indent" : true
+ },
+ "quicklink-18-checkbox" : {
+    "type" : "checkbox",
+    "default" : false,
+    "description" : "Show Quicklink in menu",
+    "tooltip" : "Choose whether or not to show this Quicklink in the Quicklinks sidebar."
  },
  "quicklink-18" : {
     "type": "entry",
     "default": "",
     "description": "Quicklink",
-    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
+    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
+    "dependency" : "quicklink-18-checkbox",
+    "indent" : true
+ },
+ "quicklink-19-checkbox" : {
+    "type" : "checkbox",
+    "default" : false,
+    "description" : "Show Quicklink in menu",
+    "tooltip" : "Choose whether or not to show this Quicklink in the Quicklinks sidebar."
  },
  "quicklink-19" : {
     "type": "entry",
     "default": "",
     "description": "Quicklink",
-    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path."
- },
-  "menu-editor-button" : {
-    "type" : "button",
-    "description" : "Open the menu editor",
-    "callback" : "_launch_editor",
-    "tooltip" : "Press this button to customize your menu entries."
+    "tooltip": "Entry for your Quicklink. Title,icon,command. If the icon does not contain an extension then it will look for the closest icon by name in the current theme. Otherwise it will find the icon by path.",
+    "dependency" : "quicklink-19-checkbox",
+    "indent" : true
  }
 }

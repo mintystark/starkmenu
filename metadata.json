@@ -1,8 +1,7 @@
 {
-    "last-edited": "1389331649",
-    "description": "A Menu Derived from physics Windows 7+Cinnamon, Menu.  Works on Cinnamon 2.0 and has a few updates and additional options.",
-    "uuid": "StarkMenu@mintystark",
-    "name": "StarkMenu",
-    "version": "1.3.0",
-    "icon": "applications-other"
+ "uuid": "CinnXPStarkMenu@NikoKrause",
+ "name": "CinnXPStarkMenu",
+ "description": "StarkMenu adapted for CinnXP theme",
+ "icon": "applications-other",
+ "max-instances": -1
 }
